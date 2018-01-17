@@ -1,0 +1,66 @@
+  <div *ngIf="analyse"  text-wrap class="dasboard">
+<button class="option-relative-top-right special-item" ion-button small  icon-only clear color="light" (click)="openHelp()" ><ion-icon name="ios-help-circle"></ion-icon></button>     
+  
+  <div class="no-bg">
+  <ion-row  >
+    <ion-col> 
+       <div [ngClass]="noteClass(analyse)" ><span >{{toFixed(analyse.note)}}/20</span></div> 
+       <br>
+       <span *ngIf="matiere || concours" class="span-title">Score</span>
+        <span *ngIf="partie" class="span-title">Score</span>
+    </ion-col>     
+    <ion-col>
+       <div [ngClass]="objectifClass(analyse)" ><span >{{toFixed(analyse.objectif)}}%</span></div>
+       <br>
+       <span class="span-title">Objectifs</span>
+    </ion-col>
+     <ion-col *ngIf="matiere || concours"> 
+       <div [ngClass]="programmeClass(analyse)"><span >{{toFixed(analyse.programme)}}%</span></div>
+       <br>
+       <span class="span-title">Programme</span>
+     </ion-col> 
+      <ion-col *ngIf="partie"> 
+       <div class="span-value none  "><span >{{format(analyse.time)}}</span></div>
+       <br>
+       <span class="span-title">Temps</span>
+     </ion-col>        
+  </ion-row> 
+<button ion-button icon-only clear color="orange" (click)="isShow=true" [hidden]="isShow"><ion-icon name="ios-arrow-down-outline"></ion-icon></button>  
+</div >
+<div [hidden]="!isShow" class="no-bg">
+ <ion-row align-items-center>
+      <ion-col>
+        <div class="span-value none ">
+          <span>
+          <span class="border-bottom">
+          {{analyse.rang}}
+          <sup *ngIf="analyse.rang>1">ième</sup>
+          <sup *ngIf="analyse.rang==1">ier</sup>
+          </span>
+         {{analyse.evalues}} 
+        </span>
+        </div>
+        <br>
+        <span class="span-title" > Rang</span>
+      </ion-col>
+      <ion-col *ngIf="(matiere||partie||concours)"> 
+       <div  class="span-value none  "><span >{{toFixed(analyse.dememe)}}</span></div> 
+       <br>
+       <span *ngIf="partie" class="span-title">Challengeurs</span>
+        <span *ngIf="matiere||concours" class="span-title">Challengeurs</span> 
+    </ion-col>            
+    <ion-col *ngIf="(matiere||partie)"> 
+       <div class="span-value none  "><span >{{toFixed(analyse.sup10)}}%</span></div> 
+       <br>
+        <span *ngIf="partie" class="span-title">Réussite</span>
+        <span *ngIf="matiere" class="span-title">Réussite</span>
+    </ion-col>      
+     <ion-col *ngIf="concours" > 
+       <div class="span-value none  "><span >{{concours.nombreInscrit}}</span></div>
+       <br>
+       <span class="span-title">Candidats</span>
+     </ion-col>
+  </ion-row>  
+<button ion-button icon-only clear (click)="isShow=false" color="orange"><ion-icon name="ios-arrow-up-outline"></ion-icon></button>    
+</div>   
+  </div>  

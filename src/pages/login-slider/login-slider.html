@@ -1,0 +1,135 @@
+<div class="overlay dark-5">
+</div>
+<ion-content class="transparent-header" [ngStyle]="{'background-image': 'url(' + backgroundImage +')'}">
+  <ion-header>
+    <ion-navbar >
+     <!-- <button menuToggle ion-button icon-only>
+        <ion-icon name="menu"></ion-icon>
+      </button>-->
+    </ion-navbar>
+  </ion-header>
+      <ion-grid #login class="login" [hidden]="singupStape">
+        <ion-row justify-content-center>
+          <ion-col col-sm-12 col-md-6 col-lg-4 col-xl-4>
+            <ion-slides #innerSlider  class="content-slider">
+              <ion-slide class="swiper-no-swiping">
+                <div style="padding: 20% 32px 32px 32px;">
+                  <form [formGroup]="loginForm" novalidate>
+                  <!--  <ion-row>
+                      <ion-col>
+                        <img class="logo" src="assets/images/logo-light.png" />
+                      </ion-col>
+                    </ion-row>-->
+                       <h3 text-center>
+                         Connectez-vous
+                       </h3>
+                        <br>
+                    <ion-item>
+                      <ion-label floating>Adresse e-mail</ion-label>
+                      <ion-input type="text" #email formControlName="email" [class.invalid]="!loginForm.controls.email.valid && loginForm.controls.email.dirty"></ion-input>
+                    </ion-item>
+                    <span style="border-bottom: 0 !important; color: #BE2222 !important;font-size: 0.8em;" *ngIf="!loginForm.controls.email.valid  && loginForm.controls.email.dirty">
+                    Entrer une adresse mail valide.
+                    </span>
+                    <ion-item>
+                      <ion-label floating>Mot de passe</ion-label>
+                      <ion-input #password formControlName="password" type="password" [class.invalid]="!loginForm.controls.password.valid &&loginForm.controls.password.dirty"></ion-input>
+                    </ion-item>
+                    <span style="border-bottom: 0 !important; color: #BE2222 !important;font-size: 0.8em;" *ngIf="!loginForm.controls.password.valid  && loginForm.controls.password.dirty">
+                    Saisir votre mot de passe.
+                    </span>
+                    <div padding>
+                      <button ion-button block (click)="getLogin()" color="pimary">Connexion</button>
+                      <button ion-button clear (click)="slideNext()" color="light" class="forgot-button">Mot de passe oublié ?</button>
+                      <br><br>
+                      <br>
+                      <br>
+                    </div>
+                  </form>
+                </div>
+                <div padding>
+                  <button ion-button clear (click)="goToSignup()" class="slide-button ">Créer un compte
+                    <ion-icon name="arrow-up"></ion-icon>
+                  </button>
+                </div>
+              </ion-slide>
+              <ion-slide class="swiper-no-swiping">
+                <form [formGroup]="resetPasswordForm" novalidate>
+                  <div style="padding: 20% 32px 32px 32px; height: 100%;">
+                 <!--   <ion-row>
+                      <ion-col>
+                        <img class="logo" src="assets/images/logo-light.png" />
+                      </ion-col>
+                    </ion-row>-->
+                       <h3 text-center >
+                           Reinitialisez votre mot de passe
+                       </h3>
+                        <br>
+                    <ion-item>
+                      <ion-label floating>Adresse e-mail</ion-label>
+                      <ion-input type="email" formControlName="email" [class.invalid]="!resetPasswordForm.controls.email.valid && resetPasswordForm.controls.email.dirty"></ion-input>
+                    </ion-item>
+                    <br>
+                    <button ion-button block (click)="resetPassword()" color="primary">Reinitialiser</button>
+                    <button ion-button clear (click)="slidePrevious()" color="light" class="goback-button">
+                      <ion-icon name="arrow-back"></ion-icon> Retour</button>
+                  </div>
+                </form>
+              </ion-slide>
+            </ion-slides>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+        <ion-grid #singup class="singup" [hidden]="!singupStape">
+          <ion-row justify-content-center>
+            <ion-col col-sm-12 col-md-6 col-lg-4 col-xl-4>
+              <div style="padding:20%  32px 32px 32px; height: 100%;">
+                <form [formGroup]="signupForm" novalidate>
+          <!--       <ion-row>
+                   <ion-col>
+                      <img class="logo" src="assets/images/logo-light.png" />
+                    </ion-col>
+                  </ion-row>-->
+                  <h3 text-center class="h3">
+                   Créer vous un compte
+                  </h3>
+                  <br>
+                  <ion-item>
+                    <ion-label floating>Adresse e-mail</ion-label>
+                    <ion-input type="text" #email formControlName="email" [class.invalid]="!signupForm.controls.email.valid && signupForm.controls.email.dirty"></ion-input>
+                  </ion-item>
+                  <span style="border-bottom: 0 !important; color: #BE2222 !important;font-size: 0.8em;" *ngIf="!signupForm.controls.email.valid  && signupForm.controls.email.dirty">
+                    Entrer une adresse mail valide.
+                  </span>
+                  <ion-item>
+                    <ion-label floating>Mot de passe</ion-label>
+                    <ion-input #password formControlName="password" type="password" [class.invalid]="!signupForm.controls.password.valid && signupForm.controls.password.dirty"></ion-input>
+                  </ion-item>
+                  <span style="border-bottom: 0 !important; color: #BE2222 !important;font-size: 0.8em;" *ngIf="!signupForm.controls.password.valid  && signupForm.controls.password.dirty">
+                    Mot de passe trop court.
+                  </span>
+                  <ion-item class="margin-bottom">
+                    <ion-label floating>Confirmation</ion-label>
+                    <ion-input #repassword formControlName="repassword" type="password" [class.invalid]="!signupForm.controls.repassword.valid && signupForm.controls.repassword.dirty"></ion-input>
+                  </ion-item>
+                  <span style="border-bottom: 0 !important; color: #BE2222 !important;font-size: 0.8em;" *ngIf="!signupForm.controls.repassword.valid  && signupForm.controls.repassword.dirty">
+                    Les mots de passe sont différents.
+                  </span>
+                <div padding>
+                  <button ion-button block (click)="getSignup()" color="pimary">Créer un compte</button>
+                  <br>
+                  <button ion-button block outline color="facebook" icon-left (click)="facebookLogin()">
+                    <ion-icon name="logo-facebook"></ion-icon>
+                    Utiliser facebook
+                  </button>
+                </div>
+                </form>
+                <button ion-button clear (click)="goToLogin()" class="slide-button">
+                  Me connecter
+                  <ion-icon name="arrow-down"></ion-icon>
+                </button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+</ion-content>

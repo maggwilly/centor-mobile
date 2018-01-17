@@ -1,44 +1,311 @@
-import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Component, NgZone } from '@angular/core';
+import { ViewChild } from '@angular/core';
+import { Events, ModalController, Platform, Nav, MenuController, LoadingController, AlertController, ActionSheetController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { DataService } from '../providers/data-service';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Storage } from '@ionic/storage';
+import firebase from 'firebase';
+import { AppNotify } from '../providers/app-notify';
+import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
+import { AngularFireAuth } from 'angularfire2/auth';
 
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+const options: PushOptions = {
+  android: {},
+  ios: {
+    alert: 'true',
+    badge: true,
+    sound: 'false'
+  },
+  windows: {},
+  browser: {
+    pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+  }
+};
 
+export interface PageInterface {
+  title: string;
+  component: any;
+  icon: string;
+  logsOut?: boolean;
+  index?: number;
+}
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
+  rootPage: any =  'ProcessingPage';//TabsPage;TutorialPage;// MatieresPage;//
+  authInfo: any;
+  concours: any;
+  paidConcours: any[];
+  preference: any = {};
+  _concours: any[];
+  user: any;
+  zone: NgZone;
+  baseUrl: string;
+  mode = 'prod';
+  registrationId;
+  photoURL:any;
+  notificationId: string //= window.localStorage.getItem('registrationId');
+  appPages: PageInterface[] = [
+    { title: 'Accueil', component: 'HomePage', icon: 'home' },
+    { title: 'Concours', component: 'ConcoursPage', icon: 'school' },
+    { title: 'Resultats', component: 'ResultatsPage', icon: 'md-list' },
+    { title: 'Contacts', component: 'ContactPage', icon: 'call' },
+    { title: 'A propos', component: 'AboutPage', icon: 'information-circle' }
+  ];
 
-  rootPage: any = HomePage;
-
-  pages: Array<{title: string, component: any}>;
-
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
-    this.initializeApp();
-
-    // used for an example of ngFor and navigation
-    this.pages = [
-      { title: 'Home', component: HomePage },
-      { title: 'List', component: ListPage }
-    ];
+  constructor(public platform: Platform,
+    public menu: MenuController,
+    public dataService: DataService,
+    public notify: AppNotify,
+    public af: AngularFireDatabase,
+    public auth: AngularFireAuth,
+    private push: Push,
+    public storage: Storage,
+    public modalCtrl: ModalController,
+    public loadingCtrl: LoadingController,
+    public actionSheetCtrl: ActionSheetController,
+    public alertCtrl: AlertController,
+    public statusBar: StatusBar,
+    public splashScreen: SplashScreen,
+    public events: Events) {
+    this.zone = new NgZone({});
+    platform.ready().then(() => {
+     // alert(platform.platforms());
+      // this.statusBar.styleBlackTranslucent();
+      //this.statusBar.overlaysWebView(true);
+      this.storage.get('registrationId').then((data)=>{
+        this.notificationId=data;
+        this.registrationId = data;
+      })
+      this.statusBar.backgroundColorByHexString("#065C79");
+     //this.storage.clear().then().catch(error=>{});
+     // window.localStorage.setItem('registrationId', 'fsQPkDT8QSU:APA91bFGFx8ps41oOgZ-oSf9R1L20ZAfPxC4OwIErve_-O50NmM6afG3f7TnEo7wtsCOmjIIruKNl8Qkh2VkHd98APbtohuBJY3bSLhxn2TqV8oaNp9aRueW4u__iCXqgA2w-Xg1VUS-');
+      this.registerForNotification();
+      this.getUrlBase(this);
+      this.splashScreen.hide();
+    });
 
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+
+
+
+  getUrlBase(obj: any) {
+    let _baseUrl = 'http://entrances.herokuapp.com/v1/'
+    if (this.mode=='dev')
+      _baseUrl = 'http://localhost:8000/v1/'
+    if (!this.platform.is('mobileweb'))
+    this.storage.set('_baseUrl', _baseUrl).then(()=>{
+      this.startApp();
+    }, error => {
+      this.notify.onError({ message: JSON.stringify(error) }); 
+      this.startApp();
+    });
+    else 
+    this.startApp();
+  }
+
+  startApp() {
+    this.observeAuth();
+    this.storage.get('read-tutorial-centor').then(data=>{
+      if (!data) {
+        const modal = this.modalCtrl.create('TutorialPage');
+        modal.onDidDismiss(data => {
+            this.storage.set('read-tutorial-centor', true).catch(error=>{
+              //this.notify.onError({ message: JSON.stringify(error) });
+            });
+        });
+        modal.present();
+      }
+    },error=>{
+      this.notify.onError({ message: JSON.stringify(error) });
+    })
+    if (!this.platform.is('mobileweb'))
+    this.storage.get('_preferences')
+      .then((data) => {
+        this.concours = data;
+        if (this.concours)
+          this.showDetails(this.concours);
+        else
+          this.nav.setRoot('HomePage');
+          //this.rootPage = 'ConcoursPage';
+      },error=>{
+        this.notify.onError({ message: JSON.stringify(error) });
+        this.nav.setRoot('HomePage');
+      });
+      else
+      this.nav.setRoot('HomePage');
+  }
+
+  openPage(page: PageInterface) {
+    // close the menu when clicking a link from the menu
+    this.menu.close();
+    // navigate to the new page if it is not the current page
+    this.nav.push(page.component);
+  }
+
+  openMessages() {
+    // navigate to the new page if it is not the current page
+    this.nav.push('ArticlesPage');
+    this.menu.close();
+  }
+
+
+
+  getUserProfile() {
+    return this.dataService.getInfo(this.authInfo.uid, this.registrationId).then((info) => {
+      if (info){
+        this.user.info = info;
+        this.user.info.photoURL = this.photoURL ? this.photoURL : this.user.info.photoURL;
+      }
+    }, error => {
+      //this.openModal('ProfilModalPage', { authInfo: this.authInfo, user: this.user });
+      this.notify.onError({ message: 'Petit problème de connexion.' });
+    })
+  }
+
+checkInfo(info:any){
+  if(!info){
+    this.dataService.getInfoObservable(this.authInfo.uid, this.registrationId).subscribe(data => {
+      this.user.info = data.json();
+    }, error => {
+      this.notify.onError({ message: 'Problème de connexion.' });
     });
   }
 
-  openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
-  }
 }
+
+
+  openModal(pageName, arg?: any) {
+    this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
+      .present();
+  }
+
+
+
+
+  openSettingPage() {
+  
+    if (firebase.auth().currentUser)
+      this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
+    else {
+      this.nav.push('LoginSliderPage', { redirectTo: true });
+      const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        this.zone.run(() => {
+          if (user) {
+          //  this.notificationId = user.uid;
+            this.nav.push('SettingPage', { authInfo: user });
+            this.notify.onSuccess({ message: "Vous êtes connecté à votre compte." });
+            unsubscribe();
+          } else {
+            this.user = undefined;
+            this.paidConcours = [];
+            unsubscribe();
+          }
+
+        });
+      })
+    }
+    this.menu.close();
+  }
+
+  registerForNotification() {
+     firebase.messaging().onMessage(data=>{
+      console.log("Message received. ", data);
+       this.events.publish('notification') 
+    });
+    
+    const pushObject: PushObject = this.push.init(options);
+    pushObject.on('notification').subscribe((notification: NotificationEventResponse) =>
+        this.events.publish('notification') 
+    ,error=>{});
+    pushObject.on('registration').subscribe((registration: RegistrationEventResponse) => {
+      this.registration(registration.registrationId);
+    }, error => { }
+    );
+  }
+
+
+  registration(registrationId: any) {
+    this.registrationId = registrationId;
+    this.notificationId = registrationId;
+    this.storage.set('registrationId', registrationId).then(()=>{
+      console.log(registrationId);
+      this.dataService.addRegistration(registrationId, { registrationId: registrationId }).then((data) => {
+      }, error => {
+        // this.notify.onError({message:'Petit problème de connexion.'}); 
+      })  
+    },error=>{
+      console.log(registrationId);
+      this.dataService.addRegistration(registrationId, { registrationId: registrationId }).then((data) => {
+      }, error => {
+        // this.notify.onError({message:'Petit problème de connexion.'}); 
+      })  
+    });
+
+  }
+
+
+  /*loadAbonnement() {
+    return this.storage.get('_paidConcours').then((data) => {
+      this.paidConcours = data ? data : [];
+      this.dataService.getAbonnements(this.authInfo.uid).then(data => {
+        this.paidConcours = data ? data : [];
+        this.storage.set('_paidConcours', this.paidConcours).catch(error => { });
+      }, error => {
+        this.notify.onError({ message: 'Problème de connexion.' });
+      })
+    })
+  }*/
+  loadAbonnement() {
+    this.dataService.getAbonnementsObservable(this.authInfo.uid).subscribe(data => {
+      this.paidConcours = data ? data : [];
+    }, error => {
+      this.notify.onError({ message: 'Problème de connexion.' });
+    })
+  }
+  observeAuth() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.photoURL = user.photoURL;
+        this.authInfo = user;
+        this.user = { info: this.authInfo };
+        this.notificationId = user.uid;
+        this.getUserProfile().then(()=>{
+        this.loadAbonnement();
+        });
+      } else {
+        this.user = undefined;
+        this.paidConcours = [];
+      }
+    });
+    this.events.subscribe('payement:success', (data) => {
+      this.zone.run(() => {
+        this.loadAbonnement();
+      });
+    });
+
+    this.events.subscribe('profil:updated', (data) => {
+      this.zone.run(() => {
+        this.user = { info: data };
+      });
+    });
+  }
+
+
+
+
+  showDetails(abonnement: any) {
+  
+    this.nav.setRoot('MatieresPage', { abonnement: abonnement });
+    this.storage.set('_preferences', abonnement).catch(error => { });
+    this.menu.close();
+  }
+ 
+}
+
+

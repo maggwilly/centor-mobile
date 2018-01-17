@@ -1,0 +1,31 @@
+<!--
+  Generated template for the Popup page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<div  no-lines [hidden]="!option"  ion-item no-lines text-wrap>
+<div *ngIf="option=='stats'" >
+   <h2 color="primary">Détails</h2>
+     <ion-item>
+    <p >Question {{questionNumber}}</p>
+    <p >{{partie.titre}} ></p>
+    <p >{{partie.matiere.titre}}></p>
+    <p>{{partie.matiere.concours.nom}}</p>
+    </ion-item>      
+  </div>
+<div *ngIf="option=='time'" >
+   <h2 color="primary">Temps de réponse</h2>
+<ion-item>
+    <p>Temps imparti </p>
+   <ion-badge item-right>{{format(question.time*60*1000)}}</ion-badge>
+</ion-item>
+<ion-item>
+  <p>Temps restant </p>
+   <ion-badge item-right>{{format(time,':',':')}}</ion-badge>
+</ion-item>
+ </div>   
+ <button ion-button  clear icon-only color="danger"  (click)="dismiss()" class="option-relative-bottom-right"> 
+  <ion-icon  name="close"></ion-icon>
+</button>
+</div>

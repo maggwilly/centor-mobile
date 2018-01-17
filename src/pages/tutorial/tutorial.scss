@@ -1,0 +1,77 @@
+
+page-tutorial {
+  .bg-gray{
+   
+  }
+ // font-family: 'Avenir', sans-serif;
+  video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    transform: translateX(-50%) translateY(-50%);
+   
+}
+
+ion-slides {
+  height: 100%;
+  position: absolute;
+  bottom: 0;
+  background: map-get($colors, primary);//transparent !important;
+  background-color: map-get($colors, primary);//transparent !important;
+ // background: linear-gradient(rgba(73, 76, 77, 0),  rgba(48, 54, 56, 0.61));
+  ion-slide {
+      color: #fff;
+      align-content: center;
+  }
+  
+  h4 {
+      font-weight: bold;
+  }
+
+  .slide-zoom {
+    height: 100%;
+  }
+
+  .slide-title {
+    margin-top: 2.9rem;
+    padding: 0 41px;
+    align-self: auto;
+  }
+
+  b {
+    font-weight: 500;
+  }
+
+  p {
+    padding: 0 41px;
+    font-size: 0.9em;
+    line-height: 1.8;
+    color: #fff;
+   
+    b {
+      color: map-get($colors, orange);
+      font-weight: bold;
+    }
+
+  }
+  .text-bg {
+    color: #fff;
+    background-color: map-get($colors, secondary);
+    font-weight: bold;
+    font-size: 0.9em;
+    padding-left: 3px;
+    padding-right: 25px;
+  }
+  .swiper-pagination-bullet {
+    background:#fff;
+  }
+
+}
+
+
+}

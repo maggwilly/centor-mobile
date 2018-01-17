@@ -1,0 +1,52 @@
+
+<ion-header >
+  <ion-navbar>
+  <ion-title>Détails</ion-title> 
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()" showWhen="android,windows,core">
+        <ion-icon name="md-close" ></ion-icon>
+      </button> 
+      <button ion-button icon-left (click)="dismiss()"showWhen="ios" >
+        <span  ><ion-icon name="ios-arrow-back" ></ion-icon>Back</span>
+      </button>       
+     </ion-buttons>   
+  </ion-navbar>
+</ion-header>
+<ion-content >
+<div *ngIf="partie">
+ <ion-card-header>{{partie.titre}}</ion-card-header> 
+ <ion-card-content>
+ <p *ngIf="partie.matiere"> {{partie.matiere.titre}}</p>
+ </ion-card-content> 
+</div>  
+<div *ngIf="partie" ion-item>
+  <ion-card-header>Description</ion-card-header> 
+<ion-card-content>
+Sources
+<p>{{partie.sources}}</p>
+<p *ngIf="!partie.sources">
+  Aucun element à afficher.
+</p>
+</ion-card-content>
+<ion-card-content>
+  Objectif
+ <p>{{partie.objectif}}</p>
+   <p *ngIf="!partie.objectif">
+    Aucun element à afficher.
+  </p> 
+ </ion-card-content>  
+ <ion-card-content> 
+Pré-requis
+<p>{{partie.prerequis}}</p>
+ <p *ngIf="!partie.prerequis">
+    Aucun element à afficher.
+  </p>
+ </ion-card-content>
+</div>
+  <div padding>
+    <button  ion-button outline block (click)="lireCours()">
+      Lire le cours
+      <ion-icon name="ios-arrow-forward" item-right  ></ion-icon>
+    </button>
+  </div> 
+</ion-content>

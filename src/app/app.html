@@ -1,19 +1,48 @@
-<ion-menu [content]="content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-content>
-    <ion-list>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-        {{p.title}}
-      </button>
-    </ion-list>
-  </ion-content>
-
-</ion-menu>
-
-<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
-<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+<ion-split-pane>
+  <ion-menu [content]="content" id="menu-material" type="reveal" side="left" persistent="true">
+    <ion-content class="transparent-header bg-light">
+      <ion-header no-border no-shadow>
+        <ion-navbar text-right>
+          <ion-title>
+            <img class="logo-menu" item-right src="assets/images/logo-light.png" />
+          </ion-title>
+        </ion-navbar>
+      </ion-header>
+      <div id="profile-bg">
+        <!--material-design-background-->
+        <img class="user-avatar round" *ngIf="user&& user.info&& user.info.photoURL" [src]="user&& user.info&& user.info.photoURL" >
+        <img class="user-avatar round" *ngIf="user&&(! user.info||!user.info.photoURL)" src="assets/images/default-avatar.jpg">
+        <p class="name" *ngIf="user">
+          <span>{{user.info.displayName||user.info.email}} </span>
+        </p>
+      </div>
+      <ion-list no-lines>
+        <ion-item-group *ngIf="paidConcours&&paidConcours.length">
+          <ion-item-divider color="white" text-left>Mes programmes</ion-item-divider>
+          <button menuClose="left" ion-item detail-none *ngFor="let  paid of paidConcours" (click)="showDetails(paid)">
+            <ion-icon item-left name="folder-open"></ion-icon>
+            {{paid.session.nomConcours}}
+          </button>
+        </ion-item-group>
+        <ion-item-divider color="white" text-left *ngIf="paidConcours&&paidConcours.length">Options</ion-item-divider>
+        <button menuClose="left" ion-item detail-none *ngFor="let p of appPages" (click)="openPage(p)">
+          <ion-icon [name]="p.icon" item-left></ion-icon>
+          {{p.title}}
+        </button>
+        <button menuClose="left" ion-item detail-none (click)="openMessages()">
+          <ion-icon name="ios-notifications" item-left></ion-icon>
+          <span>Notifications</span>
+          <ion-badge id="notifications-badge" color="danger" item-end notification [notificationId]="notificationId"></ion-badge>
+        </button>
+        <button menuClose="left" ion-item detail-none (click)="openSettingPage()">
+          <ion-icon name="person" item-left></ion-icon>
+          <span *ngIf="user">Options</span>
+          <span *ngIf="!user">Connexion</span>
+        </button>
+  
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+    <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false" main></ion-nav>
+  </ion-split-pane>

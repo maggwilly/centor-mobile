@@ -1,0 +1,30 @@
+<!-- Generated template for the ShortListComponent component -->
+<div  ion-list  *ngIf="sessionList.length||!loaded"  class="pannel" [ngClass]="style" no-border>
+    <ion-item-divider sticky *ngIf="header">
+      <ion-label>
+         {{header}}
+    <ion-badge id="notifications-badge" color="light"> {{sessionList.length}} concours</ion-badge>
+      </ion-label>
+    </ion-item-divider>
+
+  <p  *ngIf="loaded&&!sessionList.length" class="ventical-center center">Aucune donnée disponible</p>
+<ion-grid [hidden]="loaded" style=" height: 100%;justify-content: center;">
+  <ion-row justify-content-center align-items-center>
+    <ion-spinner name="circles"></ion-spinner>
+  </ion-row>
+</ion-grid>
+<ion-item (click)="showOptions(concours)" *ngFor="let concours of sessionList" [hidden]="concours.hide">
+      <div [hidden]="contract" class="item-title" *ngIf="concours&&concours.concours">
+        {{concours.nomConcours}}
+        <p>{{concours.concours.ecole}}</p>
+      </div>
+  <ion-row no-padding>
+    <ion-col col-4 *ngIf="concours.nom"><small> {{ concours.nom}}</small></ion-col>
+    <ion-col col-4 *ngIf="concours.dateLancement && target=='recents'">
+      <small> Depuis le <ion-badge>{{concours.dateLancement| date: 'dd/MM/yyyy'}}</ion-badge></small>
+    </ion-col>
+    <ion-col col-4 *ngIf="concours.nombreInscrit && target=='en_vus'"><small><ion-badge color="orange" >{{concours.nombreInscrit}}</ion-badge> inscrits</small></ion-col>
+    <ion-col col-4 *ngIf="concours.niveau && !target"><ion-badge color="secondary">{{concours.niveau}}</ion-badge> </ion-col>
+  </ion-row>
+</ion-item>
+</div>

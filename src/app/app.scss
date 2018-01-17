@@ -1,4 +1,4 @@
-// http://ionicframework.com/docs/theming/
+// http://ionicframework.com/docs/v2/theming/
 
 
 // App Global Sass
@@ -14,3 +14,332 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+.scroll {
+  height: 100%;
+} 
+ ion-content {
+        background: linear-gradient(0deg, #eeeef1 0%, white 80%, white 100%);
+        ion-item{
+         background-color: transparent;
+         }
+      }
+.bg-white{
+   background: linear-gradient(0deg, white 0%, white 80%, white 100%);
+}
+@media only screen and (min-width: 300px) {
+  .scroll-content:not(.show-scrollbar) {
+      margin-right: -10px;
+      overflow-y: scroll;
+  }
+}
+
+.logo-menu {
+  width: 40%;
+  height: auto;
+  max-width: 12em;
+  margin: 0 auto;
+}
+
+.bg-light{
+  background-color:  map-get($colors, light);
+  .item-ligth, .item-md,
+    .label-md,{
+      background-color: transparent;
+  }
+}
+  .transparent-list {
+      ion-item{
+        background-color: transparent;
+        border: none !important;
+      }
+     .item-md,.label-md,{
+      background-color: transparent;
+  }      
+    }
+
+
+   .dasboard{
+      width: 100%;
+     // display: inline-block;
+      text-align: center;
+      min-height:18%;
+      border-radius: 12px;
+      margin-bottom: 0px;
+   .span-value{
+        height: 64px;
+        width: 64px;
+        border-radius: 12px;
+        display:  inline-block;
+        font-weight: normal;
+        font-size: 1.0em;
+        text-align: center;
+        padding:8px; 
+        line-height: 100%;
+      //  box-shadow: 0px 9px 20px -3px rgba(142, 136, 146, 0.75);
+    }
+    
+   .span-title{
+         width: auto;
+         text-align: center;
+         font-size: 0.76em;
+         display:  inline-block;
+         padding-top: 1%;
+         color:  map-get($colors, primary);         
+    }
+ 
+}
+.pannel { 
+     min-height: 100px;  
+} 
+.carousel {
+     height:180px;  
+}     
+.card-background {
+    position: relative;
+    min-height: 200px;
+}  
+/* Larger than a phone */
+@media (min-width:  548px) {
+    .item-md,
+    .label-md,
+    [text-wrap] .label-md
+    {
+     font-size:1.9rem; 
+      p {
+        font-size:1.7rem;
+     } 
+  }
+  p {
+        font-size:1.7rem;
+    } 
+ .swiper-slide{
+       font-size:30px;
+    } 
+  .item > ion-icon, .item-inner > ion-icon {
+    min-height: 4.0rem;
+    font-size: 4.1rem;
+    line-height: 1;
+}
+  .dasboard{
+      height: 100%;
+         ion-grid,
+         ion-row{
+           min-height: 200px;
+         }
+     .span-value{
+        height: 125px;
+        width: 125px; 
+         padding:13px;   
+    }
+     .span-title{
+        width: auto;
+        font-size: 1.7em;
+    }     
+    }
+
+      .dasboard{
+          .span-value{
+           font-size:2.2em;  
+     }
+    }
+    
+.carousel {
+     height:240px;  
+}    
+.pannel{
+    min-height: 180px;
+}
+
+.fab[mini]{
+  margin: 12px;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+}
+.fab{
+  font-size: 21px;
+}
+}
+
+
+
+.borded-list-item {
+ .none,.success,.warning,.danger{
+  margin-top: 2px;   
+  padding-left: 8px;
+  }
+
+ }
+ .none{
+   border-left: 5px solid color($colors, primary);
+ }
+ .success{
+     border-left: 5px solid color($colors, secondary);
+ }
+  .warning{
+     border-left: 5px solid color($colors, orange);
+ }
+  .danger{
+    border-left: 5px solid color($colors, danger);
+ }
+ 
+.special-item{
+    ion-icon{
+        color:  #7F7F7F;
+    }
+    }
+ 
+.option-relative-top-right{
+  display: block;
+  position: absolute;
+  font-weight: bold;
+  top: 3px;
+  right: 15px;
+}  
+
+.option-relative-top-left{
+  display: block;
+  position: absolute;
+  font-weight: bold;
+  top: 4px;
+  left: 8px;
+}
+
+.option-relative-bottom-right{
+  display: block;
+  position: absolute;
+  font-weight: bold;
+  bottom: 4px;
+  right: 8px;
+}
+
+.center {
+  display: block;
+  margin: 0 auto;
+}
+
+.vertical-center {
+   position: absolute;
+   display: inline-block;
+   top: 35%;
+   transform: translateY(-50%);
+}
+
+.top-radius {
+  border-radius: 10% 10% 0 0;
+}
+
+.bottom-radius {
+  border-radius: 0 0 10% 10%;
+}
+
+.round {
+  border-radius: 50%;
+}
+
+.transparent-header {
+  .toolbar-content,
+  .back-button {
+    color: white;
+  }
+  .toolbar-background,
+  ion-navbar,
+  ion-header {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+  .header-md::after,
+  .toolbar-background-ios {
+    background-image: none;
+    border-bottom: 0;
+  }
+  .header-ios .toolbar-background-ios,
+  .footer-ios .toolbar-background-ios {
+    border: 0;
+  }
+  // ---
+}
+
+
+// Material Design Sidemenu
+#menu-material {
+  #profile-bg {
+    padding: 5px 15px;
+    height: 26vh;
+    background-image: url('../assets/images/material-design-background.jpg');
+    background-size: cover;
+    color: white;
+    .name {
+      position: absolute;
+      top: 17.5vh;
+      font-size:2.5vh;
+      margin-bottom: 3px;
+    }
+     box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
+  }
+  .user-avatar {
+    padding: .4em;
+    height: 12vh;
+    width: 12vh;
+    // width: 75px;
+    //height: 75px;
+    //box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
+  }
+  h3,
+  .label,
+  {
+    color: #999;
+    font-weight: 400;
+  }
+  ion-icon {
+    color: #777;
+  }
+  
+}
+
+/* overlay */
+.overlay {
+	background:rgba(0,0,0, 0.2);
+	position:absolute; 
+	left:0; right:0; top:0; bottom:0;
+	z-index:1; /* required for IE */
+  //z-index: -100;
+	-webkit-transition: all 1s;
+	   -moz-transition: all 1s;
+		 -o-transition: all 1s;
+			transition: all 1s;
+}
+/* dark overlay */
+.overlay.dark-0 {
+	background-color: rgba(0,0,0,0);
+}
+.overlay.dark-1 {
+	background-color: rgba(0,0,0,.1);
+}
+.overlay.dark-2 {
+	background-color: rgba(0,0,0,.2);
+}
+.overlay.dark-3 {
+	background-color: rgba(0,0,0,.3);
+}
+.overlay.dark-4 {
+	background-color: rgba(0,0,0,.4);
+}
+.overlay.dark-5 {
+	background-color: rgba(0,0,0,.5);
+}
+.overlay.dark-6 {
+	background-color: rgba(0,0,0,.6);
+}
+.overlay.dark-7 {
+	background-color: rgba(0,0,0,.7);
+}
+.overlay.dark-8 {
+	background-color: rgba(0,0,0,.8);
+}
+.overlay.dark-9 {
+	background-color: rgba(0,0,0,.9);
+}
+.overlay.dark-10 {
+	background-color: rgba(0,0,0,1);
+}

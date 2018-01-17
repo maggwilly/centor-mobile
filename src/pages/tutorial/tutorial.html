@@ -1,0 +1,69 @@
+<ion-content no-bounce >
+    <ion-header no-border>
+      <ion-navbar transparent>
+        <ion-buttons end>
+          <button ion-button  (click)="startApp()">
+            <ion-icon color="white" name="md-close"></ion-icon>
+          </button>
+        </ion-buttons>
+      </ion-navbar>
+    </ion-header>
+  <ion-slides pager loop autoplay="15000" (ionWillChange)="onSlideChangeStart($event)">
+    <ion-slide>
+      <br><br> <br><br>
+      <div text-center>
+      <h2 class="slide-title">Bienvenue sur CentOr !</h2>
+      <p>Imergez-vous dès à présent dans un univers <b>d'opportunités</b>  de formations. Avec nous, vous gagnerz   de la confiance en vous.</p>
+    </div>
+    </ion-slide>
+    <ion-slide >
+        <br><br><br><br>
+      <div text-left >
+      <h2 class="slide-title">Restez au parfum !</h2>
+      <p>Vous êtes <b>informés</b> de tous les <b>concours</b> et <b>opportunités de formation</b> disponibles pour votre profil.
+        Gardez les yeux ouverts sur les dates et offres importantes.
+        <br>
+        <span class="text-bg">Restez éveillés</span></p>
+    </div>
+    </ion-slide >
+    <ion-slide >
+      <br><br> <br><br>
+      <div text-right >
+      <h2 class="slide-title">Armez-vous pour faire fâce !</h2>
+      <p>CENTOR dispose d'outils et ressources adéquats pour vous préparer comme personne, au concours de votre choix.  Un concours
+        est avant tout une question de <b>profil</b> et de <b> préparation</b>.</p>
+      </div>
+    </ion-slide>
+    <ion-slide>
+        <br><br> 
+        <div text-left style=" align-self: center;">
+      <h2 class="slide-title">Mesurez pour amméliorer !</h2>
+      <p>Vous êtes intelligents et vous aimez "busher" mais à quel point ? CentOr vous présente les
+        <b>indicteurs de  clés de performance</b> durant toute votre phase prépa.</p>
+       </div>
+    </ion-slide>
+    <ion-slide>
+        <br><br> <br><br><br><br>
+        <div text-right style=" align-self: center;">
+      <h2 class="slide-title">Evaluez, jugez et comparez</h2>
+      <p>Sortez de votre chambre! Comparez vos
+        performances à celles des autres qui préparent le même concours. Prennez le poul chaque jour et testez le <b> niveau de compétion</b>.
+         <br>
+         <span class="text-bg">Soyez malin !</span>
+        </p>
+      
+       </div>
+    </ion-slide>
+    <ion-slide>
+        <br><br><br><br>
+        <div text-center style="align-self: center;">
+      <h2 class="slide-title">Êtes-vous prêt ?</h2>
+      <p>Demarrez votre aventure dès maintenant. Respirez un coup puis jetez-vous.</p>
+      <button ion-button icon-right large (click)="startApp()">
+          Commencer 
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

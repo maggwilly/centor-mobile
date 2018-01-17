@@ -1,0 +1,46 @@
+<!--
+  Generated template for the Details component.
+  See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
+  for more info on Angular 2 Components.
+-->
+<ion-list no-lines no-padding >
+    <div ion-item     *ngIf="concours.type" class="bg-transparent">{{concours.nom}}
+         <ion-note item-right>{{concours.type}}</ion-note>  
+    <ion-icon name="cube"class="light-icon" item-left></ion-icon>  
+    </div> 
+  <div ion-item text-wrap *ngIf="concours.dateLancement" class="bg-transparent">
+    <ion-icon name="md-calendar" class="light-icon" item-left></ion-icon>
+    Date d'ouverture
+    <p>{{concours.dateLancement| date: 'dd/MM/yyyy'}}</p>
+  </div>
+  <div ion-item  text-wrap  *ngIf="concours.dateDossier" class="bg-transparent">
+      <ion-icon name="md-calendar" class="light-icon" item-left></ion-icon>  
+     Date de fermeture
+     <p>{{concours.dateDossier| date: 'dd/MM/yyyy'}}</p>
+      <ion-badge  *ngIf="remaindDays(concours.dateDossier)" item-right [color]="remaindDays(concours.dateDossier).color">{{remaindDays(concours.dateDossier).text}}</ion-badge>      
+  </div>  
+  <div ion-item  text-wrap  *ngIf="concours.dateConcours" class="bg-transparent">
+      <ion-icon name="md-calendar" class="light-icon" item-left></ion-icon>  
+    Date du concours
+     <p >{{concours.dateConcours| date: 'dd/MM/yyyy'}}</p>
+      <ion-badge *ngIf="remaindDays(concours.dateConcours)" item-right [color]="remaindDays(concours.dateConcours).color">{{remaindDays(concours.dateConcours).text}}</ion-badge>
+  </div>
+  <div ion-item     *ngIf="concours.nombrePlace" class="bg-transparent">
+    <ion-icon name="person" class="light-icon" item-left></ion-icon>  
+    Places disponibles
+     <ion-badge item-right>{{concours.nombrePlace}}</ion-badge>    
+  </div> 
+  <div ion-item     *ngIf="concours.nombreInscrit">
+      <ion-icon name="person" class="light-icon" item-left></ion-icon>  
+   Déjà  inscrits au concours
+    <ion-badge item-right color="secondary">{{concours.nombreInscrit}}</ion-badge>
+  </div> 
+  <div *ngIf="concours.liens&&concours.liens.length">
+  <a ion-item  *ngFor="let lien of concours.liens"     [href]="lien.description" class="bg-transparent" target="'_blank'">
+      <ion-icon name="link" item-left></ion-icon>  
+     {{lien.titre}}
+   <ion-note item-right><ion-icon  [name]="name(lien.description)" ></ion-icon></ion-note>
+  </a> 
+</div> 
+</ion-list>
+ 

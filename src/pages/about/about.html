@@ -1,0 +1,35 @@
+<ion-header no-border >
+  <ion-navbar hideBackButton>
+    <button menuToggle ion-button icon-only>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>A propos</ion-title>
+    <ion-buttons end>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+<ion-list >
+  <ion-item *ngFor="let  page of appPages" (click)="openHelp(page)">
+      {{page.title}} 
+  <ion-icon [name]="page.icon" item-left color="primary"></ion-icon>
+  </ion-item>
+  <a ion-item href="http://www.facebook.com/centOrApp/">
+    Notre page facebook 
+<ion-icon name="logo-facebook" item-left color="primary"></ion-icon>
+</a>  
+  <a ion-item href="http://www.centor.org">
+      Visitez notre site 
+  <ion-icon name="md-globe" item-left color="primary"></ion-icon>
+  </a> 
+  <ion-item (click)="openContact()">
+     Nous contacter
+    <ion-icon name="call" item-left color="primary"></ion-icon>
+  </ion-item>   
+</ion-list>
+</ion-content>
+<ion-footer no-border>
+  <ion-item text-center>
+    <p><small>&copy; 2017 Centor inc. All rights reserved</small></p>
+  </ion-item>
+</ion-footer>

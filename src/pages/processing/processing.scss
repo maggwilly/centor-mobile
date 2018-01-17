@@ -1,0 +1,79 @@
+page-processing {
+      .grid, .row {
+        height: 80%;
+        justify-content: center;
+      }  
+
+      .empty {
+             text-align: center;
+             padding-left: 10%;
+             padding-right: 10%;
+              font-size: 1.2em;
+             color:map-get($colors, light);  
+       }
+
+      .preload {
+        animation: none !important;
+      }
+    
+      .fab {
+        transition: 1s all ease;
+        margin-top: 20rem !important;
+        margin-right: 3rem !important;
+        background: map-get($colors, primary);
+      }
+    
+      .expand {
+          animation: expand 0.5s cubic-bezier(.66, .35,.96,.38) forwards;
+      }
+    
+      .contract {
+        animation: contract 0.4s cubic-bezier(0.75, .80, 0.25, 0) forwards;
+      }
+    
+
+    
+      @keyframes contract {
+        0%   {
+          transform: scale(100);
+          border-radius: 100%;
+          margin: 0;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    
+      @keyframes expand {
+        50%  {
+          transform: scale(100);
+        }
+        100% {
+          transform: scale(100);
+          border-radius: 100%;
+          margin: 0;
+        }
+      }
+    
+      ion-card {
+        position: relative;
+        height: 80vh;
+    
+        h4 {
+           left: 5%;
+           bottom: 3%;
+           position: absolute;
+        }
+      }
+    
+      ion-icon {
+        transition: display 1s ease-in;
+      }
+          
+}
+ion-modal.inset-modal {
+  // transparent black background overlay
+  background-color: rgba(0, 0, 0, .5) !important;
+  transition: opacity .25s ease-in-out;
+  padding: 20vh 10vw;
+}

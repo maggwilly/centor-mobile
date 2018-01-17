@@ -1,0 +1,89 @@
+<ion-content padding class="transparent-header">
+    <ion-header>
+      <ion-navbar hideBackButton>
+            <button menuToggle ion-button icon-only>
+                    <ion-icon name="menu"></ion-icon>
+            </button>         
+          <ion-buttons end>
+              <button ion-button icon-only (click)="presentActionSheet()"><ion-icon name="power"></ion-icon></button>
+          </ion-buttons>     
+      </ion-navbar>
+    </ion-header>
+    <div id="profile-bg" ></div>
+    <div id="content">
+      <div id="profile-info" ion-item text-wrap>
+        <img id="profile-image" *ngIf="user&& user.info&& user.info.photoURL" [src]="user&& user.info&& user.info.photoURL" alt="image">
+        <img id="profile-image" *ngIf="!user||! user.info||!user.info.photoURL" src="assets/images/default-avatar.jpg">        
+        <h3 id="profile-name" *ngIf="user&& user.info&& user.info.displayName">{{user.info.displayName}}</h3>
+        <p *ngIf="user&& user.info"><span >{{user.info.email}} </span></p>
+       <!-- <p class="profile-description" >Modifiez et completez votre profil afin de nous aider à vous proposer les offres idéales .</p>
+        <button ion-button  class="follow-button" small outline icon-left color="purple" (click)="editProfileCandidat()" [disabled]="user&&!user.info">Modifier <ion-icon name="settings"></ion-icon></button>-->
+      </div>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-sm-12 col-xl-6 col-md-12 col-lg-6>
+      <div *ngIf="user.info">
+        <ion-card-header text-left>Profil 
+</ion-card-header>
+          <button ion-button  small clear icon-left color="purple" (click)="editProfileCandidat()" class="edit-button">
+            Modifier   
+             <ion-icon name="settings"></ion-icon>
+          </button>
+        <ion-list no-lines>
+          <ion-item *ngIf="user.info.email">
+            <ion-icon name="mail" color="primary" item-start></ion-icon>
+            <p>Email</p>
+            {{user.info.email}}
+          </ion-item>
+          <ion-item *ngIf="user.info.phone">
+            <ion-icon item-start name="call" ></ion-icon>
+            <p>Mobile</p>
+            {{user.info.phone}}
+          </ion-item>
+          <ion-item *ngIf="user.info.branche">
+            <ion-icon item-start name="school" ></ion-icon>
+            <p>Serie</p>
+            {{user.info.branche}}
+          </ion-item>
+          <ion-item *ngIf="user.info.niveau">
+            <ion-icon item-start name="list"></ion-icon>
+            <p>Grade</p>
+            {{user.info.niveau}}
+          </ion-item>
+          <ion-item *ngIf="user.info.age">
+            <ion-icon item-start name="person"></ion-icon>
+            <p>Date de naissance</p>
+            {{user.info.dateMax}}
+          </ion-item>
+          <ion-item *ngIf="user.info.ville">
+            <ion-icon item-start name="pin" color="twitter"></ion-icon>
+              <p>Ville</p>
+             {{user.info.ville}}
+          </ion-item>
+        </ion-list>
+      </div>
+      </ion-col>
+        <ion-col col-sm-12 col-xl-6 col-md-12 col-lg-6>
+      <div>
+        <ion-card-header text-left>Mes programmes</ion-card-header>
+      <ion-list *ngIf="paidConcours&&paidConcours.length">
+          <ion-item *ngFor="let paid of paidConcours"  (click)="showAbonnement(paid)">
+              <ion-icon name="folder-open" item-left></ion-icon>
+              <span>{{paid.session.nomConcours}}</span>
+              <ion-badge item-right color="danger" *ngIf="isExpired(paid)">!</ion-badge>
+        </ion-item>
+        </ion-list>
+        <ion-item class="list-item" text-wrap *ngIf="paidConcours&&!paidConcours.length">
+        <p text-center >Vous n'êtes inscrit à aucun programme de préparation.</p>
+       </ion-item> 
+        <ion-grid [hidden]="paidConcours" style=" height: 100%;justify-content: center;" ion-item>
+          <ion-row justify-content-center align-items-center padding>
+            <ion-spinner name="circles"></ion-spinner>
+          </ion-row>
+        </ion-grid>
+      </div>
+          </ion-col>
+          </ion-row>
+          </ion-grid>
+    </div>
+  </ion-content>

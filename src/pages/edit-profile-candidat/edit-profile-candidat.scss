@@ -1,0 +1,17 @@
+page-edit-profile-candidat {
+      ion-spinner * {
+        width: 28px;
+        height: 28px;
+        stroke: #fff;
+        fill: #fff;
+      }  
+      ion-list{
+        ion-icon{
+          color:  #7F7F7F;
+         }  
+      } 
+ ion-spinner,
+ ion-button {
+ display: inline-block !important;
+}
+}

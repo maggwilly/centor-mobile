@@ -1,0 +1,122 @@
+<!--
+  Generated template for the AbaoutUsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-content style="background: transparent;">
+  <!--<div class="overlay dark-7"></div> -->
+    <ion-header no-border>
+        <ion-navbar transparent>
+          <ion-buttons end>
+            <button ion-button (click)="dismiss(false)">
+                <ion-icon color="white" name="md-close"></ion-icon>
+            </button>
+          </ion-buttons>
+        </ion-navbar>
+      </ion-header>   
+  <ion-slides pager autoplay="15000">
+    <ion-slide>
+       <h4>Présentation des indicateurs du tableau de bord</h4>
+        <p>
+            <img   class="img" src="assets/images/items.png">
+       </p>
+    </ion-slide>
+    <ion-slide>
+        <h4>Le score</h4>
+        <ion-row>
+          <ion-col col-4>
+          <img class="img" src="assets/images/score.png">
+          </ion-col>
+          <ion-col col-8>
+            <P>le <b>score</b> représente la moyenne obtenue à l'issue de la dernière évaluation.</P>
+          </ion-col>
+        </ion-row>
+      </ion-slide> 
+    <ion-slide>
+      <h4>Taux d'assimilation</h4>
+      <ion-row>
+        <ion-col col-4>
+          <img class="img" src="assets/images/assimilation.png">
+        </ion-col>
+        <ion-col col-8>
+          <P>C'est le nombre d'objectifs déjà <b>assimilés</b> par rapport au total prévu dans le programme.</P>
+        </ion-col>
+
+      </ion-row>
+    </ion-slide>
+    <ion-slide>
+      <h4>Taux de couverture</h4>
+      <ion-row>
+        <ion-col col-4>
+          <img class="img" src="assets/images/couverture.png">
+        </ion-col>
+        <ion-col col-8>
+          <P>C'est la proportion du programme déjà <b>couvert</b> par rapport au programme de préparation prévu. </P>
+        </ion-col>
+      </ion-row>
+    </ion-slide>
+    <ion-slide>
+      <h4>Le rang</h4>
+      <ion-row>
+        <ion-col col-4>
+          <img class="img" src="assets/images/rang.png">
+        </ion-col>
+        <ion-col col-8>
+          <P> Votre <b>position actuelle</b> par rapport aux autres futures concourants évalués au même moment.
+           </P>
+        </ion-col>
+
+      </ion-row>
+    </ion-slide>
+    <ion-slide>
+      <h4>Ex &aelig;quo</h4>
+      <ion-row>
+        <ion-col col-4>
+          <img class="img" src="assets/images/exaequo.png">
+        </ion-col>
+        <ion-col col-8>
+          <P>C'est le nombre de concourants actuellement aux <b>même niveau</b> de préparation que vous.
+          </P>
+        </ion-col>
+      </ion-row>
+    </ion-slide>
+    <ion-slide>
+      <h4>Nombre de moyennes</h4>
+      <ion-row>
+        <ion-col col-4>
+          <img class="img" src="assets/images/assimilation.png">
+        </ion-col>
+        <ion-col col-8>
+          <P>C'est taux de <b>réuissite</b> (dont le score est plus grand que 10) à l'issu des évaluations.
+          </P>
+        </ion-col>
+      </ion-row>
+    </ion-slide>
+    <ion-slide>
+      <h4>Les incrits</h4>
+      <ion-row>
+        <ion-col col-8>
+          <P>Il s'agit du <b>nombre officiel</b> de candidats actuellement inscrits au même concours.
+          </P>
+        </ion-col>
+        <ion-col col-4>
+          <img class="img" src="assets/images/inscrits.png">
+        </ion-col>
+      </ion-row>
+    </ion-slide>
+    <ion-slide>
+              <P> Pour plus de détails sur les indicateurs, contactez-nous. 
+                 <br>
+                 <ion-icon name="logo-whatsapp" item-start></ion-icon>  +237694210203
+                 <br>
+                 <ion-icon name="mail" item-start></ion-icon>  contact@centorapp.com 
+                 <br>
+                 <ion-icon name="globe" item-start></ion-icon> www.centorapp.com   
+                </P>
+              <button ion-button icon-right  outline color="white" (click)="dismiss(false)">
+                 Merci J'ai compris                 
+                </button>        
+            </ion-slide>                               
+  </ion-slides>
+</ion-content>

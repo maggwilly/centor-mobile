@@ -1,0 +1,15 @@
+page-matieres {
+.image{
+  max-height: 14rem;
+}
+
+.card-background {
+     //  background: linear-gradient(rgba(6,92,121,0.31),  rgba(6,92,121,0));//, url('../../assets/images/menu-header.jpg');
+       background-size: cover;
+       background-repeat:no-repeat; 
+       position: relative;
+       min-height: 200px;
+       //text-align: center;
+  }
+
+}

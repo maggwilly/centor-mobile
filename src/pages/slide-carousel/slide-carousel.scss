@@ -1,0 +1,63 @@
+page-slider-list-two {
+  background-color: #0000FF; //blue or test #fafad2; //lightgoldenrodyellow
+  ion-slides {
+    //background-color: greenyellow;  //not taken into account?
+  }
+  ion-slide {
+    //background-color: greenyellow;  //not taken into account?
+  }
+  .outerSlide {
+    //height: 59%;
+    //width: 90%;  //right side of slide touches the border
+    //background-color: #0000FF; //blue not taken into account?
+  }
+  .innerSlides {
+    //background-color: #0000FF; //#FFFBD0 - blue not taken into account?
+    width: 80%;
+  }
+  ion-item ion-label {
+    margin-left: 0px; //default at 0px
+    margin-right: 0px; //default at 8px
+    margin-top: 0px; //default at 13px
+    margin-bottom: 0px; //default at 13px
+  }
+  .outerIonItem {
+    padding-left: 0px; //default at 16px
+  }
+  .outerIonItem .item-inner {
+    padding-right: 0px; //default at 8px;
+  }
+  .profilePicCityName {
+   // position: static; //Need to check scrolling is working, otherwise change to static
+   margin: 10px;
+  }
+  .favImgDiv {
+    position: relative;
+    z-index: 1;
+    height: 100px;
+  img {
+    //width: auto;
+  //  max-width: 100%;
+    height: 100px;
+    max-height: 100px;
+}  
+  }
+  .favDiv {
+    position: absolute;
+    top: 20%;
+    right: 6%;
+    font-size: 1.6em !important; //default large at 1.2em
+  }
+  .favDivInactiveHeart {
+    //color: white;  //Overwritting Danger colour attribute of the button
+    font-weight: bold;
+  }
+  .imgDiv {
+    height: 10%;  //Why not taken into account?
+   // width: auto;
+    
+  }
+
+
+}
+

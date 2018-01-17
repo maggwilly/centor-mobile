@@ -1,0 +1,181 @@
+<ion-header no-border no-shadow  #head>
+  <ion-navbar>
+    <ion-title>{{partie.titre}}</ion-title>
+    <ion-buttons start >
+      <button ion-button icon-only (click)="showInfo()">
+        <ion-icon name="information-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end >
+      <button ion-button icon-only (click)="observeAuth(true)">
+        <ion-icon name="md-refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-grid [hidden]="isTheEnd" style="margin-top:-20px;">
+      <ion-row justify-content-center no-padding>
+        <ion-col col-3>
+          <div >
+            <ion-fab center top>
+              <button color="light" mini ion-fab (click)="presentPopover($event,'stats')" class="button-time"><span>{{questionNumber()}}</span></button>
+            </ion-fab>
+          </div>
+        </ion-col>
+        <ion-col col-3>
+          <div >
+            <ion-fab center top>
+              <button color="primary" mini ion-fab (click)="presentPopover($event,'time')" class="button-time">
+         <span >{{format(time,':',':')}}</span>
+         </button>
+            </ion-fab>
+          </div>
+        </ion-col>
+        <ion-col col-3 [hidden]="!isAmswering">
+          <div >
+            <ion-fab center top>
+              <button color="facebook" mini ion-fab (click)="share()"><ion-icon name="ios-more"></ion-icon></button>
+            </ion-fab>
+          </div>
+        </ion-col>
+        <ion-col col-3 [hidden]="isAmswering">
+          <div >
+            <ion-fab center top>
+              <button color="secondary" mini ion-fab (click)="explication()"> <ion-icon name="md-more"></ion-icon></button>
+            </ion-fab>
+          </div>
+        </ion-col>
+        <ion-col col-3>
+          <div >
+            <ion-fab center top>
+              <button color="danger" mini ion-fab (click)="end()"> <ion-icon name="close"></ion-icon></button>
+            </ion-fab>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>   
+</ion-header>
+<ion-content class="bg-white">
+  <div [hidden]="!isTheEnd" class="card-background" >
+      <ion-card-header>Indicateurs de progression</ion-card-header>
+          <ion-grid style="height: 100%;justify-content: center;" *ngIf="!loaded">
+            <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
+              <ion-spinner name="circles" class="vertical-center"></ion-spinner>
+            </ion-row>
+          </ion-grid>
+      <dashboord-item [authInfo]="authInfo" [analyse]="analyse" [partie]="partie" [isShow]="isShow" *ngIf="analyse&&loaded"></dashboord-item>
+    <ion-card-content  *ngIf="!analyse && loaded" >
+        <p class="vertical-center">Vous n'avez pas encore subi une évaluation.</p>
+    </ion-card-content>
+  </div>
+    <div padding  [hidden]="!isTheEnd">
+      <button (click)="reset()" ion-button block color="primary" *ngIf="partie&&partie.questions&&partie.questions.length">
+            <span *ngIf="canHasScore()|| analyse||(!canHasScore()&&!analyse&&partie.lastIndex)" >Reprendre le test</span>
+             <span *ngIf="!canHasScore()&&!analyse&&!partie.lastIndex">Commencer le test</span>
+       </button>
+       <ion-row justify-content-center align-items-center *ngIf="!(partie&&partie.questions&&partie.questions.length)">
+          <ion-spinner  name="circles"></ion-spinner>
+       </ion-row>       
+       <br>       
+      <button (click)="lireCours()" ion-button block color="light" icon-left>
+      <ion-icon name="ios-book-outline" ></ion-icon>
+       Lire le cours
+      </button>
+      <br>
+      <button (click)="startVisit()" ion-button block color="secondary" *ngIf="analyse||canHasScore()">
+        Voir le corrigé
+      </button>
+      <br>
+      <button (click)="dismiss()" ion-button block color="danger" outline>
+        Quitter
+      </button>
+    </div>
+
+  <ion-slides #slides  [hidden]="(isTheEnd || !isAmswering)" (ionSlideWillChange)="change($event)" *ngIf="partie&&partie.questions&&partie.questions.length" zoom>
+    <ion-slide *ngFor="let question of partie.questions; let i = index;">
+      <div class="question">
+        <div text-center>
+          <p [MathJax]="question.text">
+           {{question.text}}
+          </p>
+          <div class="swiper-zoom-container">
+          <img *ngIf="question.image" [src]="question.image" style="width:200px;height:100px;">
+          </div>
+        </div>
+        <ion-list radio-group [(ngModel)]="question.amswer">
+          <ion-item text-wrap *ngIf="question.propA">
+            <span item-left class="question-number">A. </span>
+            <ion-label [MathJax]="question.propA">{{question.propA}}</ion-label>
+            <ion-radio value="a" [disabled]="hasAmswer(question)" (ionSelect)="next()"></ion-radio>
+          </ion-item>
+          <ion-item text-wrap *ngIf="question.propB">
+            <span item-left class="question-number">B. </span>
+            <ion-label [MathJax]="question.propB">{{question.propB}}</ion-label>
+            <ion-radio value="b" [disabled]="hasAmswer(question)" (ionSelect)="next()"></ion-radio>
+          </ion-item>
+          <ion-item text-wrap *ngIf="question.propC">
+            <span item-left class="question-number">C.  </span>
+            <ion-label [MathJax]="question.propC">{{question.propC}}</ion-label>
+            <ion-radio value="c" [disabled]="hasAmswer(question)" (ionSelect)="next()"></ion-radio>
+          </ion-item>
+          <ion-item text-wrap *ngIf="question.propD">
+            <span item-left class="question-number">D.  </span>
+            <ion-label [MathJax]="question.propD">{{question.propD}}</ion-label>
+            <ion-radio value="d" [disabled]="hasAmswer(question)" (ionSelect)="next()"></ion-radio>
+          </ion-item>
+          <ion-item text-wrap *ngIf="question.propE">
+            <span item-left class="question-number">E.  </span>
+            <ion-label [MathJax]="question.propE">{{question.propE}}</ion-label>
+            <ion-radio value="e" [disabled]="hasAmswer(question)" (ionSelect)="next()"></ion-radio>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-slide>
+    <ion-slide></ion-slide>
+  </ion-slides>
+  <ion-slides #slides2  [hidden]="(isAmswering || isTheEnd)" (ionSlideWillChange)="change($event)" zoom>
+    <ion-slide *ngFor="let question of partie.questions ; let i = index;">
+      <div class="question">
+        <div text-center>
+          <p [MathJax]="question.text"> 
+            {{question.text}}
+          </p>
+          <img *ngIf="question.image" [src]="question.image" style="width:200px;height:100px;">
+        </div>
+        <ion-list>
+          <ion-item [ngClass]="{'correct': isCorrect(question,'a'), 'wrong': isThis(question,'a')&& !isCorrect(question,'a')}" text-wrap
+            *ngIf="question.propA">
+            <span item-left class="question-number">A. </span>
+            <ion-label [MathJax]="question.propA">{{question.propA}}</ion-label>
+          </ion-item>
+          <ion-item [ngClass]="{'correct':  isCorrect(question,'b'), 'wrong': isThis(question,'b')&& !isCorrect(question,'b')}" text-wrap
+            *ngIf="question.propB">
+            <span item-left class="question-number">B. </span>
+            <ion-label [MathJax]="question.propB">{{question.propB}}</ion-label>
+          </ion-item>
+          <ion-item [ngClass]="{'correct': isCorrect(question,'c'), 'wrong': isThis(question,'c')&& !isCorrect(question,'c')}" text-wrap
+            *ngIf="question.propC">
+            <span item-left class="question-number">c. </span>
+            <ion-label [MathJax]="question.propC">{{question.propC}}</ion-label>
+          </ion-item>
+          <ion-item [ngClass]="{'correct':  isCorrect(question,'d'), 'wrong': isThis(question,'d')&& !isCorrect(question,'d')}" text-wrap
+            *ngIf="question.propD">
+            <span item-left class="question-number">D. </span>
+            <ion-label [MathJax]="question.propD">{{question.propD}}</ion-label>
+          </ion-item>
+          <ion-item [ngClass]="{'correct':  isCorrect(question,'e'), 'wrong': isThis(question,'e')&& !isCorrect(question,'e')}" text-wrap
+            *ngIf="question.propE">
+            <span item-left class="question-number">E. </span>
+            <ion-label [MathJax]="question.propE">{{question.propE}}</ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-slide>
+    <ion-slide></ion-slide>
+  </ion-slides>
+  <ion-fab right bottom [hidden]="isTheEnd">
+    <button mini ion-fab color="light" (click)="next()"><ion-icon name="md-arrow-dropright"></ion-icon></button>
+  </ion-fab>
+  <ion-fab left bottom [hidden]="isTheEnd">
+    <button mini ion-fab color="light" [disabled]="isBeginning()" (click)="preview()"><ion-icon name="md-arrow-dropleft"></ion-icon></button>
+  </ion-fab>
+</ion-content>

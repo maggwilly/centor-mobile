@@ -1,0 +1,47 @@
+<!--
+  Generated template for the MatiereDetails page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header no-shadow no-border #head>
+  <ion-navbar>
+    <ion-title *ngIf="matiere">{{matiere.titre}}</ion-title>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="observeAuth(true)">
+      <ion-icon name="md-refresh"></ion-icon>
+    </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content >
+  <ion-grid>
+  <ion-row>
+ <ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12>  
+  <div class="card-background">
+    <ion-card-header>Indicateurs de progression</ion-card-header>
+    <ion-grid  style="height: 100%;justify-content: center;" *ngIf="!loaded">
+        <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
+          <ion-spinner class="vertical-center"  name="circles" ></ion-spinner> 
+        </ion-row>
+       </ion-grid>     
+    <dashboord-item [authInfo]="authInfo" [analyse]="analyse" [matiere]="matiere" [isShow]="isShow" *ngIf="analyse&&matiere && loaded"></dashboord-item>
+  <ion-card-content *ngIf="!analyse && loaded" >
+      <p class="vertical-center">Vous n'avez pas encore subi une évaluation.</p>
+    </ion-card-content>
+  </div>
+</ion-col>
+<ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12>  
+  <div>
+    <ion-card-header>Contenu de la matière</ion-card-header>
+    <ion-list class="borded-list-item special-item" inset *ngIf="matiere&&matiere.parties&&matiere.parties.length">
+      <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)">
+        <ion-note item-right>{{partie.type}}</ion-note>
+        {{partie.titre}}
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-col>
+</ion-row>
+</ion-grid>
+</ion-content>

@@ -1,0 +1,36 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>Aide Orange Money</ion-title>
+		<ion-buttons start>
+			<button ion-button (click)="dismiss()" showWhen="android,windows,core">
+				<ion-icon name="md-close"></ion-icon>
+			</button>
+			<button ion-button icon-left (click)="dismiss()" showWhen="ios">
+				<span>
+					<ion-icon name="ios-arrow-back"></ion-icon>Back</span>
+			</button>
+		</ion-buttons>
+	</ion-navbar>
+</ion-header>
+<ion-content>
+	<ion-slides #mySlider class="outerSlide"  effect="fade" (ionSlideWillChange)="onSlideChanged()" autoplay="10000">
+		<ion-slide class="innerSlides swiper-slide-contum" *ngFor="let city of citiesSlides">
+			<ion-item class="outerIonItem">
+				<div class="favImgDiv" padding>
+					<div class="imgDiv">
+						<img (click)="onSlideChanged()" src="{{city.image}}" />
+					<ion-item no-lines class="profilePicCityName" text-wrap text-center>
+						<p>
+							{{city.name}}
+						</p>
+					</ion-item>
+					</div>
+				</div>
+
+			</ion-item>
+		</ion-slide>
+	<!-- Add Pagination -->
+	<div *ngIf="currentIndex > 0" class="swiper-button-prev swiper-button-black" (click)="previousSlide()"></div>
+	<div *ngIf="currentIndex < citiesSlides.length-1" class="swiper-button-next swiper-button-black" (click)="nextSlide()"></div>
+	</ion-slides>
+</ion-content>

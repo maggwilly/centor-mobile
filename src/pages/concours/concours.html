@@ -1,0 +1,60 @@
+<ion-header no-border #head>
+  <ion-navbar hideBackButton>
+    <button menuToggle ion-button icon-only>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Concours</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="loadData()">
+        <ion-icon name="md-refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content hide-header [header]="head">
+  <ion-grid>
+    <ion-row>
+      <ion-col col-sm-12 col-xl-8 col-md-6 col-lg-6>
+        <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (ionInput)="search()" placeholder="Rechercher un concours">
+        </ion-searchbar>
+    <ion-segment [(ngModel)]="segment" (ionChange)="search()">
+      <ion-segment-button value="all">
+        Tout
+      </ion-segment-button>
+      <ion-segment-button value="BAC - GCE A/L">
+        BAC-GCE A/L
+      </ion-segment-button>
+      <ion-segment-button value="Licence & equiv">
+        Licence
+      </ion-segment-button>
+      <ion-segment-button value="'Master & equiv">
+        Master
+      </ion-segment-button>
+    </ion-segment>
+        <concours-list [concoursList]="_concours"></concours-list>
+        <ion-grid [hidden]="_concours&&_concours.length" style=" height: 100%;justify-content: center;">
+          <ion-row justify-content-center align-items-center>
+            <ion-spinner name="circles"></ion-spinner>
+          </ion-row>
+        </ion-grid>
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ion-col>
+      <ion-col col-sm-12 col-xl-4 col-md-6 col-lg-6 hideWhen='mobile'>
+        <ion-card-header text-left>
+          Les plus en vus
+        </ion-card-header>
+        <short-list target="en_vus" styleShow='transparent-list'></short-list>
+        <ion-card-header text-left>
+          Recement ouverts
+        </ion-card-header>
+        <short-list target="recents" styleShow='transparent-list'></short-list>
+        <ion-card-header text-left>
+          Pouvant m'interesser
+        </ion-card-header>
+        <short-list [authInfo]="authInfo" styleShow='transparent-list'></short-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

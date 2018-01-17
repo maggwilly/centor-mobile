@@ -1,18 +1,75 @@
-<ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
+<!--
+  Generated template for the HomePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header no-border #head>
+  <ion-navbar hideBackButton>
+    <button menuToggle ion-button icon-only>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-title>Accueil</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="openArticles()">
+        <ion-icon name="ios-notifications"></ion-icon>
+        <ion-badge class="notifications-badge" notification [notificationId]="notificationId" color="danger"></ion-badge>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
+<ion-content hide-header [header]="head">
+<ion-grid >
+  <ion-row>
+    <ion-col col-sm-12 col-xl-8 col-md-6 col-lg-6>
+    <ion-row>
+      <ion-col col-8>
+    <ion-card-header text-left>
+      Concours disponibles
+    </ion-card-header>
+    </ion-col>
+    <ion-col text-right col-4>
+        <button ion-button small clear item-right icon-left class="open-button" (click)="openPage('ConcoursPage')">
+                      Ouvrir la liste
+             <ion-icon name="ios-arrow-round-forward-outline"></ion-icon>
+        </button>
+    </ion-col>
+    </ion-row>
 
-<ion-content padding>
-  <h3>Ionic Menu Starter</h3>
-
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
-
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+     <short-list target="en_vus" header="Concours les plus en vus"></short-list>
+    <short-list target="recents" header="Concours recement ouverts "></short-list>
+    <short-list [authInfo]="authInfo" header="Concours pouvant m'interesser"></short-list>
+    </ion-col>
+    <ion-col col-sm-12 col-xl-4 col-md-6 col-lg-6 hideWhen='mobile'>
+    <ion-row >
+      <ion-col col-8>
+        <ion-card-header text-left>
+         Dernières nouvelles
+        </ion-card-header>
+      </ion-col>
+      <ion-col text-right col-4>
+        <button ion-button small clear item-right icon-left class="open-button" (click)="openPage('AnnoncesPage')">
+          Ouvrir la liste
+          <ion-icon name="ios-arrow-round-forward-outline"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+     <carousel ></carousel>
+    <ion-row>
+      <ion-col col-8>
+        <ion-card-header text-left>
+          Resultats
+        </ion-card-header>
+      </ion-col>
+      <ion-col text-right col-4>
+        <button ion-button small clear item-right icon-left class="open-button" (click)="openPage('ResultatsPage')">
+          Ouvrir la liste
+          <ion-icon name="ios-arrow-round-forward-outline"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+     <resultat-list></resultat-list>
+    </ion-col>
+  </ion-row>
+</ion-grid>
 </ion-content>

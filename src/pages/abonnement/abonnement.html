@@ -1,0 +1,56 @@
+
+<ion-header>
+  <ion-navbar>
+<ion-title>Inscription</ion-title>
+      <ion-buttons start>
+      <button ion-button (click)="dismiss()" showWhen="android,windows,core">
+        <ion-icon name="md-close" ></ion-icon>
+      </button>
+      <button ion-button icon-left (click)="dismiss()"showWhen="ios" >
+        <span  ><ion-icon name="ios-arrow-back" ></ion-icon>Back</span>
+      </button> 
+    </ion-buttons>   
+  </ion-navbar>
+</ion-header>
+<ion-content padding>  
+  <ion-list-header *ngIf="abonnement">{{abonnement.session.concours.nom}}</ion-list-header>  
+<ion-list *ngIf="abonnement" >
+  <ion-item>
+<h2> Date de l'abonnement</h2>
+<p>{{abonnement.startDate| date: 'dd/MM/yyyy'}}</p>
+</ion-item>
+  <ion-item>
+<h2> Date d'expiration</h2>
+<p  *ngIf="abonnement.endDate">{{abonnement.endDate| date: 'dd/MM/yyyy'}}</p>
+<p *ngIf="!abonnement.endDate">Ilimité</p>
+    </ion-item>
+<ion-item >
+<h2> Prix</h2>
+   <p *ngIf="abonnement.plan!='free'">{{abonnement.price}} XAF</p>
+    <p *ngIf="abonnement.plan=='free'">Gratuit</p>
+</ion-item>
+<ion-item>
+<h2> Méthode de paiement</h2>
+<p *ngIf="abonnement.plan!='free'">{{abonnement.method}}</p>
+  <p *ngIf="abonnement.plan=='free'">Gratuit</p>
+</ion-item>
+<ion-item>
+<h2> Plan d'abonnement</h2>
+    <p >{{abonnement.plan}}</p>
+   <button ion-button small outline color="orange" (click)="renouveller()" icon-left item-right *ngIf="!isExpired(abonnement) && abonnement.plan!='premium'">
+     <ion-icon name="card"></ion-icon>
+     Prolonger
+  </button>
+</ion-item>
+</ion-list>
+<div padding *ngIf="isExpired(abonnement)">
+  <ion-item text-wrap text-left>
+   <ion-badge item-left color="danger">!</ion-badge>
+  <p> Votre inscription est arrivée à expiration.</p>
+  </ion-item>
+  <button ion-button small block outline color="orange" (click)="renouveller()"  icon-left >
+     <ion-icon name="card"></ion-icon>
+     Renouveller 
+  </button> 
+</div>
+</ion-content>

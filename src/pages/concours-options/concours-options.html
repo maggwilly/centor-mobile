@@ -1,0 +1,57 @@
+<!--
+  Generated template for the ConcoursOptions page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+     <ion-title  *ngIf="concours&&concours.concours"> {{concours.nomConcours}}</ion-title>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="loadOnline()">
+        <ion-icon name="md-refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content *ngIf="concours">
+  <ion-grid>
+    <ion-row>
+      <ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12>
+        <div>
+          <details-item [concours]="concours" *ngIf="concours"></details-item>
+          <br>
+          <ion-row no-padding justify-content-center align-items-center >
+            <ion-col text-left col-4 >
+              <button ion-button clear small color="primary" (click)="share()" icon-left>
+                <ion-icon name='share-alt'></ion-icon>
+                Partager
+              </button>
+            </ion-col> 
+            <ion-col text-center col-4>
+              <button ion-button clear small color="primary" (click)="suivre(!status)" icon-left>
+                <ion-icon name='ios-notifications-outline' *ngIf="!status"></ion-icon>
+                <ion-icon name='ios-notifications' *ngIf="status"></ion-icon>
+               suivre
+              </button>
+            </ion-col>                 
+            <ion-col text-right col-4>
+              <button ion-button clear small color="primary" (click)="more()" icon-left>
+                <ion-icon name='ios-more'></ion-icon>
+               détails
+              </button>
+            </ion-col> 
+      </ion-row>          
+    </div>
+      </ion-col>
+      <ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12>
+        <div>
+          <ion-card-header>Programme de préparation</ion-card-header>
+          <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+

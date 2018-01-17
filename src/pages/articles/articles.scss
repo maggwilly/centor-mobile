@@ -1,0 +1,29 @@
+page-articles {
+.articles {
+  padding-left: 0px;
+ .article-item,ion-item{
+  min-height: 9.1rem;
+background-color: #f4f4f2;
+    border-left: 4px solid color($colors, primary);
+    padding-left: 8px;
+    margin-top: 1px;  
+  
+  }
+  } 
+.article-image{
+  object-fit: cover;
+}
+
+.grid, .row {
+  height: 100%;
+  justify-content: center;
+}
+.empty {
+  text-align: center;
+  margin-top: -20%;
+  padding-left: 10%;
+  padding-right: 10%; 
+   font-size: 1.2em;
+  color:map-get($colors, light);  
+}
+}
