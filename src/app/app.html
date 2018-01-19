@@ -1,4 +1,4 @@
-<ion-split-pane>
+<ion-split-pane  when="md">
   <ion-menu [content]="content" id="menu-material" type="reveal" side="left" persistent="true">
     <ion-content class="transparent-header bg-light">
       <ion-header no-border no-shadow>
@@ -8,12 +8,12 @@
           </ion-title>
         </ion-navbar>
       </ion-header>
+ 
       <div id="profile-bg">
-        <!--material-design-background-->
         <img class="user-avatar round" *ngIf="user&& user.info&& user.info.photoURL" [src]="user&& user.info&& user.info.photoURL" >
         <img class="user-avatar round" *ngIf="user&&(! user.info||!user.info.photoURL)" src="assets/images/default-avatar.jpg">
         <p class="name" *ngIf="user">
-          <span>{{user.info.displayName||user.info.email}} </span>
+          <span>{{(user.info.displayName||user.info.email)| limitTo:15}}  </span>
         </p>
       </div>
       <ion-list no-lines>

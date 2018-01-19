@@ -15,7 +15,6 @@ export class HideHeaderDirective {
 headerHeight;
 scrollContent;
   constructor(private elementRef:ElementRef, private renderer:Renderer) {
-    console.log('Hello HideHeaderDirective Directive');
   }
 
   ngOnInit(){
@@ -26,8 +25,6 @@ scrollContent;
   }
   onContentScroll(event){
     if(event.scrollTop>this.headerHeight){
-      console.log('-'+this.headerHeight+'px');
-      console.log(event.scrollTop);
       this.renderer.setElementStyle(this.header,'top',(this.headerHeight>56)?'-'+(this.headerHeight+25)+'px':'-'+this.headerHeight+'px');
       this.renderer.setElementStyle(this.scrollContent,'margin-top','-25px');
     }else {

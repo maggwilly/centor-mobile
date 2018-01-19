@@ -15,16 +15,16 @@ page-setting {
       #profile-bg {
         position: absolute;
         left: 0;
-        background-image: url('../assets/images/material-design-background.jpg');
+        background: linear-gradient(rgba(6,92,121,0),  rgba(6,92,121,0.61)) ,url('../assets/images/material-design-background.jpg');
         width: 100%;
         margin-top: -16px;
-        //height: 140px;
+        background-size: cover;
         height: 26vh;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
         text-align: center;
-         box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
+        box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
       }
       // Profile content
       #content {

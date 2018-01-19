@@ -33,7 +33,6 @@ export class ConcoursPage {
   }
 
   ionViewDidLoad() {
-     let searchText=this.navParams.get('searchText');
      this.storage.get('_concours').then((data)=>{
       this._concours=data?data:[]; 
          if (!this.platform.is('core'))
@@ -62,7 +61,7 @@ if (user) {
 loadData(){
     return  this.dataService.getSessions(0).then((data)=>{
                this._concours=data?data:[];    
-                this.search(this.queryText); 
+                this.search(); 
               this.storage.set('_concours', this._concours).then(()=>{ },error=>{})  ;  
         },error=>{ 
              this.alert();
@@ -105,21 +104,22 @@ loadData(){
     return this.storage.set('_concours', this._concours);
   }
 
-search(text?:any) {
-  this.filter(this._concours, text);
+search() {
+  this.filter(this._concours, this.queryText);
   this.doSearch().then(()=>{
   if(!(this._concours&&this._concours.length))
      return;
-    this.filter(this._concours,text);
+    this.filter(this._concours, this.queryText);
   },error => {
-    this.filter(this._concours,text);
+    this.filter(this._concours, this.queryText);
     });
   }
 
 
 
   filter(array:any[],text){
-  let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') : '';
+    console.log(text);
+  let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') :'';
   let queryWords = queryText.split(' ').filter(w => !!w.trim().length); 
     array.forEach(item => {
       item.hide = true;

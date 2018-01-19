@@ -8,10 +8,12 @@ import { AppNotify } from '../providers/app-notify';
 import { Push } from '@ionic-native/push';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { SocialSharing } from '@ionic-native/social-sharing';
 // Directives
 import { NotificationDirective } from '../directives/notification/notification';
 import { HideHeaderDirective } from '../directives/hide-header/hide-header';
-
+import { UpdaterDirective} from '../directives/updater/updater';
+import { MathJaxDirective } from '../directives/MathJax.directive';
 // Components
 import { DashboordItemComponent } from '../components/dashboord-item/dashboord-item';
 import { ProgrammeComponent } from '../components/programme/programme';
@@ -64,7 +66,6 @@ const firebaseConfig = {
 export const MODULES = [
   BrowserModule,
   HttpModule,
-  
   AngularFireAuthModule,
   AngularFireDatabaseModule,
   CloudModule.forRoot(cloudSettings),
@@ -84,6 +85,7 @@ export const MAINPROVIDERS = [
 export const SHAREDPROVIDERS = [
   DataService,
   AppNotify,
+  SocialSharing,
 ];
 
 export const COMPONENTS = [
@@ -96,4 +98,6 @@ export const COMPONENTS = [
 export const DIRECTIVES = [
   NotificationDirective,
   HideHeaderDirective,
+  UpdaterDirective,
+  MathJaxDirective
 ];

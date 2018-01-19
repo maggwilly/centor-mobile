@@ -20,7 +20,7 @@ import { IonicPage } from 'ionic-angular';
 })
 export class ResultatsPage {
   _resultats: any[] = [];
-  queryText = null;
+ queryText = null;
   authInfo: any;
   @ViewChild("searchbar") searchbar: Searchbar;
   constructor(
@@ -31,6 +31,7 @@ export class ResultatsPage {
     public notify: AppNotify,
     public events: Events,
     public platform: Platform,
+
   ) {
 
   }
@@ -38,7 +39,6 @@ export class ResultatsPage {
 
 
   ionViewDidLoad() {
-    let searchText = this.navParams.get('searchText');
       this.storage.get('_resultats').then((data) => {
         this._resultats = data ? data : [];
       if (!this.platform.is('core'))
@@ -47,7 +47,6 @@ export class ResultatsPage {
           this.doSearch();
       }, error => { })
   }
-
 
 
 
@@ -116,7 +115,7 @@ export class ResultatsPage {
     this.doSearch().then(() => {
       if (!(this._resultats && this._resultats.length))
         return;
-      let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') : this.queryText.toLowerCase().replace(/,|\.|-/g, ' ');
+      let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') : '';
       let queryWords = queryText.split(' ').filter(w => !!w.trim().length);
       this._resultats.forEach(item => {
         item.hide = true;

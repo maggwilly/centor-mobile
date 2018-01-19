@@ -44,16 +44,15 @@ export class MyApp {
   _concours: any[];
   user: any;
   zone: NgZone;
-  baseUrl: string;
+ // baseUrl: string;
   mode = 'prod';
   registrationId;
-  photoURL:any;
+  //photoURL:any;
   notificationId: string //= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
     { title: 'Accueil', component: 'HomePage', icon: 'home' },
     { title: 'Concours', component: 'ConcoursPage', icon: 'school' },
     { title: 'Resultats', component: 'ResultatsPage', icon: 'md-list' },
-    { title: 'Contacts', component: 'ContactPage', icon: 'call' },
     { title: 'A propos', component: 'AboutPage', icon: 'information-circle' }
   ];
 
@@ -95,7 +94,7 @@ export class MyApp {
 
 
   getUrlBase(obj: any) {
-    let _baseUrl = 'http://entrances.herokuapp.com/v1/'
+    let _baseUrl = 'https://concours.centor.org/v1/'
     if (this.mode=='dev')
       _baseUrl = 'http://localhost:8000/v1/'
     if (!this.platform.is('mobileweb'))
@@ -160,7 +159,7 @@ export class MyApp {
     return this.dataService.getInfo(this.authInfo.uid, this.registrationId).then((info) => {
       if (info){
         this.user.info = info;
-        this.user.info.photoURL = this.photoURL ? this.photoURL : this.user.info.photoURL;
+        //this.user.info.photoURL = this.photoURL ? this.photoURL : this.user.info.photoURL;
       }
     }, error => {
       //this.openModal('ProfilModalPage', { authInfo: this.authInfo, user: this.user });
@@ -250,17 +249,7 @@ checkInfo(info:any){
   }
 
 
-  /*loadAbonnement() {
-    return this.storage.get('_paidConcours').then((data) => {
-      this.paidConcours = data ? data : [];
-      this.dataService.getAbonnements(this.authInfo.uid).then(data => {
-        this.paidConcours = data ? data : [];
-        this.storage.set('_paidConcours', this.paidConcours).catch(error => { });
-      }, error => {
-        this.notify.onError({ message: 'Problème de connexion.' });
-      })
-    })
-  }*/
+
   loadAbonnement() {
     this.dataService.getAbonnementsObservable(this.authInfo.uid).subscribe(data => {
       this.paidConcours = data ? data : [];
@@ -271,8 +260,9 @@ checkInfo(info:any){
   observeAuth() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.photoURL = user.photoURL;
+       // this.photoURL = user.photoURL;
         this.authInfo = user;
+        console.log(user.providerId);       
         this.user = { info: this.authInfo };
         this.notificationId = user.uid;
         this.getUserProfile().then(()=>{

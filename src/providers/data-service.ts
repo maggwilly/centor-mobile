@@ -10,7 +10,7 @@ import { AppNotify } from '../providers/app-notify';
 export class DataService {
 data: any;
  private headers = new Headers({'Content-Type': 'application/json'});
-  _baseUrl = 'http://entrances.herokuapp.com/v1/'
+  _baseUrl = 'https://concours.centor.org/v1/'
 
   constructor(public http: Http, public storage: Storage, public events: Events, public notify: AppNotify,) {
     this.storage.get('_baseUrl').then(data => {
@@ -205,7 +205,7 @@ getAbonnement(uid:number,id:number){
       .flatMap((i) => this.http.get(this._baseUrl + 'formated/abonnement/' + id + '/show/one/json', { headers: this.headers }));
   }
  startCommande(uid:any,sessionid:any,bundle:any){
-   //alert(this._baseUrl+'formated/commende/'+uid+'/'+sessionid+'/'+bundle+'/json');
+  console.log(this._baseUrl+'formated/commende/'+uid+'/'+sessionid+'/'+bundle+'/json');
     return  this.http.get(this._baseUrl+'formated/commende/'+uid+'/'+sessionid+'/'+bundle+'/json', { headers:this. headers })
              .toPromise()
               .then(response =>response.json());     

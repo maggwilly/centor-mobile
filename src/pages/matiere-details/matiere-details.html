@@ -15,9 +15,6 @@
   </ion-navbar>
 </ion-header>
 <ion-content >
-  <ion-grid>
-  <ion-row>
- <ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12>  
   <div class="card-background">
     <ion-card-header>Indicateurs de progression</ion-card-header>
     <ion-grid  style="height: 100%;justify-content: center;" *ngIf="!loaded">
@@ -30,18 +27,13 @@
       <p class="vertical-center">Vous n'avez pas encore subi une évaluation.</p>
     </ion-card-content>
   </div>
-</ion-col>
-<ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12>  
   <div>
     <ion-card-header>Contenu de la matière</ion-card-header>
-    <ion-list class="borded-list-item special-item" inset *ngIf="matiere&&matiere.parties&&matiere.parties.length">
-      <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)">
+    <ion-list class="borded-list-item special-item" inset *ngIf="matiere&&matiere.parties&&matiere.parties.length" >
+      <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)" updater [user]="authInfo" [session]="concours" [matiere]="matiere" [partie]=" partie">
         <ion-note item-right>{{partie.type}}</ion-note>
         {{partie.titre}}
       </ion-item>
     </ion-list>
   </div>
-</ion-col>
-</ion-row>
-</ion-grid>
 </ion-content>

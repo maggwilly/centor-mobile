@@ -2,19 +2,21 @@
     <ion-navbar primary>
       <ion-title>Paramètres</ion-title> 
 
-    <ion-buttons  start>
+    <ion-buttons  right>
           <ion-spinner name="circles" *ngIf="submited||uploapping"></ion-spinner>
           <button ion-button icon-only (click)="editInfo()" *ngIf="!submited&&!uploapping">
             <ion-icon name="md-done-all"></ion-icon>
           </button>
     </ion-buttons>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="dismiss()" showWhen="android,windows,core">
+      <ion-buttons showWhen="ios" start>
+        <button ion-button icon-left (click)="dismiss()" >
+          <span>
+            <ion-icon name="ios-arrow-back"></ion-icon>Back</span>
+        </button>
+      </ion-buttons>
+    <ion-buttons showWhen="android,windows,core" end>
+      <button ion-button icon-only (click)="dismiss()" >
         <ion-icon name="md-close"></ion-icon>
-      </button>
-      <button ion-button icon-left (click)="dismiss()" showWhen="ios">
-        <span>
-          <ion-icon name="ios-arrow-back"></ion-icon>Back</span>
       </button>
     </ion-buttons>
     </ion-navbar>

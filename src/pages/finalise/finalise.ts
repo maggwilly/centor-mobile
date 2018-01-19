@@ -42,10 +42,11 @@ export class FinalisePage {
   }
 
   ionViewDidEnter() {
-    console.log('Hello FinalisePage Page');
+    
      this.concours=this.navParams.get('concours'); 
      this.abonnement=this.navParams.get('abonnement');  
      this.uid= firebase.auth().currentUser.uid;
+    console.log(JSON.stringify(this.concours.price));
   }
 
 
@@ -79,8 +80,8 @@ export class FinalisePage {
           
           this.notify.onSuccess(
             {
-              message: "Pour effectuer votre paiment,vous aurez besoin d'un CODE DE PAIMENT de 06 chiffres. Obtenez le par SMS en composant le #150*4*4*CODE_SECRET# sur votre telephone. Le code de paiment  est différent de votre code secret Orange Money",
-              duration: 120000,
+            message: "Pour effectuer votre paiment,vous aurez besoin d'un CODE DE PAIMENT de 06 chiffres. Obtenez le par SMS en composant le #150*4*4*CODE_SECRET# sur votre telephone. Le code de paiment  est différent de votre code secret Orange Money",
+            duration: 120000,
             dismissOnPageChange:true,
             showCloseButton:true,
             closeButtonText:'ok',

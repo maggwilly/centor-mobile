@@ -3,7 +3,8 @@
     <ion-item-divider sticky *ngIf="header">
       <ion-label>
          {{header}}
-    <ion-badge id="notifications-badge" color="light"> {{sessionList.length}} concours</ion-badge>
+    <ion-badge id="notifications-badge" color="light" showWhen="core"> {{sessionList.length}} concours</ion-badge>
+    <ion-badge id="notifications-badge" color="light" showWhen="mobile"> {{sessionList.length}}</ion-badge>
       </ion-label>
     </ion-item-divider>
 

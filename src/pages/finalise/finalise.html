@@ -1,3 +1,5 @@
+
+
 <ion-content class="transparent-header">
     <ion-header>
         <ion-navbar>
@@ -12,35 +14,40 @@
         </ion-navbar>
       </ion-header>  
     <ion-slides pager style="height:30%;width:100%"  autoplay="15000"   loop >
+            <ion-slide class="bg-light">
+              <div padding>
+                   Suivez le programme de prépa depuis votre mobile, ordinateur et tablette. Choisissez la formule qui vous convient.
+              </div>
+            </ion-slide>
           <ion-slide style="background-image: url('assets/images/orange-money.jpg');background-size: cover;background-repeat:no-repeat;">
           </ion-slide>
     </ion-slides>
-    <ion-slides #innerSlider style="height:70%;width:100%">
+    <ion-slides #innerSlider >
       <ion-slide >   
    <ion-list padding class="items-list">
     <ion-item text-wrap>
      <p>
-  Payez en toute simplicité par Orange Money.
+  Payez votre inscription en toute simplicité par Orange Money.
   <button clear (click)="help()"showWhen="mobile" >Obtenir de l'aide.</button >
     <a href="http://help.centor.org/om.html" showWhen="core">Obtenir de l'aide.</a>
     </p>
     </ion-item>
-   <ion-item *ngIf="concours && !abonnement" text-wrap class="starter" (click)="slideNext('starter')">
+   <ion-item *ngIf="(concours &&!abonnement)&&(concours.price&&concours.price.starterDelay)" text-wrap class="starter" (click)="slideNext('starter')">
      <span>STARTER</span>
-     <h2>15 jours de préparation </h2>
-     <p>Cours,TD, et anciens sujets, évaluation</p>
-     <ion-note item-right *ngIf="concours&&concours.price">{{concours.price.starter}} FCFA</ion-note>
+     <h2>{{concours.price.starterDelay}} jours de préparation </h2>
+     <p>{{concours.price.starterDesc}}</p>
+     <ion-note item-right *ngIf="concours&&concours.price">GRATUIT</ion-note>
    </ion-item>
-   <ion-item  text-wrap class="standard" (click)="slideNext('standard')">
+   <ion-item *ngIf="(concours.price&&concours.price.standardDelay)" text-wrap class="standard" (click)="slideNext('standard')">
       <span>STANDARD</span>
-      <h2>45 jours de préparation</h2>
-      <p>Cours,TD, et anciens sujets, évaluation, assistance des professeurs.</p>
+      <h2>{{concours.price.standardDelay}} jours de préparation</h2>
+      <p>{{concours.price.standardDesc}}</p>
       <ion-note item-right *ngIf="concours&&concours.price">{{concours.price.standard}} FCFA</ion-note>
     </ion-item> 
-    <ion-item  text-wrap class="premium" (click)="slideNext('premium')">
+    <ion-item *ngIf="(concours.price&&concours.price.premiumDelay)" text-wrap class="premium" (click)="slideNext('premium')">
         <span>PREMIUM</span>
-        <h2>Préparation complète</h2>
-        <p>Accès à toutes les ressources, conseils et astuces par mail.</p>
+        <h2>{{concours.price.premiumDelay}} jours de préparation</h2>
+        <p>{{concours.price.premiumDesc}}</p>
         <ion-note item-right *ngIf="concours&&concours.price">{{concours.price.premium}} FCFA</ion-note>
     </ion-item>   
  </ion-list>
@@ -56,40 +63,41 @@
         <ion-item no-lines text-wrap *ngIf="bundle=='starter'">
             <h1>STARTER</h1>
             <br>
-            <h2>15 jours de préparation </h2>
-            <p>Cours,TD, et anciens sujets, évaluations</p>
+            <h2>{{concours.price.starterDelay}} jours de préparation </h2>
+            <p>{{concours.price.starterDesc}}</p>
             <ion-note item-right *ngIf="concours&&concours.price"><strong>GRATUIT</strong></ion-note>
         </ion-item>
         <ion-item no-lines text-wrap *ngIf="bundle=='standard'">
             <h1>STANDARD</h1>
             <br>
-            <h2>45 jours de préparation</h2>
-            <p>Cours,TD, et anciens sujets, évaluations, professeurs.</p>
+            <h2>{{concours.price.standardDelay}} jours de préparation</h2>
+            <p>{{concours.price.standardDesc}}.</p>
             <ion-note item-right *ngIf="concours&&concours.price">{{concours.price.standard}}<sup> FCFA</sup></ion-note>
         </ion-item>
         <ion-item no-lines text-wrap *ngIf="bundle=='premium'">
             <h1>PREMIUM</h1>
             <br>
-            <h2>Préparation complète</h2>
-            <p>Accès à toutes les ressources, conseils et astuces par mail.</p>
+            <h2>{{concours.price.premiumDelay}} jours de préparation</h2>
+            <p>{{concours.price.premiumDesc}}</p>
             <ion-note item-right *ngIf="concours&&concours.price">{{concours.price.premium}}<sup> FCFA</sup></ion-note>
         </ion-item>
         <ion-item>
             {{concours.concours.nom}}
             <p>{{concours.nom}}</p>
          </ion-item>
-       <!-- <ion-item no-lines *ngIf="commande.data">
-            <a [href]="commande.data.payment_url" style="background: #ff4500; border: 15px solid #ff4500; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" >
-              <span style="color:#ffffff;padding: 3px;">Inscription</span>
+      <!--<div no-lines *ngIf="commande.data">
+        <br>
+            <a ion-button block color="orange" [href]="commande.data.payment_url" target="_blank" >
+              <span >Payement</span>
           </a>         
-        </ion-item>-->
-        <div *ngIf="commande.data">
+        </div>-->
+         <div *ngIf="commande.data">
           <br>
           <button ion-button block color="orange" (click)="confirmCommende()">Payement</button>
         </div>
         <div *ngIf="!commande.data">
           <br>
-            <button ion-button block color="orange"  (click)="confirmCommende()" >Inscription</button>
+            <button ion-button block color="orange"  (click)="confirmCommende()" >M'inscrire</button>
         </div>       
       </ion-list>      
  </ion-slide >

@@ -46,6 +46,6 @@ export class HomePage {
   
   openArticles() {
     // close the menu when clicking a link from the menu
-    this.navCtrl.setRoot('ArticlesPage');
+    this.navCtrl.push('ArticlesPage');
   }  
 }

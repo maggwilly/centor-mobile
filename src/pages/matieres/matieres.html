@@ -17,9 +17,6 @@
   </ion-navbar>
 </ion-header>
 <ion-content >
-  <ion-grid>
-    <ion-row>
-      <ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12 >
         <div class="card-background">
           <ion-card-header>Indicateurs de progression</ion-card-header>
           <ion-grid  style="height: 100%;justify-content: center;" *ngIf="!loaded">
@@ -32,13 +29,8 @@
             <p class="vertical-center" >Vous n'avez pas encore subi une évaluation.</p>
           </ion-card-content>
         </div>
-      </ion-col>
-      <ion-col col-sm-12 col-xl-12 col-md-12 col-lg-12>
         <div>
           <ion-card-header>Programme de préparation</ion-card-header>
           <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
         </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>

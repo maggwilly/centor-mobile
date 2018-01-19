@@ -2,6 +2,7 @@ import { Component} from '@angular/core';
 import { App, ModalController, NavController } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { IonicPage } from 'ionic-angular';
+import { Facebook } from '@ionic-native/facebook'
 export interface PageInterface {
   title: string;
   link: string;
@@ -26,9 +27,10 @@ export class AboutPage {
  preload  = true;
  constructor(
     private iab: InAppBrowser,
+   private facebook: Facebook,
      public appCtrl: App, 
-   public navCtrl: NavController,
-    private modalCtrl: ModalController 
+     public navCtrl: NavController,
+     private modalCtrl: ModalController 
  ) {
 
   }
@@ -44,20 +46,15 @@ openContact(){
   this.navCtrl.push('ContactPage');
 }
 
-expand(pb:boolean=true) {
-  this.expanded = true;
-  this.contracted = !this.expanded;
-  this.showIcon = false;
-  setTimeout(() => {
-    const modal = this.modalCtrl.create('AbaoutUsPage',{pb:pb});
-    modal.onDidDismiss(data => {
-      this.expanded = false;
-      this.contracted = !this.expanded;
-      window.localStorage.setItem('read-knowledge-centor','readed');
-      setTimeout(() => this.showIcon = true, 2000);
-    });
-    modal.present();
-  },         10);
-}
+  appInvite(){
+   this.facebook.appInvite(
+     {
+       url:'https://play.google.com/store/apps/details?id=com.centor.mobile.app',
+       picture:'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fapp-features2.png?alt=media&token=9a8a1c97-55cf-410a-af34-52ce9df3a8dc'
+  }
+).then((data)=>{
+     console.log('invited');
+})
+  }
 
 }

@@ -6,13 +6,13 @@
 -->
 <ion-header no-border >
   <ion-navbar>
-    <ion-title>Message</ion-title>
+    <ion-title>{{article.notification.titre}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content >
    <div *ngIf="article" class="article-titre" ion-item  no-lines>
-  <h2>{{article.notification.titre}}</h2> 
+  <p>{{article.notification.sousTitre}}</p> 
   </div> 
-  <div *ngIf="article&&article.notification"   [innerHTML]="article.notification.text" padding class="content">
+  <div *ngIf="article&&article.notification"   [MathJax]="article.notification.text" padding class="content">
   </div>
 </ion-content>

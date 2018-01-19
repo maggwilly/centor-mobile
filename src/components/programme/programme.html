@@ -1,7 +1,7 @@
 <div text-wrap *ngIf="(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
   <ion-list  class="borded-list-item" inset>
     <ion-item text-wrap (click)="show(matiere)" *ngFor="let matiere of concours.matieres" 
-      [ngClass]="getClass(matiere.analyse)" class="img-round">
+      [ngClass]="getClass(matiere.analyse)" class="img-round" >
       <ion-icon [hidden]="!abonnementLoaded&&authInfo" name="lock-outline" item-right *ngIf="isExpired(abonnement)"></ion-icon>
       <ion-icon [hidden]="!abonnementLoaded&&authInfo"name="ios-arrow-forward" item-right *ngIf="!isExpired(abonnement)"></ion-icon>
       <ion-spinner item-right [hidden]="abonnementLoaded||!authInfo"  name="circles"></ion-spinner>

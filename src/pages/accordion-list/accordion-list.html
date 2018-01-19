@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Significations</ion-title>
+          <ion-buttons end>
+            <button ion-button (click)="dismiss(false)">
+              <ion-icon color="white" name="md-close"></ion-icon>
+            </button>
+          </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <p text-center>Voici à quoi renvoie chaque indicateur inscrit sur votre tableau de bord.</p>
+  <accordion-list *ngFor="let item of items"
+                  [title]="item.name"
+                  textColor="#FFF"
+                  hasMargin="true"
+                  headerColor="#FFF">
+     <p text-wrap [innerHTML]="item.description"></p>
+  </accordion-list>
+</ion-content>

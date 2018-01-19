@@ -65,10 +65,14 @@ ionViewDidEnter() {
 
 
 suivre(status:any=''){
+  if (!this.concours)
+    return;
   if(this.authInfo){
     this.status = status!='' ? status : this.status;
     this.dataService.suivreSession(this.concours.id, this.authInfo.uid, status).then((data)=>{
       this.status = data;
+      if (this.status)
+        this.notify.onSuccess({ message: 'Vous suivez ce concours.' });
      }, error => {
        this.status = !this.status
          this.notify.onError({ message: 'problème de connexion  !' });
@@ -125,6 +129,8 @@ openConcours() {
    }
 
  getAbonnement(){
+   if (!this.concours)
+   return;
      this.dataService.getAbonnement(this.authInfo.uid,this.concours.id).then(data=>{
            this.abonnement=data;
            this.abonnementLoaded=true;
@@ -199,15 +205,15 @@ listenToEvents(){
 
 
   share(url: any) {
-    let textMessage = this.concours.nom;
+    let textMessage = this.concours.nomConcours;
     this.facebook.showDialog({
       method:'share',
-     href:this.dataService._baseUrl + 'session/' + this.concours.id + '/show/from/mobile',
+      href:this.dataService._baseUrl + 'session/' + this.concours.id + '/show/from/mobile',
       caption: textMessage,
       hashtag: '#centor'
-    })
+    }).catch(error => { })
    /** 
-   *this.socialSharing.share(textMessage, null , null, window.localStorage.getItem('_baseUrl') + 'programme/' + this.concours.id + '/show/from/mobile')
+   *this.socialSharing.share(textMessage, null , null,this.dataService._baseUrl + 'session/' + this.concours.id + '/show/from/mobile')
       .catch((error) => {
       })*/
   }

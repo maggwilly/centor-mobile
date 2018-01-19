@@ -1,6 +1,5 @@
   <div *ngIf="analyse"  text-wrap class="dasboard">
-<button class="option-relative-top-right special-item" ion-button small  icon-only clear color="light" (click)="openHelp()" ><ion-icon name="ios-help-circle"></ion-icon></button>     
-  
+<button class="option-relative-top-right special-item" ion-button   icon-only clear color="light" (click)="openHelp()" ><ion-icon name="ios-help-circle"></ion-icon></button>     
   <div class="no-bg">
   <ion-row  >
     <ion-col> 
@@ -33,7 +32,7 @@
         <div class="span-value none ">
           <span>
           <span class="border-bottom">
-          {{analyse.rang}}
+         {{analyse.rang}}
           <sup *ngIf="analyse.rang>1">ième</sup>
           <sup *ngIf="analyse.rang==1">ier</sup>
           </span>

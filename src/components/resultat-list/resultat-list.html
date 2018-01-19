@@ -1,10 +1,13 @@
 <!-- Generated template for the ResultatListComponent component -->
 <ion-list *ngIf="resultatList&&resultatList.length"  no-border class="transparent-list">
-  <a ion-item  *ngFor="let resultat of resultatList" [hidden]="resultat.hide" text-wrap [href]="resultat.url" target="'_blank'">
+  <ion-item  *ngFor="let resultat of resultatList" [hidden]="resultat.hide" text-wrap >
  {{resultat.description}}
  <p *ngIf="resultat.date"><small> publié le {{resultat.date|date: 'dd MMMM yyyy'}}</small></p>
-  <ion-note item-right>
+  <button ion-button icon-only clear item-right (click)="share(resultat)" >
+    <ion-icon name="share-alt"></ion-icon>
+  </button>
+  <a ion-button icon-only clear item-right [href]="resultat.url" target="'_blank'" >
     <ion-icon [name]="name(resultat.url)"></ion-icon>
-  </ion-note>
   </a>
+  </ion-item>
 </ion-list>

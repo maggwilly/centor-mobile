@@ -12,25 +12,24 @@
   </ion-navbar>
 </ion-header>
 <ion-content hide-header [header]="head">
-  <ion-grid>
     <ion-row>
-      <ion-col col-sm-12 col-xl-8 col-md-6 col-lg-6>
+      <ion-col col-sm-12 col-xl-8 col-md-12 col-lg-9>
         <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (ionInput)="search()" placeholder="Rechercher un concours">
         </ion-searchbar>
-    <ion-segment [(ngModel)]="segment" (ionChange)="search()">
-      <ion-segment-button value="all">
-        Tout
-      </ion-segment-button>
-      <ion-segment-button value="BAC - GCE A/L">
-        BAC-GCE A/L
-      </ion-segment-button>
-      <ion-segment-button value="Licence & equiv">
-        Licence
-      </ion-segment-button>
-      <ion-segment-button value="'Master & equiv">
-        Master
-      </ion-segment-button>
-    </ion-segment>
+        <ion-segment [(ngModel)]="segment" (ionChange)="search()">
+          <ion-segment-button value="all">
+            Tout
+          </ion-segment-button>
+          <ion-segment-button value="BAC - GCE A/L">
+            BAC-GCE
+          </ion-segment-button>
+          <ion-segment-button value="Licence & equiv">
+            Licence
+          </ion-segment-button>
+          <ion-segment-button value="'Master & equiv">
+            Master
+          </ion-segment-button>
+        </ion-segment>
         <concours-list [concoursList]="_concours"></concours-list>
         <ion-grid [hidden]="_concours&&_concours.length" style=" height: 100%;justify-content: center;">
           <ion-row justify-content-center align-items-center>
@@ -41,7 +40,7 @@
           <ion-infinite-scroll-content></ion-infinite-scroll-content>
         </ion-infinite-scroll>
       </ion-col>
-      <ion-col col-sm-12 col-xl-4 col-md-6 col-lg-6 hideWhen='mobile'>
+      <ion-col col-sm-12 col-xl-4 col-md-12 col-lg-3 id="right-pannel">
         <ion-card-header text-left>
           Les plus en vus
         </ion-card-header>
@@ -56,5 +55,4 @@
         <short-list [authInfo]="authInfo" styleShow='transparent-list'></short-list>
       </ion-col>
     </ion-row>
-  </ion-grid>
 </ion-content>

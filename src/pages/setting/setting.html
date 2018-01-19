@@ -1,4 +1,4 @@
-<ion-content padding class="transparent-header">
+<ion-content  class="transparent-header">
     <ion-header>
       <ion-navbar hideBackButton>
             <button menuToggle ion-button icon-only>
@@ -21,11 +21,11 @@
       </div>
         <ion-grid>
           <ion-row>
-            <ion-col col-sm-12 col-xl-6 col-md-12 col-lg-6>
+            <ion-col col-12>
       <div *ngIf="user.info">
-        <ion-card-header text-left>Profil 
-</ion-card-header>
-          <button ion-button  small clear icon-left color="purple" (click)="editProfileCandidat()" class="edit-button">
+        <br>
+        <ion-card-header text-left>Profil</ion-card-header>
+          <button ion-button   clear icon-left color="purple" (click)="editProfileCandidat()" class="edit-button">
             Modifier   
              <ion-icon name="settings"></ion-icon>
           </button>
@@ -63,8 +63,9 @@
         </ion-list>
       </div>
       </ion-col>
-        <ion-col col-sm-12 col-xl-6 col-md-12 col-lg-6>
+        <ion-col col-12>
       <div>
+        <br>
         <ion-card-header text-left>Mes programmes</ion-card-header>
       <ion-list *ngIf="paidConcours&&paidConcours.length">
           <ion-item *ngFor="let paid of paidConcours"  (click)="showAbonnement(paid)">

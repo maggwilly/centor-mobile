@@ -50,7 +50,7 @@ toFixed(value:any,dec:number=0):any{
 
 openHelp(){
  // this.iab.create('http://help.centor.org/kpi.html');
-  const modal = this.modalCtrl.create('HelpPage');
+  const modal = this.modalCtrl.create('AccordionListPage');
   modal.onDidDismiss(data => {
     window.localStorage.setItem('read-knowledge-kpi', 'readed');
   });

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
+import { SocialSharing } from '@ionic-native/social-sharing';
 /**
  * Generated class for the ResultatListComponent component.
  *
@@ -18,7 +19,7 @@ export class ResultatListComponent {
   resultatList: any[] = [];
   @Input()
   style: string ='';
-  constructor(public dataService: DataService, public notify: AppNotify) {
+  constructor(public dataService: DataService, public notify: AppNotify ,   private socialSharing: SocialSharing,) {
 
   }
   ngOnInit() {
@@ -41,4 +42,13 @@ export class ResultatListComponent {
     return 'md-open';
   }
   
+  share(resultat: any) {
+    let textMessage = resultat.description;
+    this.socialSharing.share(textMessage, null, null, this.dataService._baseUrl + 'resultat/' + resultat.id + '/get/mobile')
+       .catch((error) => {
+       })
+  }
+
+
+
 }

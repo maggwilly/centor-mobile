@@ -98,8 +98,11 @@
     position: relative;
     min-height: 200px;
 }  
+
+
+
 /* Larger than a phone */
-@media (min-width:  548px) {
+@media (min-width:  576px) {
     .item-md,
     .label-md,
     [text-wrap] .label-md
@@ -141,8 +144,9 @@
           .span-value{
            font-size:2.2em;  
      }
+   
     }
-    
+ 
 .carousel {
      height:240px;  
 }    
@@ -150,18 +154,24 @@
     min-height: 180px;
 }
 
+
 .fab[mini]{
   margin: 12px;
   width: 60px;
   height: 60px;
   line-height: 60px;
 }
+
 .fab{
-  font-size: 21px;
-}
+    font-size: 21px;
+ }
 }
 
 
+
+@media screen and (max-width: 768px) {
+  #right-pannel { display: none; }  /* show it on small screens */
+} 
 
 .borded-list-item {
  .none,.success,.warning,.danger{
@@ -266,7 +276,7 @@
   #profile-bg {
     padding: 5px 15px;
     height: 26vh;
-    background-image: url('../assets/images/material-design-background.jpg');
+    background: linear-gradient(rgba(6,92,121,0),  rgba(6,92,121,0.61)) , url('../assets/images/material-design-background.jpg');
     background-size: cover;
     color: white;
     .name {
