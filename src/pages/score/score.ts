@@ -279,17 +279,19 @@ export class ScorePage {
     }
   }
 
-
-
-
+  isOlympia(partie: any) {
+    if (!partie || partie.type!='OL')
+      return false;
+    let now = Date.now();
+    let endDate = new Date(partie.endDate).getTime();
+    return now < endDate;
+  }
 
 
   showInfo() {
     let modal = this.modalCtrl.create('StartPage', { partie: this.partie });
     modal.present();
   }
-
-
 
   /*Parcour pour voir le corrigé*/
   hasAmswer(question: any): boolean {

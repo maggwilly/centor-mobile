@@ -14,6 +14,7 @@ import { NotificationDirective } from '../directives/notification/notification';
 import { HideHeaderDirective } from '../directives/hide-header/hide-header';
 import { UpdaterDirective} from '../directives/updater/updater';
 import { MathJaxDirective } from '../directives/MathJax.directive';
+
 // Components
 import { DashboordItemComponent } from '../components/dashboord-item/dashboord-item';
 import { ProgrammeComponent } from '../components/programme/programme';
@@ -23,7 +24,7 @@ import { ResultatListComponent } from '../components/resultat-list/resultat-list
 // Modules
 
 import { IonicStorageModule } from '@ionic/storage';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule} from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import {  CloudModule } from '@ionic/cloud-angular';
 import { AngularFireModule } from 'angularfire2';
@@ -34,19 +35,20 @@ import { CloudSettings } from '@ionic/cloud-angular';
 import { LimitToPipe } from '../pipes/limit-to/limit-to';
 
 const cloudSettings: CloudSettings = {
-  'core': {
-    'app_id': 'c3ad15a6'
+  core: {
+    app_id: 'c3ad15a6'
   },
-  'push': {
-    'sender_id': '163815809818',
-    'pluginConfig': {
-      'ios': {
-        'badge': true,
-        'sound': true
+  push: {
+    sender_id: '163815809818',
+    pluginConfig: {
+      ios: {
+        badge: true,
+        sound: true
       },
-      'android': {
+      android: {
         vibrate: true,
-        'sound': true
+        forceShow:true,       
+        sound: true
 
       }
     }
@@ -99,5 +101,5 @@ export const DIRECTIVES = [
   NotificationDirective,
   HideHeaderDirective,
   UpdaterDirective,
-  MathJaxDirective
+  MathJaxDirective,
 ];

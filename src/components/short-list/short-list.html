@@ -24,6 +24,11 @@
     <ion-col col-4 *ngIf="concours.dateLancement && target=='recents'">
       <small> Depuis le <ion-badge>{{concours.dateLancement| date: 'dd/MM/yyyy'}}</ion-badge></small>
     </ion-col>
+    <ion-col col-4 *ngIf="concours.dateConcours && target=='owards'">
+      <small> Ouvert jusqu'au 
+        <ion-badge>{{concours.dateConcours| date: 'dd/MM/yyyy'}}</ion-badge>
+      </small>
+    </ion-col>
     <ion-col col-4 *ngIf="concours.nombreInscrit && target=='en_vus'"><small><ion-badge color="orange" >{{concours.nombreInscrit}}</ion-badge> inscrits</small></ion-col>
     <ion-col col-4 *ngIf="concours.niveau && !target"><ion-badge color="secondary">{{concours.niveau}}</ion-badge> </ion-col>
   </ion-row>

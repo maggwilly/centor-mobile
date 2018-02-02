@@ -1,4 +1,8 @@
 page-finalise {
+  .package-details{
+    position: absolute;
+    top: 30px;
+  }
 
   .goback-button {
     font-weight: bold;
@@ -17,12 +21,10 @@ page-finalise {
 ion-note{
    font-size: 1.0em;
    color:  #7F7F7F;
- //  font-weight: bold;
 }
 .starter{
   border-left: 5px solid color($colors, light);
   span{
-    // font-size: 1.0em;
      color:  color($colors,light);
      font-weight: bold;
   }
@@ -30,7 +32,6 @@ ion-note{
 .standard{
   border-left: 5px solid color($colors, primary);
   span{
-    // font-size: 1.0em;
      color:  color($colors,primary);
      font-weight: bold;
   }
@@ -38,7 +39,6 @@ ion-note{
 .premium{
  border-left: 5px solid color($colors, orange);
  span{
-  // font-size: 1.0em;
    color:  color($colors,orange);
     font-weight: bold;
 }

@@ -49,7 +49,7 @@ openContact(){
   appInvite(){
    this.facebook.appInvite(
      {
-       url:'https://play.google.com/store/apps/details?id=com.centor.mobile.app',
+       url:'https://vsn5c.app.goo.gl/centor',
        picture:'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fapp-features2.png?alt=media&token=9a8a1c97-55cf-410a-af34-52ce9df3a8dc'
   }
 ).then((data)=>{

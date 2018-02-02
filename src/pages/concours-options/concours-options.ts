@@ -1,4 +1,4 @@
-import { Component,NgZone   } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NavController, App,NavParams ,ModalController, LoadingController,Events } from 'ionic-angular';
 import firebase from 'firebase';
 import { MatieresPage } from '../matieres/matieres';
@@ -13,14 +13,13 @@ import { Facebook } from '@ionic-native/facebook'
 @IonicPage()
 @Component({
   selector: 'page-concours-options',
-  templateUrl: 'concours-options.html'
+  templateUrl: 'concours-options.html'   
 })
 export class ConcoursOptionsPage {
  concours:any={};
  authInfo;  
   abonnement:any;
   abonnementLoaded:boolean=false;
-
   matiereLoaded:boolean=false;
   status=false;
   public loading: any;
@@ -71,8 +70,8 @@ suivre(status:any=''){
     this.status = status!='' ? status : this.status;
     this.dataService.suivreSession(this.concours.id, this.authInfo.uid, status).then((data)=>{
       this.status = data;
-      if (this.status)
-        this.notify.onSuccess({ message: 'Vous suivez ce concours.' });
+     // if (this.status)
+       // this.notify.onSuccess({ message: 'Vous suivez ce concours.' });
      }, error => {
        this.status = !this.status
          this.notify.onError({ message: 'problème de connexion  !' });

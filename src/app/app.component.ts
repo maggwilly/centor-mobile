@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, trigger, transition, style, state, animate, keyframes  } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Events, ModalController, Platform, Nav, MenuController, LoadingController, AlertController, ActionSheetController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -9,14 +9,16 @@ import { Storage } from '@ionic/storage';
 import firebase from 'firebase';
 import { AppNotify } from '../providers/app-notify';
 import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
-import { AngularFireAuth } from 'angularfire2/auth';
 
 const options: PushOptions = {
-  android: {},
+  android: {
+    sound: true,
+    vibrate:true,
+    forceShow:true},
   ios: {
     alert: 'true',
     badge: true,
-    sound: 'false'
+    sound: 'true'
   },
   windows: {},
   browser: {
@@ -32,11 +34,28 @@ export interface PageInterface {
   index?: number;
 }
 @Component({
-  templateUrl: 'app.html'
+  templateUrl: 'app.html',
+    animations: [
+    trigger('bounce', [
+      state('*', style({
+        transform: 'translateX(0)'
+      })),
+      transition('* => rightSwipe', animate('700ms ease-out', keyframes([
+        style({ transform: 'translateX(0)', offset: 0 }),
+        style({ transform: 'translateX(-65px)', offset: .3 }),
+        style({ transform: 'translateX(0)', offset: 1 })
+      ]))),
+      transition('* => leftSwipe', animate('700ms ease-out', keyframes([
+        style({ transform: 'translateX(0)', offset: 0 }),
+        style({ transform: 'translateX(65px)', offset: .3 }),
+        style({ transform: 'translateX(0)', offset: 1 })
+      ])))
+    ])
+  ]
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  rootPage: any =  'ProcessingPage';//TabsPage;TutorialPage;// MatieresPage;//
+  rootPage: any = (!document.URL.startsWith('http') || this.platform.is('core') || this.platform.is('mobileweb')) ? 'ProcessingPage' : 'HomePage';//TabsPage;TutorialPage;// MatieresPage;//
   authInfo: any;
   concours: any;
   paidConcours: any[];
@@ -44,10 +63,8 @@ export class MyApp {
   _concours: any[];
   user: any;
   zone: NgZone;
- // baseUrl: string;
   mode = 'prod';
   registrationId;
-  //photoURL:any;
   notificationId: string //= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
     { title: 'Accueil', component: 'HomePage', icon: 'home' },
@@ -55,13 +72,13 @@ export class MyApp {
     { title: 'Resultats', component: 'ResultatsPage', icon: 'md-list' },
     { title: 'A propos', component: 'AboutPage', icon: 'information-circle' }
   ];
-
+  skipMsg: string = "Skip";
+  state: string = 'x';
   constructor(public platform: Platform,
     public menu: MenuController,
     public dataService: DataService,
     public notify: AppNotify,
     public af: AngularFireDatabase,
-    public auth: AngularFireAuth,
     private push: Push,
     public storage: Storage,
     public modalCtrl: ModalController,
@@ -77,7 +94,7 @@ export class MyApp {
       // this.statusBar.styleBlackTranslucent();
       //this.statusBar.overlaysWebView(true);
       this.storage.get('registrationId').then((data)=>{
-        this.notificationId=data;
+        //this.notificationId=data;
         this.registrationId = data;
       })
       this.statusBar.backgroundColorByHexString("#065C79");
@@ -90,7 +107,9 @@ export class MyApp {
 
   }
 
-
+  animationDone() {
+    this.state = 'x';
+  }
 
 
   getUrlBase(obj: any) {
@@ -123,7 +142,9 @@ export class MyApp {
     },error=>{
       this.notify.onError({ message: JSON.stringify(error) });
     })
-    if (!this.platform.is('mobileweb'))
+    console.log(this.platform.platforms());
+    
+    if (!document.URL.startsWith('http') || this.platform.is('core') || this.platform.is('mobileweb'))
     this.storage.get('_preferences')
       .then((data) => {
         this.concours = data;
@@ -136,8 +157,8 @@ export class MyApp {
         this.notify.onError({ message: JSON.stringify(error) });
         this.nav.setRoot('HomePage');
       });
-      else
-      this.nav.setRoot('HomePage');
+     // else
+     // this.nav.setRoot('HomePage');
   }
 
   openPage(page: PageInterface) {
@@ -149,7 +170,7 @@ export class MyApp {
 
   openMessages() {
     // navigate to the new page if it is not the current page
-    this.nav.push('ArticlesPage');
+    this.nav.push('NotificationsPage');
     this.menu.close();
   }
 
@@ -196,7 +217,7 @@ checkInfo(info:any){
       const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
         this.zone.run(() => {
           if (user) {
-          //  this.notificationId = user.uid;
+            this.notificationId = user.uid;
             this.nav.push('SettingPage', { authInfo: user });
             this.notify.onSuccess({ message: "Vous êtes connecté à votre compte." });
             unsubscribe();
@@ -231,7 +252,7 @@ checkInfo(info:any){
 
   registration(registrationId: any) {
     this.registrationId = registrationId;
-    this.notificationId = registrationId;
+   // this.notificationId = registrationId;
     this.storage.set('registrationId', registrationId).then(()=>{
       console.log(registrationId);
       this.dataService.addRegistration(registrationId, { registrationId: registrationId }).then((data) => {

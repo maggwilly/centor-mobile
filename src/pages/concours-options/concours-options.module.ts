@@ -7,6 +7,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { Facebook } from '@ionic-native/facebook'
 import { SharedComponentsModule } from '../../app/shared.module';
 import { SharedDirectivesModule } from '../../app/shared.module';
+
 @NgModule({
   declarations: [
     ConcoursOptionsPage, 
@@ -14,7 +15,9 @@ import { SharedDirectivesModule } from '../../app/shared.module';
    
   ],
   imports: [
-    IonicPageModule.forChild(ConcoursOptionsPage), SharedComponentsModule, SharedDirectivesModule
+    IonicPageModule.forChild(ConcoursOptionsPage),
+     SharedComponentsModule,
+      SharedDirectivesModule
   ],
   entryComponents: [DetailsComponent],
   providers: [InAppBrowser, SocialSharing, Facebook]

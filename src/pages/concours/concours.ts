@@ -74,7 +74,7 @@ loadData(){
   doInfinite(infiniteScroll?:any) {
     this.dataService.getSessions(this._concours.length).then(data=>{
       this.updateList(data);
-      this.storage.set('_concours', this._concours).then(() => { }, error => { });
+     // this.storage.set('_concours', this._concours).then(() => { }, error => { });
      if(infiniteScroll)
          infiniteScroll.complete();
     },error=>{
@@ -86,7 +86,7 @@ loadData(){
   return  this.dataService.getSessions(this._concours.length,true).then(data => {
      // this.updateList(data);
     this._concours = data;
-      this.storage.set('_concours', this._concours).then(() => { }, error => { });
+      //this.storage.set('_concours', this._concours).then(() => { }, error => { });
     }, error => {
       this.notify.onError({ message: 'Petit problème de connexion.' });
     })
@@ -95,13 +95,13 @@ loadData(){
   updateList(array: any[]) {
     if (!(this._concours && this._concours.length)) {
       this._concours = array;
-      return this.storage.set('_concours', this._concours);
+      return ;//this.storage.set('_concours', this._concours);
     }
     this.filter(array, this.queryText);
     array.forEach(item => {
       this._concours.push(item);
     });
-    return this.storage.set('_concours', this._concours);
+    return ;//this.storage.set('_concours', this._concours);
   }
 
 search() {

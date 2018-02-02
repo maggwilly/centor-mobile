@@ -81,7 +81,7 @@
        Lire le cours
       </button>
       <br>
-      <button (click)="startVisit()" ion-button block color="secondary" *ngIf="analyse||canHasScore()">
+      <button (click)="startVisit()" ion-button block color="secondary" *ngIf="analyse||canHasScore()" [disabled]="isOlympia(partie)">
         Voir le corrigé
       </button>
       <br>

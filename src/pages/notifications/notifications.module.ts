@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { ArticlesPage } from './articles';
+import { NotificationsPage } from './notifications';
 import { SharedDirectivesModule } from '../../app/shared.module';
 @NgModule({
   declarations: [
-    ArticlesPage,
+    NotificationsPage,
   ],
   imports: [
-    IonicPageModule.forChild(ArticlesPage),
-    SharedDirectivesModule
+    IonicPageModule.forChild(NotificationsPage), SharedDirectivesModule
   ],
 })
-export class ArticlesPageModule {}
+export class NotificationsPageModule {}

@@ -62,6 +62,9 @@ data: any;
       case 'en_vus':
         url = this._baseUrl + 'formated/session/plus/en/vus/json'
         break; 
+      case 'owards':
+        url = this._baseUrl + 'formated/session/owards/json'
+        break;         
       default:
         url = this._baseUrl + 'formated/session/for/user/' + uid+'/json'
         break;

@@ -7,12 +7,17 @@
   <meta name="description" content="Une application en ligne et sur mobile destinée à la préparation des concours d'entrée dans les grandes écoles du Cameroun. Développée par Centor .inc, elle fournit des ressources nécessaires en fonction du concours. Elle vous permet de vous organiser et de vous auto-évaluer grâce aux travaux dirigés auxquels vous êtes soumis durant la préparation">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
+  <meta property="al:android:url" content="centorapp://home">
+  <meta property="al:android:package" content="com.centor.mobile.app">
+  <meta property="al:android:app_name" content="centor">
+  <meta property="og:title" content="Centor" />
+  <meta property="og:type" content="website" />
   <link rel="icon" type="image/x-icon" href="assets/icon/favicon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4e8ef7">
   <!-- cordova.js required for cordova apps -->
   <script src="cordova.js"></script>
-
+<script src="assets/js/web-animation.min.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
@@ -20,9 +25,7 @@
         .catch(err => console.error('Error', err));
     }
   </script>
-
   <link href="build/main.css" rel="stylesheet">
-
 </head>
 <body>
 

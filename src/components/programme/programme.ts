@@ -1,4 +1,4 @@
-import { Component, Input ,NgZone } from '@angular/core';
+import { Component, Input, NgZone } from '@angular/core';
 import { NavController,App, NavParams ,ModalController, AlertController,Events } from 'ionic-angular';
 import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
@@ -11,12 +11,12 @@ import firebase from 'firebase';
 */
 @Component({
   selector: 'programme',
-  templateUrl: 'programme.html'
+  templateUrl: 'programme.html' 
+ 
 })
 export class ProgrammeComponent {
    categorie:any='prepa';
    alert=false;
-   text: string;
    @Input()
    abonnement:any;
     @Input()
@@ -30,7 +30,8 @@ export class ProgrammeComponent {
   @Input()
   abonnementLoaded:any;
   abonnementExpired: any;  
-   zone:NgZone;
+  zone:NgZone;
+  buttonToHide: HTMLElement;
   constructor(
     public navCtrl: NavController,
     public notify:AppNotify,
@@ -40,9 +41,9 @@ export class ProgrammeComponent {
     public navParams: NavParams,
     public dataService:DataService,
     public modalCtrl: ModalController) {
-    this.text = 'Hello World';
     this.zone = new NgZone({});
   }
+
 
 
 inscrire() {
@@ -105,9 +106,9 @@ show(matiere:any){
      this.appCtrl.getRootNav().push('MatiereDetailsPage',{matiere:matiere});  
  }
 
+
  openModal(pageName,arg?:any) {
-  this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
-                .present();
+  this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' }).present();
 }
 
   signup() {

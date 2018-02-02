@@ -5,7 +5,7 @@
     </button>
     <ion-title>Accueil</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="openArticles()">
+      <button ion-button icon-only  [@flip]="flipState" (click)="toggleFlip()">
         <ion-icon name="ios-notifications"></ion-icon>
         <ion-badge class="notifications-badge" notification [notificationId]="notificationId" color="danger"></ion-badge>
       </button>
@@ -29,7 +29,7 @@
         </button>
     </ion-col>
     </ion-row>
-
+      <short-list target="owards" header="Olympiades"></short-list>
      <short-list target="en_vus" header="Concours les plus en vus"></short-list>
     <short-list target="recents" header="Concours recement ouverts "></short-list>
     <short-list [authInfo]="authInfo" header="Concours pouvant m'interesser"></short-list>

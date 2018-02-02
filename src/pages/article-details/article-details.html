@@ -10,9 +10,9 @@
   </ion-navbar>
 </ion-header>
 <ion-content >
-   <div *ngIf="article" class="article-titre" ion-item  no-lines>
+  <!-- <div *ngIf="article" class="article-titre" ion-item  no-lines>
   <p>{{article.notification.sousTitre}}</p> 
-  </div> 
+  </div> -->
   <div *ngIf="article&&article.notification"   [MathJax]="article.notification.text" padding class="content">
   </div>
 </ion-content>

@@ -9,4 +9,25 @@ img {
         width: 40px;
       } 
 }
+         .switch {
+            position: fixed;
+            bottom: -30px;
+            left: 50%;
+            transform: translate3d(-50%, -50%, 0);
+            width: 100%;
+            border-radius: 4px;
+            text-align: center;
+            z-index: 100;
+            opacity: 1;
+            .active {
+                background: #3366CC!important;
+                color: #fff;
+            }
+            .button {
+                width: 100%;
+                height: 56px;
+                margin: 0;
+                padding: 0;
+            }
+        }
 }

@@ -28,7 +28,7 @@ export class NotificationDirective {
   }
 
   ngOnChanges() {
-    this.dataService.getMessages(this.registerId,this.notificationId,0).then((data)=>{
+    this.dataService.getMessages(this.registerId, this.notificationId,0).then((data)=>{
       if (data) {
         this.count = data ? data.count : 0
         this.elementRef.nativeElement.innerHTML = this.count > 0 ? this.count : '';

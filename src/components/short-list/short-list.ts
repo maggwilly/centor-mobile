@@ -41,7 +41,7 @@ export class ShortListComponent {
       this.loaded=true;
   },error=>{
     console.log(error);
-    
+    this.sessionList = []
     this.notify.onError({ message: 'problème de connexion  !' });
   })
   }  

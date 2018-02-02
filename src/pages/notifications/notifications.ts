@@ -1,18 +1,24 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams,Platform , LoadingController,AlertController} from 'ionic-angular';
+import { NavController, NavParams, Platform, LoadingController, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
 import firebase from 'firebase';
 import { IonicPage } from 'ionic-angular';
 
+/**
+ * Generated class for the NotificationsPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
 
 @IonicPage()
 @Component({
-  selector: 'page-articles',
-  templateUrl: 'articles-list.html'
+  selector: 'page-notifications',
+  templateUrl: 'notifications.html',
 })
-export class ArticlesPage {
+export class NotificationsPage {
 _articles:any[]; 
 notificationId: string //= window.localStorage.getItem('registrationId');
 registerId:any;
@@ -26,7 +32,7 @@ registerId:any;
       public loadingCtrl: LoadingController,    
       public platform: Platform,
       ) {
-
+  
   }
 
 
@@ -49,7 +55,10 @@ registerId:any;
              this.loadData(true);
     });
   }
-       
+getIcon(article:any):string{
+  let iconName = (!article.readed) ? 'ios-' + article.notification.format : 'ios-' + article.notification.format + '-outline';
+  return iconName;
+}     
 
 loadData(all?:boolean){
   this._articles=null;
@@ -94,8 +103,6 @@ updateList(array:any[]){
         if(!this._articles.find(conc=>{return conc.id==element.id}))
         this._articles.push(element);
   });
-  if (!this.platform.is('mobileweb'))
-  this.storage.set('_articles', this._articles).catch(error=>{});
 }
 
 }
