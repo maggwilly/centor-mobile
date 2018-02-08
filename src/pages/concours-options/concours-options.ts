@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone} from '@angular/core';
 import { NavController, App,NavParams ,ModalController, LoadingController,Events } from 'ionic-angular';
 import firebase from 'firebase';
 import { MatieresPage } from '../matieres/matieres';
@@ -13,7 +13,7 @@ import { Facebook } from '@ionic-native/facebook'
 @IonicPage()
 @Component({
   selector: 'page-concours-options',
-  templateUrl: 'concours-options.html'   
+  templateUrl: 'concours-options.html'  
 })
 export class ConcoursOptionsPage {
  concours:any={};

@@ -157,8 +157,8 @@ export class MyApp {
         this.notify.onError({ message: JSON.stringify(error) });
         this.nav.setRoot('HomePage');
       });
-     // else
-     // this.nav.setRoot('HomePage');
+      else
+        this.nav.setRoot('HomePage');
   }
 
   openPage(page: PageInterface) {

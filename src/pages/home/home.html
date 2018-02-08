@@ -5,7 +5,7 @@
     </button>
     <ion-title>Accueil</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only  [@flip]="flipState" (click)="toggleFlip()">
+      <button ion-button icon-only (click)="openArticles()" [@flip]="flipState" >
         <ion-icon name="ios-notifications"></ion-icon>
         <ion-badge class="notifications-badge" notification [notificationId]="notificationId" color="danger"></ion-badge>
       </button>
