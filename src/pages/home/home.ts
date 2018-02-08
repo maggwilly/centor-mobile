@@ -17,18 +17,12 @@ import { Storage } from '@ionic/storage';
 export class HomePage {
   authInfo:any;
   notificationId: string
-  flipState: String = 'notFlipped';
-  flyInOutState: String = 'in';
-  fadeState: String = 'visible';
-  bounceState: String = 'noBounce';
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage,) {
   }
 
   ionViewDidLoad() {
-  /*  this.storage.get('registrationId').then(id => {
-      this.notificationId = id;
-      this.observeAuth()
-    })*/
+
     this.observeAuth();
   }
   toggleFlip() {

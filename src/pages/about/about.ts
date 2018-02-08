@@ -1,5 +1,5 @@
 import { Component} from '@angular/core';
-import { App, ModalController, NavController } from 'ionic-angular';
+import { App, NavController } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { IonicPage } from 'ionic-angular';
 import { Facebook } from '@ionic-native/facebook'
@@ -29,8 +29,7 @@ export class AboutPage {
     private iab: InAppBrowser,
    private facebook: Facebook,
      public appCtrl: App, 
-     public navCtrl: NavController,
-     private modalCtrl: ModalController 
+     public navCtrl: NavController
  ) {
 
   }

@@ -4,7 +4,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { MODULES, MAINPROVIDERS , SHAREDPROVIDERS} from './app.imports';
 import { SharedDirectivesModule } from './shared.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -20,8 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       pageTransition: 'ios-transition'
     }),
     MODULES,
-    SharedDirectivesModule,
-    BrowserAnimationsModule
+    SharedDirectivesModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

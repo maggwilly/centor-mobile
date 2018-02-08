@@ -35,7 +35,7 @@
           <ion-badge id="notifications-badge" color="danger" item-end notification [notificationId]="notificationId"></ion-badge>
         </button>
         <button menuClose="left" ion-item detail-none (click)="openSettingPage()">
-          <ion-icon name="person" item-left [@bounce]='state' (@bounce.done)="animationDone()"></ion-icon>
+          <ion-icon name="person" item-left ></ion-icon>
           <span *ngIf="user">Options</span>
           <span *ngIf="!user">Connexion</span>
         </button>

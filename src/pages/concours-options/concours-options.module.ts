@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule} from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { ConcoursOptionsPage } from './concours-options';
 import { DetailsComponent } from '../../components/details/details';
@@ -12,6 +12,7 @@ import { SharedDirectivesModule } from '../../app/shared.module';
   declarations: [
     ConcoursOptionsPage, 
     DetailsComponent,
+
    
   ],
   imports: [

@@ -52,7 +52,6 @@
     "cordova-plugin-x-socialsharing": "^5.2.0",
     "cordova.plugins.diagnostic": "^3.6.7",
     "cors": "^2.8.4",
-    "css-animator": "^2.3.0",
     "es6-promise-plugin": "^4.1.0",
     "express": "^4.16.2",
     "firebase": "^4.3.1",

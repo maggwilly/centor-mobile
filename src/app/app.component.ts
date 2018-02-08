@@ -1,4 +1,4 @@
-import { Component, NgZone, trigger, transition, style, state, animate, keyframes  } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Events, ModalController, Platform, Nav, MenuController, LoadingController, AlertController, ActionSheetController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -34,24 +34,7 @@ export interface PageInterface {
   index?: number;
 }
 @Component({
-  templateUrl: 'app.html',
-    animations: [
-    trigger('bounce', [
-      state('*', style({
-        transform: 'translateX(0)'
-      })),
-      transition('* => rightSwipe', animate('700ms ease-out', keyframes([
-        style({ transform: 'translateX(0)', offset: 0 }),
-        style({ transform: 'translateX(-65px)', offset: .3 }),
-        style({ transform: 'translateX(0)', offset: 1 })
-      ]))),
-      transition('* => leftSwipe', animate('700ms ease-out', keyframes([
-        style({ transform: 'translateX(0)', offset: 0 }),
-        style({ transform: 'translateX(65px)', offset: .3 }),
-        style({ transform: 'translateX(0)', offset: 1 })
-      ])))
-    ])
-  ]
+  templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
