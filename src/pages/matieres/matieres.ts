@@ -12,17 +12,16 @@ import { IonicPage } from 'ionic-angular';
   templateUrl: 'matieres.html'
 })
 export class MatieresPage {
- 
    concours:any;
    _analyses:any[];
-  abonnementLoaded: boolean = false;
+   abonnementLoaded: boolean = false;
    authInfo;
    analyse:any;
    abonnement:any;
    isShow:boolean=true;
-  loaded: boolean=false;
+   loaded: boolean=false;
    matiereLoaded
-zone:NgZone;
+   zone:NgZone;
   constructor(
      public navCtrl: NavController,
      public navParams: NavParams,
@@ -90,15 +89,9 @@ observeAuth(show:boolean=false){
    return now>endDate;
    }
    
-
-
-
 showOptions(){
     this.navCtrl.push('ConcoursOptionsPage',{concours:this.concours,abonnement:this.abonnement,});
 }
-
-
-
 
   getShowConcours(){
   return   this.dataService.getShowSession(this.concours.id).then(data=>{
@@ -160,24 +153,14 @@ listenToEvents(){
     })
   }
 
-/*getAnalyse(loading?:any){
-  this.loaded=false;
- return   this.dataService.getAnalyse(this.authInfo.uid,this.concours.id,0,0).then((analyse)=>{
-        this.analyse=analyse;
-        this.concours.analyse=analyse;
-        this.loaded=true;  
-  },error=>{
-    this.loaded=false;
-        this.notify.onError({message:'Problème de connexion.'});
-  })     
-}*/
+
 
 loadMatieres(){
      return this.storage.get('_matieres_'+this.concours.id).then((data)=>{
           this.concours.matieres=data?data:[]; 
-     if(!this.concours.matieres||!this.concours.matieres.length)
-       return this.loadOnline(); 
-       this.matiereLoaded=true;     
+    if(!this.concours.matieres||!this.concours.matieres.length)
+           return this.loadOnline(); 
+       this.matiereLoaded = true;     
     },error=>{
       return this.loadOnline();
     });

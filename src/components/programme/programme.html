@@ -1,9 +1,10 @@
 <div text-wrap *ngIf="(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
 <div class="switch" *ngIf="!authInfo||isExpired(abonnement)" >
-  <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" >
-    <ion-icon name="list"></ion-icon> Commencer la préparation
+  <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" [@flash]="flashState"  (click)="inscrire()">
+    <ion-icon name="list"></ion-icon>
+    <span *ngIf="!abonnement">Commencer la préparation</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
   </button>
-  <button ion-button color="blue"   icon-left *ngIf="!authInfo">
+  <button ion-button color="blue"   icon-left *ngIf="!authInfo" [@flash]="flashState" (click)="signup()">
     <ion-icon name="person"></ion-icon> Créer un compte
   </button>
 </div>

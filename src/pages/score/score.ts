@@ -71,27 +71,22 @@ export class ScorePage {
 
 
   initPage() {
-
     this.partieToUpdate = this.navParams.get('partie');
     this.partie = Object.assign({}, this.partieToUpdate);
-    return this.storage.get('_questions_' + this.partie.id).then((data) => {
-      this.partie.questions = data ? data : [];
+    return this.storage.get('_partie_' + this.partie.id).then((data) => {
+      this.partie = data ? data : this.partie;
       this.isTheBegining = this.partie.lastIndex ? false : true;
-      if (!this.partie.questions || (this.partie.questions && !this.partie.questions.length)) {
-
+     if (!this.partie.questions || (this.partie.questions && !this.partie.questions.length)) {
         return this.dataService.getQuestions(this.partie.qcm).then((data) => {
           this.partie.questions = data;
-          this.storage.set('_questions_' + this.partie.id, this.partie.questions);
-          // this.evalMath();      
-          //this.observeAuth();   
+          this.storage.set('_partie_' + this.partie.id, this.partie);  
           this.evalMathlowly().then(() => {
             this.observeAuth();
           }, error => { });
         }, error => {
           this.notify.onError({ message: 'Petit problème de connexion.' });
         })
-      } else {
-        // this.evalMath(); 
+    } else {
         this.evalMathlowly().then(() => {
           this.observeAuth();
         }, error => { });
@@ -99,16 +94,9 @@ export class ScorePage {
     });
   }
 
-  evalMath() {
-    /* Promise.all([eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])')]).then(()=>{
-       this.isMathProcessed = true;
-     }, (error) =>{
-             this.notify.onError({ message: 'problème lors du chargement des formules mathématiques.' });
-     });*/
 
-  }
   evalMathlowly(): Promise<any> {
-   
+    eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
     return new Promise(resolve => {
       eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
       resolve(true);
@@ -184,8 +172,8 @@ export class ScorePage {
       if (this.currentQuestion && this.isAmswering)
         this.counter();
     }
-
-    this.storage.set('_questions_' + this.partie.id, this.partie.questions).catch(error => { });
+    this.storage.set('_partie_' + this.partie.id, this.partie).catch(error => { });
+    //this.storage.set('_questions_' + this.partie.id, this.partie.questions).catch(error => { });
   }
 
 
@@ -226,11 +214,9 @@ export class ScorePage {
   }
 
 
-
-
   /*Quelles toute les réponses */
   reset() {
-    this.start = this.partie.lastIndex && this.partie.lastIndex < this.partie.questions.length - 1 ? this.partie.lastIndex : 0;
+    this.start = (this.partie.lastIndex &&( this.partie.lastIndex < this.partie.questions.length - 1 ))? this.partie.lastIndex : 0;
     setTimeout(() => {
       this.getSlides().slideTo(this.start);
       this.isTheEnd = false;
@@ -280,10 +266,10 @@ export class ScorePage {
   }
 
   isOlympia(partie: any) {
-    if (!partie || partie.type!='OL')
+    if (!partie || !(partie.type == 'OL' || partie.type == 'CB'))
       return false;
-    let now = Date.now();
-    let endDate = new Date(partie.endDate).getTime();
+      let now = Date.now();
+        let endDate = new Date(partie.endDate).getTime();
     return now < endDate;
   }
 
@@ -336,24 +322,21 @@ export class ScorePage {
       if (user) {
         this.authInfo = user;
         this.partieToUpdate.analyse = Utils.setScore(this.partie);
-        console.log(JSON.stringify(this.partieToUpdate.analyse));
         if (this.partieToUpdate.analyse)
           this.zone.run(() => {
             this.loaded = false;
             this.dataService.saveAnalyse(this.authInfo.uid, this.partie.matiere.concours.id, this.partie.matiere.id, this.partie.id, this.partieToUpdate.analyse)
               .then(data => {
-                console.log(JSON.stringify(data));
                 this.analyse = data.partie;
-                console.log(JSON.stringify(this.analyse));
+              
                 this.partieToUpdate.analyse = data.partie;
-                console.log(JSON.stringify(this.partieToUpdate.analyse));
                 this.isShow = true;
                 this.events.publish('score:partie:updated', data.parents);
-                this.storage.set('_questions_' + this.partie.id, this.partie.questions).catch(error => { });
+                this.storage.set('_partie_' + this.partie.id, this.partie).catch(error => { });
                 this.loaded=true;
               }, error => {
                this.loaded = true;
-                this.storage.set('_questions_' + this.partie.id, this.partie.questions);
+                this.storage.set('_partie_' + this.partie.id, this.partie);
                 let alert = this.alertCtrl.create({
                   message: "Les données n'ont pas put être enrégistrée.Votre connexion à internet est peut-être perturbée.",
                   buttons: [
@@ -392,19 +375,9 @@ export class ScorePage {
       this.loaded = true;
     }, error => {
       this.notify.onError({ message: 'Petit problème de connexion.' });
+      
     })
   }
-  /*getAnalyse(show: boolean = true) {
-    this.loaded = false;
-    return this.dataService.getAnalyse(this.authInfo.uid, this.partie.matiere.concours.id, this.partie.matiere.id, this.partie.id).then((analyse) => {
-      this.analyse = analyse;
-      this.partie.analyse = analyse;
-      this.isMathProcessed = true;
-      this.loaded = true;
-    }, error => {
-      this.notify.onError({ message: 'Petit problème de connexion.' });
-    })
-  }*/
 
   /*Affiche le paneau */
   show(action: string) {

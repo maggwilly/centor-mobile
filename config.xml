@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.centor.mobile.app" installLocation="preferExternal" version="2.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.centor.mobile.app" installLocation="preferExternal" version="2.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Centor</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <description>Prepa concours.</description>
+    <author email="hi@ionicframework" href="http://ionicframework.com/">Prépa concours</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -14,16 +14,18 @@
     <preference name="ScrollEnabled" value="false" />
     <preference name="android-minSdkVersion" value="16" />
     <preference name="BackupWebStorage" value="none" />
-    <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="6000" />
     <preference name="loadUrlTimeoutValue" value="900000" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
-    <preference name="SplashScreen" value="assets/images/splash.png" />
-    <preference name="SplashScreenBackgroundColor" value="#065C79" />
-    <preference name="SplashScreenWidth" value="400" />
-    <preference name="SplashScreenHeight" value="400" />
     <preference name="SplashScreenDelay" value="29000" />
     <preference name="AndroidLaunchMode" value="singleTask" />
+    <platform name="browser">
+        <preference name="SplashMaintainAspectRatio" value="true" />
+        <preference name="SplashScreen" value="assets/images/splash.png" />
+        <preference name="SplashScreenBackgroundColor" value="#065C79" />
+        <preference name="SplashScreenWidth" value="400" />
+        <preference name="SplashScreenHeight" value="400" />
+    </platform>
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />

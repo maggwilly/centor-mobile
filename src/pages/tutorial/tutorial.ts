@@ -18,7 +18,8 @@ export class TutorialPage {
 
   constructor(public navCtrl: NavController, public menu: MenuController, public viewCtrl: ViewController,) {
   }
-  startApp() {
+
+  dismiss() {
     this.viewCtrl.dismiss();
   }
 

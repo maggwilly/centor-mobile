@@ -16,6 +16,6 @@ export class LimitToPipe implements PipeTransform {
   transform(value: string, ...args) {
     let trail = ' ...';
     let limit = args ? parseInt(args[0], 10) : 10;
-    return value.length > limit ? value.substring(0, limit) + trail : value;
+    return value &&(value.length > limit) ? value.substring(0, limit) + trail : value;
   }
 }

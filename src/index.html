@@ -29,9 +29,12 @@
 <style>
   #cookie-message {
     width: 100%;
-    height: 36px;
-    color: white; //padding:4px;
+   min-height: 56px;
+    color: white;
     display: none;
+    position: absolute;
+    top: 0px;
+    z-index: 1;
     background-color: red;
   }
 </style>
@@ -73,13 +76,13 @@
 
 </script>
 <script src="assets/js/detect.min.js"></script>
-<!--<script type="text/javascript">
-alert("text/javascript");
- // var user = detect.parse(navigator.userAgent);
-  //document.write(user.browser.version); 
-  //if ((user.browser.family === 'Firefox' && user.browser.version < 59) || (user.browser.family === 'Chrome' && user.browser.version < 70)) {
+<script type="text/javascript">
+
+var user = detect.parse(navigator.userAgent);
+ document.write(user.browser.version); 
+ if ((user.browser.family === 'Firefox' && user.browser.version < 46) || (user.browser.family === 'Chrome' && user.browser.version < 49)) {
     document.getElementById("cookie-message").style.display = "block";
- // }
-</script>-->
+  }
+</script>
 </body>
 </html>

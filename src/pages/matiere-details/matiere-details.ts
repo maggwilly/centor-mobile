@@ -33,29 +33,28 @@ export class MatiereDetailsPage {
     public events: Events,
     public notify: AppNotify,
     public viewCtrl: ViewController) {
-    this.listenToEvents();
-    this.initPage();
+    
     this.isShow = false;
     this.zone = new NgZone({});
+    this.authInfo = firebase.auth().currentUser;
   }
 
 
   ionViewDidEnter() {
-   // this.initPage();
-   // this.observeAuth(false);
+    this.listenToEvents();
+    this.initPage();
   }
   /** Compare le score et le temps de reponse */
   initPage() {
     this.matiereToUpdate = this.navParams.get('matiere');
     this.matiere = Object.assign({}, this.matiereToUpdate);
     this.concours = this.matiere.concours;
-    this.setParties().then(() => {
-      this.observeAuth(false);
-
-    });
-
+    this.observeAuth(false);
+    this.setParties();
 
   }
+
+
   dismiss(data?: any) {
     this.viewCtrl.dismiss(data);
   }
@@ -74,6 +73,7 @@ export class MatiereDetailsPage {
   }
 
   observeAuth(loading: boolean = false) {
+    
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.authInfo = user
@@ -91,27 +91,21 @@ export class MatiereDetailsPage {
     return this.storage.get('_parties_' + this.matiere.id)
       .then((data) => {
         this.matiere.parties = data ? data : [];
-        if (!this.matiere.parties || !this.matiere.parties.length) {
+        //if (!this.matiere.parties || !this.matiere.parties.length) 
           return this.loadOnline();
-        }
+       
       }).catch(error => {
         return this.loadOnline();
       });;
   }
 
   loadOnline() {
-    /*  let loading=this.loadingCtrl.create();
-    loading.present();*/
     this.loaded = false;
     return this.dataService.getParties(this.matiere.contenu)
       .then((data) => {
         this.matiere.parties = data;
         this.loaded = true;
-        this.storage.set('_parties_' + this.matiere.id, this.matiere.parties).then(() => {
-          // loading.dismiss();
-        }).catch(error => {
-          //  loading.dismiss();
-        });
+           this.storage.set('_parties_' + this.matiere.id, this.matiere.parties);
       }, error => {
         this.loaded = false;
         this.notify.onError({ message: 'Petit problème de connexion.' });
@@ -129,22 +123,15 @@ export class MatiereDetailsPage {
     });
   }
 
- /* getAnalyse(show: boolean = true) {
-    this.loaded = false;
-    return this.dataService.getAnalyse(this.authInfo.uid, this.matiere.concours.id, this.matiere.id, 0).then((analyse) => {
-      this.analyse = analyse;
-      this.loaded = true;
-      this.matiere.analyse = analyse;
 
-    }, error => {
-      this.notify.onError({ message: 'Petit problème de connexion.' });
-    });
-  }*/
 
   /** Compare le score et le temps de reponse */
   show(partie: any) {
     partie.matiere.concours = { id: this.matiere.concours.id, nom: this.matiere.concours.nom };
     partie.matiere.titre = this.matiere.titre;
+    partie.matiere.id = this.matiere.id;
+   // console.log(this.concours);
+    console.log(partie.matiere.id);
     this.navCtrl.push('ScorePage', { partie: partie });
   }
 

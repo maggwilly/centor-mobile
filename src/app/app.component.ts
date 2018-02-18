@@ -10,6 +10,8 @@ import firebase from 'firebase';
 import { AppNotify } from '../providers/app-notify';
 import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
+const appVersion:'2.1.0';
+
 const options: PushOptions = {
   android: {
     sound: true,
@@ -238,15 +240,15 @@ checkInfo(info:any){
    // this.notificationId = registrationId;
     this.storage.set('registrationId', registrationId).then(()=>{
       console.log(registrationId);
-      this.dataService.addRegistration(registrationId, { registrationId: registrationId }).then((data) => {
+      this.dataService.addRegistration(registrationId, { registrationId: registrationId ,appVersion: appVersion }).then((data) => {
       }, error => {
-        // this.notify.onError({message:'Petit problème de connexion.'}); 
+        this.notify.onError({message:'problème de connexion.'}); 
       })  
     },error=>{
       console.log(registrationId);
       this.dataService.addRegistration(registrationId, { registrationId: registrationId }).then((data) => {
       }, error => {
-        // this.notify.onError({message:'Petit problème de connexion.'}); 
+        / this.notify.onError({message:'problème de connexion.'}); 
       })  
     });
 

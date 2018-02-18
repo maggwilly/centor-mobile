@@ -24,7 +24,7 @@ import { ResultatListComponent } from '../components/resultat-list/resultat-list
 // Modules
 
 import { IonicStorageModule } from '@ionic/storage';
-import { BrowserModule} from '@angular/platform-browser';
+//import { BrowserModule} from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import {  CloudModule } from '@ionic/cloud-angular';
 import { AngularFireModule } from 'angularfire2';
@@ -66,7 +66,7 @@ const firebaseConfig = {
 
 
 export const MODULES = [
-  BrowserModule,
+ // BrowserModule,
   HttpModule,
   AngularFireAuthModule,
   AngularFireDatabaseModule,

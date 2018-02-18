@@ -31,12 +31,12 @@
       <ion-col>
         <div class="span-value none ">
           <span>
-          <span class="border-bottom">
+          <span >
          {{analyse.rang}}
           <sup *ngIf="analyse.rang>1">ième</sup>
           <sup *ngIf="analyse.rang==1">ier</sup>
-          </span>
-         {{analyse.evalues}} 
+          </span><br> <small>sur</small>
+         {{analyse.evalues}}
         </span>
         </div>
         <br>

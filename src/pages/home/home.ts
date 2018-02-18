@@ -25,9 +25,7 @@ export class HomePage {
 
     this.observeAuth();
   }
-  toggleFlip() {
-    this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
-  }
+
   openPage(page){
       this.navCtrl.push(page)
   }

@@ -6,12 +6,12 @@ import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { AppNotify } from '../providers/app-notify';
+import firebase from 'firebase';
 @Injectable()
 export class DataService {
 data: any;
- private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new Headers({ 'Content-Type': 'application/json', 'Connected-User': this.getUserUID()});
   _baseUrl = 'https://concours.centor.org/v1/'
-
   constructor(public http: Http, public storage: Storage, public events: Events, public notify: AppNotify,) {
     this.storage.get('_baseUrl').then(data => {
       this._baseUrl = data ? data : this._baseUrl;
@@ -28,14 +28,15 @@ data: any;
  
 }
 
+  getUserUID() {
+    return firebase.auth().currentUser ? firebase.auth().currentUser.uid:'';
+  }
  /*Recherche la date de derniere mise a jour*/
  getImageTest(){
   return  this.http.get('assets/data/image',  { headers:this. headers })
            .toPromise()
             .then(response =>response.text());    
 }
-
-
 
  /*Recherche la date de derniere mise a jour*/
  getSessions(start:number,all?:boolean,order?:string){
@@ -95,7 +96,9 @@ data: any;
 
  /*Recherche la date de derniere mise a jour*/
  addRegistration(registrationId:string,registration:any){
-  //alert(localStorage.getItem('_baseUrl')+'formated/sending/'+id+'/edit/json');
+   console.log(this._baseUrl + 'formated/registration/' + registrationId + '/new/json');
+   console.log(JSON.stringify(registration));
+
    return this.http.post(this._baseUrl +'formated/registration/'+registrationId+'/new/json',JSON.stringify(registration ),  { headers:this. headers })
            .toPromise()
             .then(response =>response.json());    
@@ -267,12 +270,14 @@ saveAnalyse(uid:any,concours:number,matiere:number,partie:number,analyse:any){
 
 
 getAnalyse(uid:any,concours:number,matiere:number,partie:number){
+ 
      return  this.http.get(this._baseUrl+'formated/analyse/'+uid+'/'+concours+'/'+matiere+'/'+partie+'/json', { headers:this. headers })
               .toPromise()
                .then(response =>response.json());      
 }
 
 getAnalyseObservable(uid: any, concours: number, matiere: number, partie: number) {
+ // console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json');
     return this.http.get(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json', { headers: this.headers })
     .map(response => response.json());
   }

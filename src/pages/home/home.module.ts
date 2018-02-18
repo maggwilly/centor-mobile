@@ -11,7 +11,8 @@ import { CarouselComponent } from '../../components/carousel/carousel';
   imports: [
     IonicPageModule.forChild(HomePage),
     SharedComponentsModule,
-    SharedDirectivesModule
+    SharedDirectivesModule,
+    
   ],
 })
 export class HomePageModule {}

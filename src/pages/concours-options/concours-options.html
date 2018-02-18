@@ -8,7 +8,7 @@
   <ion-navbar>
      <ion-title  *ngIf="concours&&concours.concours"> {{concours.nomConcours}}</ion-title>
     <ion-buttons right>
-      <button ion-button icon-only (click)="loadOnline()">
+      <button ion-button icon-only (click)="loadOnline()" >
         <ion-icon name="md-refresh"></ion-icon>
       </button>
     </ion-buttons>
