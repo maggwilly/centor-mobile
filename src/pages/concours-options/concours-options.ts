@@ -192,7 +192,7 @@ openConcours() {
  isExpired(abonnement:any){
    if(abonnement==null)
      return true;
-  let now=Date.now();
+   let now = firebase.database.ServerValue.TIMESTAMP;
   let endDate=new Date(abonnement.endDate).getTime();
    return now>endDate;
    }
@@ -208,7 +208,9 @@ openConcours() {
      });
   }
 
-
+  openChat() {
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
+  }
 
   getShowConcours(id:number){
     return this.dataService.getShowSession(id).then(data=>{

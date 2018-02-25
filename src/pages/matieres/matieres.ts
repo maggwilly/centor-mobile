@@ -5,7 +5,7 @@ import { Storage } from '@ionic/storage';
 import firebase from 'firebase';
 import { AppNotify } from '../../providers/app-notify';
 import { IonicPage } from 'ionic-angular';
-
+import { GroupsProvider } from '../../providers/groups/groups';
 @IonicPage()
 @Component({
   selector: 'page-matieres',
@@ -22,6 +22,7 @@ export class MatieresPage {
    loaded: boolean=false;
    matiereLoaded
    zone:NgZone;
+
   constructor(
      public navCtrl: NavController,
      public navParams: NavParams,
@@ -30,6 +31,7 @@ export class MatieresPage {
      public modalCtrl: ModalController,
      public events: Events,
      public appCtrl: App, 
+   public groupservice: GroupsProvider,
      public loadingCtrl: LoadingController,
      public notify:AppNotify,
      public storage: Storage)
@@ -84,13 +86,14 @@ observeAuth(show:boolean=false){
  isExpired(abonnement:any){
    if(abonnement==null)
      return true;
-  let now=Date.now();
+   let now = firebase.database.ServerValue.TIMESTAMP;
   let endDate=new Date(abonnement.endDate).getTime();
    return now>endDate;
    }
    
 showOptions(){
-    this.navCtrl.push('ConcoursOptionsPage',{concours:this.concours,abonnement:this.abonnement,});
+
+   this.navCtrl.push('ConcoursOptionsPage',{concours:this.concours ,abonnement:this.abonnement,});
 }
 
   getShowConcours(){
@@ -112,6 +115,10 @@ showOptions(){
       }, error => {
         this.notify.onError({ message: 'Petit problème de connexion.' });
       });
+  }
+
+  openChat() {
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
   }
 
 
@@ -178,4 +185,6 @@ loadOnline(){
       }) 
 }
 
+
+ 
 }

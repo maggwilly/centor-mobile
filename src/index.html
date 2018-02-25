@@ -17,7 +17,7 @@
   <meta name="theme-color" content="#4e8ef7">
   <!-- cordova.js required for cordova apps -->
   <script src="cordova.js"></script>
-<script src="assets/js/web-animations.min.js"></script>
+<!--<script src="assets/js/web-animations.min.js"></script>-->
 <!--  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
@@ -79,7 +79,6 @@
 <script type="text/javascript">
 
 var user = detect.parse(navigator.userAgent);
- document.write(user.browser.version); 
  if ((user.browser.family === 'Firefox' && user.browser.version < 46) || (user.browser.family === 'Chrome' && user.browser.version < 49)) {
     document.getElementById("cookie-message").style.display = "block";
   }

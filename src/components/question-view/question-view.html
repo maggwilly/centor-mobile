@@ -1,0 +1,33 @@
+<div class="question">
+  <div text-center>
+    <p [MathJax]="question.text"><strong> {{question.text}}</strong></p>
+    <img *ngIf="question.image" [src]="question.image" style="width:200px;height:100px;">
+  </div>
+  <ion-list>
+    <ion-item  text-wrap
+      *ngIf="question.propA">
+      <span item-left >A. </span>
+      <ion-label [MathJax]="question.propA">{{question.propA}}</ion-label>
+    </ion-item>
+    <ion-item  text-wrap
+      *ngIf="question.propB">
+      <span item-left >B. </span>
+      <ion-label [MathJax]="question.propB">{{question.propB}}</ion-label>
+    </ion-item>
+    <ion-item  text-wrap
+      *ngIf="question.propC">
+      <span item-left >C. </span>
+      <ion-label [MathJax]="question.propC">{{question.propC}}</ion-label>
+    </ion-item>
+    <ion-item  text-wrap
+      *ngIf="question.propD">
+      <span item-left >D. </span>
+      <ion-label [MathJax]="question.propD">{{question.propD}}</ion-label>
+    </ion-item>
+    <ion-item  text-wrap
+      *ngIf="question.propE">
+      <span item-left >E. </span>
+      <ion-label [MathJax]="question.propE">{{question.propE}}</ion-label>
+    </ion-item>
+  </ion-list>
+</div>

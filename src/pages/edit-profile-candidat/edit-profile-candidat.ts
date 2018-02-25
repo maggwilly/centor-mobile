@@ -7,7 +7,7 @@ import firebase from 'firebase';
 import { Storage } from '@ionic/storage';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { IonicPage } from 'ionic-angular';
-
+import { UserProvider } from '../../providers/user/user';
 @IonicPage()
 @Component({
   selector: 'page-edit-profile-candidat',
@@ -34,6 +34,7 @@ export class EditProfileCandidatPage {
   public navParams: NavParams,
   public dataService:DataService,
   public alertCtrl: AlertController,
+   public userProvider: UserProvider,
   private camera: Camera,
   public notify:AppNotify
 ) {}
@@ -51,22 +52,25 @@ export class EditProfileCandidatPage {
 
 
   editInfo(close:boolean=true){
-    console.log('Cancel clicked');
     this.submited=true;
     this.candidat.photoURL = this.photoURL ? this.photoURL : this.candidat.photoURL ;
     this.dataService.editInfo(this.authInfo.uid, this.candidat).then((info)=>{
     this.candidat=info;
-      this.submited = false;
-    if(close){
-    this.storage.set('_info',info);
-    this.notify.onSuccess({ message: 'Votre profil a été mis à jour !' })
-      this.viewCtrl.dismiss(info);
-    }
+    this.submited = false;
+      this.userProvider.updatedisplayname(this.candidat.displayName).then(()=>{
+        if (close) {
+          this.notify.onSuccess({ message: 'Votre profil a été mis à jour !' })
+          this.viewCtrl.dismiss(info);
+        }
+
+      })
+
    },error=>{
-    this.submited=false;
+      this.submited=false;
      this.notify.onError({ message:'Petit problème de connexion !'});      
    })
   }
+
 
   getPicture(sourceType:number){
     const options: CameraOptions = {
@@ -80,21 +84,23 @@ export class EditProfileCandidatPage {
      mediaType: this.camera.MediaType.PICTURE,
      sourceType:sourceType
    } 
-    this.fileName = this.authInfo.uid;
+
+    
     this.camera.getPicture(options).then((imageData) => {
       this.candidat.base64Image = 'data:image/png;base64, ' + imageData;
        this.uploapping = true;
-      firebase.storage().ref('profilePictures/' + this.fileName+ '.jpeg')
+      firebase.storage().ref('profilePictures/' + firebase.auth().currentUser.uid)
       .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
         this.candidat.base64Image = picture.downloadURL;
         this.photoURL = picture.downloadURL;
         this.uploapping = false;
-        if (!this.candidat.photoURL)
-        this.editInfo(false);
-      }, error => {
+        /*if (!this.candidat.photoURL)
+          this.editInfo(false);*/
+        return   this.userProvider.updateimage(picture.downloadURL);
+        }, error => {
         this.notify.onError({ message: 'Un problème est survenu !' });  
-      });
-    }, error => {
+       });
+     }, error => {
       this.notify.onError({ message: 'Un problème est survenu !' }); 
     });
 
@@ -104,10 +110,8 @@ export class EditProfileCandidatPage {
     this.base64Image = 'data:image/jpeg;base64,' + imageData;
     this.candidat.base64Image='data:image/jpeg;base64,' + imageData;
      this.imageData=imageData;
-
      const selfieRef = firebase.storage().ref('profilePictures/' + this.authInfo.uid+'.jpeg');
      selfieRef.putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture=>{
-
        this.candidat.photoURl = picture.downloadURL;
      });
    },error=>{
@@ -116,8 +120,9 @@ export class EditProfileCandidatPage {
    }
 
    cancelPicture(){
-     firebase.storage().ref('profilePictures/' + this.fileName + '.jpeg').delete().then(()=>{
+     firebase.storage().ref('profilePictures/' + firebase.auth().currentUser.uid).delete().then(()=>{
        this.photoURL = undefined;
+       //this.userProvider.updateimage(this.photoURL); defqult avatar
      }, error => {
       this.notify.onError({ message: 'Un problème est survenu !' }); 
      });
@@ -132,7 +137,6 @@ export class EditProfileCandidatPage {
           icon:'camera',
           handler: () => {
            this.getPicture(1);
-          
           }
         },
         {

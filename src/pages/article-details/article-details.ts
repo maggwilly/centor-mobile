@@ -31,11 +31,11 @@ export class ArticleDetailsPage {
     article.readed=true;
     return this.dataService.readMessage(id).then(data=>{
              this.article.readed=true;  
-        // eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
+         eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
       this.events.publish('message:read');            
         },error=>{
       this.notify.onError({message:'Petit problème de connexion.'});
-       //eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
+       eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
       });
  
   }

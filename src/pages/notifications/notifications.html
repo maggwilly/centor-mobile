@@ -18,7 +18,7 @@
         {{ article.notification.sousTitre}}
       </p>
       <small>
-        {{article.sendDate| date: 'dd/MM/yyyy'}}
+        {{article.sendDate| relativeTime:1}}
       </small>
       <ion-icon  [name]="getIcon(article)" item-left color="primary"></ion-icon>
      <!-- <ion-icon *ngIf="article.readed" name="ios-outline" item-left color="primary"></ion-icon>-->
@@ -26,7 +26,7 @@
   </ion-list>
   <ion-grid *ngIf="!_articles">
     <ion-row justify-content-center align-items-center>
-      <ion-spinner name="circles"></ion-spinner>
+      <ion-spinner name="dots"></ion-spinner>
     </ion-row>
   </ion-grid>
   <ion-grid *ngIf="_articles&&!_articles.length">

@@ -1,14 +1,20 @@
 <ion-header no-border no-shadow  #head>
   <ion-navbar>
     <ion-title>{{partie.titre}}</ion-title>
-    <ion-buttons right >
-      <button ion-button icon-only (click)="showInfo()">
-        <ion-icon name="information-circle"></ion-icon>
-      </button>
-    </ion-buttons>
-    <ion-buttons end >
+    <ion-buttons right [hidden]="!isTheEnd">
       <button ion-button icon-only (click)="observeAuth(true)">
         <ion-icon name="md-refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons right [hidden]="isTheEnd">
+      <button ion-button icon-only (click)="togglePopupMenu()">
+        <ion-icon name="ios-apps"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="openChat()">
+        <ion-icon name="ios-chatboxes"></ion-icon>
+        <ion-badge class="notifications-badge" notification [groupname]="concours.id" *ngIf="concours" color="danger"></ion-badge>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -30,17 +36,10 @@
             </ion-fab>
           </div>
         </ion-col>
-        <ion-col col-3 [hidden]="!isAmswering">
+        <ion-col col-3>
           <div >
             <ion-fab center top>
-              <button color="facebook" mini ion-fab (click)="share()"><ion-icon name="ios-more"></ion-icon></button>
-            </ion-fab>
-          </div>
-        </ion-col>
-        <ion-col col-3 [hidden]="isAmswering">
-          <div >
-            <ion-fab center top>
-              <button color="secondary" mini ion-fab (click)="explication()"> <ion-icon name="md-more"></ion-icon></button>
+              <button color="facebook" mini ion-fab (click)="share()"><ion-icon name="ios-bug"></ion-icon></button>
             </ion-fab>
           </div>
         </ion-col>
@@ -54,17 +53,17 @@
       </ion-row>
     </ion-grid>   
 </ion-header>
-<ion-content class="bg-white">
+<ion-content class="bg-white" #content>
   <div [hidden]="!isTheEnd" class="card-background" >
       <ion-card-header>Tableau de bord</ion-card-header>
           <ion-grid style="height: 100%;justify-content: center;" *ngIf="!loaded">
             <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
-              <ion-spinner name="circles" class="vertical-center"></ion-spinner>
+              <ion-spinner name="dots" class="vertical-center"></ion-spinner>
             </ion-row>
           </ion-grid>
       <dashboord-item [authInfo]="authInfo" [analyse]="analyse" [partie]="partie" [isShow]="isShow" *ngIf="analyse&&loaded"></dashboord-item>
     <ion-card-content  *ngIf="!analyse && loaded" >
-   <p class="vertical-center" text-center>
+   <p class="vertical-center">
          Nous n'avons aucune information à vous présenter pour le moment car vous n'avez pas encore subi une évaluation.
      </p>
     </ion-card-content>
@@ -75,7 +74,7 @@
              <span *ngIf="!canHasScore()&&!analyse&&!partie.lastIndex">Commencer le test</span>
        </button>
        <ion-row justify-content-center align-items-center *ngIf="!(partie&&partie.questions&&partie.questions.length)">
-          <ion-spinner  name="circles"></ion-spinner>
+          <ion-spinner  name="dots"></ion-spinner>
        </ion-row>       
        <br>       
       <button (click)="lireCours()" ion-button block color="light" icon-left>
@@ -85,10 +84,6 @@
       <br>
       <button (click)="startVisit()" ion-button block color="secondary" *ngIf="analyse||canHasScore()" [disabled]="isOlympia(partie)">
         Voir le corrigé
-      </button>
-      <br>
-      <button (click)="dismiss()" ion-button block color="danger" outline>
-        Quitter
       </button>
     </div>
 
@@ -174,10 +169,43 @@
     </ion-slide>
     <ion-slide></ion-slide>
   </ion-slides>
-  <ion-fab right bottom [hidden]="isTheEnd">
+  <ion-fab right bottom [hidden]="isTheEnd||openMenu">
     <button mini ion-fab color="light" (click)="next()"><ion-icon name="md-arrow-dropright"></ion-icon></button>
   </ion-fab>
-  <ion-fab left bottom [hidden]="isTheEnd">
+  <ion-fab left bottom [hidden]="isTheEnd||openMenu">
     <button mini ion-fab color="light" [disabled]="isBeginning()" (click)="preview()"><ion-icon name="md-arrow-dropleft"></ion-icon></button>
   </ion-fab>
+
+  <div class="popup-menu" [hidden]="!isTheEnd&&!openMenu">
+    <div class="popup-menu-overlay" [ngClass]="{'in': openMenu}" (click)="togglePopupMenu()"></div>
+    <div class="popup-menu-toggle" (click)="togglePopupMenu()" [ngClass]="{'out': openMenu}"></div>
+    <div class="popup-menu-panel" [ngClass]="{'in': openMenu}">
+      <div class="popup-menu-item" (click)="goToMenu()">
+        <ion-icon name="menu"></ion-icon>
+        <span>Menu</span>
+      </div>
+      <div class="popup-menu-item" (click)="goToChat()">
+        <ion-icon name="ios-chatboxes"></ion-icon>
+        <ion-badge notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
+        <span>Discussion</span>
+      </div>
+      <div class="popup-menu-item" (click)="goToHome()">
+        <ion-icon name="home"></ion-icon>
+        <span>Accueil</span>
+      </div>
+      <div class="popup-menu-item" (click)="goToNotifications()">
+        <ion-icon name="ios-notifications"></ion-icon>
+        <ion-badge notification notification [notificationId]="notificationId"></ion-badge>
+        <span>Objets</span>
+      </div>
+      <div class="popup-menu-item" (click)="goToAccount()">
+        <ion-icon name="person"></ion-icon>
+        <span>Profil</span>
+      </div>
+      <div class="popup-menu-item" (click)="goToAbout()">
+        <ion-icon name="information-circle"></ion-icon>
+        <span>A propos</span>
+      </div>
+    </div>
+  </div>
 </ion-content>

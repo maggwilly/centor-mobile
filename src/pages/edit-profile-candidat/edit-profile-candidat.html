@@ -3,7 +3,7 @@
       <ion-title>Paramètres</ion-title> 
 
     <ion-buttons  right>
-          <ion-spinner name="circles" *ngIf="submited||uploapping"></ion-spinner>
+          <ion-spinner name="dots" *ngIf="submited||uploapping"></ion-spinner>
           <button ion-button icon-only (click)="editInfo()" *ngIf="!submited&&!uploapping">
             <ion-icon name="md-done-all"></ion-icon>
           </button>
@@ -32,7 +32,7 @@
         <button item-right  ion-button clear icon-only  *ngIf="!uploapping">
           <ion-icon name="ios-create"></ion-icon>
         </button>  
-          <ion-spinner item-right name="circles" *ngIf="uploapping"></ion-spinner>
+          <ion-spinner item-right name="dots" *ngIf="uploapping"></ion-spinner>
       <!--  
         <button item-right color="danger" clear ion-button icon-only (click)="cancelPicture()" *ngIf="photoURL">
           <ion-icon name="md-close"></ion-icon>
@@ -49,7 +49,7 @@
             <ion-input type="text" value="" [(ngModel)]="candidat.displayName" name="displayName" ></ion-input>
           </ion-item>
   <ion-item>
-    <ion-icon name='school' item-start></ion-icon>
+    <ion-icon name='person' item-start></ion-icon>
     <ion-label  floating> Date de naissance</ion-label>
     <ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="D MMM  YYYY" min="1960" max="2018" doneText="Terminé" cancelText="Annuler"
       name="dateMax" [(ngModel)]="candidat.dateMax" #expire_date="ngModel"></ion-datetime>

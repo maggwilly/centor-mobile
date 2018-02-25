@@ -12,13 +12,13 @@ export class MathJaxDirective {
     ngOnChanges() {
      // console.log('>> ngOnChanges');
    this.el.nativeElement.innerHTML = this.MathJaxInput;
-     //eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
+     eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
       // this.events.publish('questions:loaded')    
-    //eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub, this.el.nativeElement])');
+   // eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub, this.el.nativeElement])');
  }
 
     ngOnInit() {
-      this.el.nativeElement.innerHTML = this.MathJaxInput;
+     // this.el.nativeElement.innerHTML = this.MathJaxInput;
      // eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub, this.el.nativeElement])');
   // eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub, this.el.nativeElement])');; 
  }

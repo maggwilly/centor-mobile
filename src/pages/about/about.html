@@ -28,6 +28,24 @@
     <ion-icon name="call" item-left color="primary"></ion-icon>
   </ion-item>   
 </ion-list>
+<br>
+<ion-list>
+  <button ion-item (click)="setReference()" *ngIf="authInfo&&!ambassador">
+    Code de reférence
+    <ion-icon name="md-finger-print" item-left color="royal"></ion-icon>
+    <ion-spinner item-right name="dots"></ion-spinner>
+  </button>
+  <ion-item *ngIf="authInfo&&ambassador">
+    Code de reférence
+    <ion-icon name="md-finger-print" item-left color="royal"></ion-icon>
+    <ion-icon name="md-checkmark" item-right color="secondary" *ngIf="ambassador.uid"></ion-icon>
+    <ion-note item-right *ngIf="ambassador.id">{{ambassador.id}}</ion-note>
+  </ion-item>
+  <button ion-item (click)="signup()" *ngIf="!authInfo">
+    Créer un compte
+    <ion-icon name="person" item-left color="royal"></ion-icon>
+  </button>
+</ion-list>
 </ion-content>
 <ion-footer no-border>
   <ion-item text-center>

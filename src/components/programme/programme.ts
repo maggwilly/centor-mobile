@@ -211,7 +211,7 @@ show(matiere:any){
   this.notify.onError({message:'Patientez un instant pendant que les données chargent...'});
        return;
       }
-    matiere.concours={nom:this.concours.concours.nom,id:this.concours.id};
+    matiere.concours=this.concours;
    if(this.authInfo&&this.isExpired(this.abonnement)){
          this.inscrire();
       return ;

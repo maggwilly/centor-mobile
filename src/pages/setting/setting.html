@@ -31,32 +31,32 @@
           </button>
         <ion-list no-lines>
           <ion-item *ngIf="user.info.email">
-            <ion-icon name="mail" color="primary" item-start></ion-icon>
+            <ion-icon name="mail" color="light" item-start></ion-icon>
             <p>Email</p>
             {{user.info.email}}
           </ion-item>
           <ion-item *ngIf="user.info.phone">
-            <ion-icon item-start name="call" ></ion-icon>
+            <ion-icon item-start name="call" color="light"></ion-icon>
             <p>Mobile</p>
             {{user.info.phone}}
           </ion-item>
           <ion-item *ngIf="user.info.branche">
-            <ion-icon item-start name="school" ></ion-icon>
+            <ion-icon item-start name="school" color="light"></ion-icon>
             <p>Serie</p>
             {{user.info.branche}}
           </ion-item>
           <ion-item *ngIf="user.info.niveau">
-            <ion-icon item-start name="list"></ion-icon>
+            <ion-icon item-start name="school" color="light"></ion-icon>
             <p>Grade</p>
             {{user.info.niveau}}
           </ion-item>
-          <ion-item *ngIf="user.info.age">
-            <ion-icon item-start name="person"></ion-icon>
+          <ion-item *ngIf="user.info.dateMax">
+            <ion-icon item-start name="person" color="light"></ion-icon>
             <p>Date de naissance</p>
-            {{user.info.dateMax}}
+            {{user.info.dateMax| date: 'dd/MM/yyyy'}}
           </ion-item>
           <ion-item *ngIf="user.info.ville">
-            <ion-icon item-start name="pin" color="twitter"></ion-icon>
+            <ion-icon item-start name="pin" color="light"></ion-icon>
               <p>Ville</p>
              {{user.info.ville}}
           </ion-item>
@@ -69,7 +69,7 @@
         <ion-card-header text-left>Mes programmes</ion-card-header>
       <ion-list *ngIf="paidConcours&&paidConcours.length">
           <ion-item *ngFor="let paid of paidConcours"  (click)="showAbonnement(paid)">
-              <ion-icon name="folder-open" item-left></ion-icon>
+              <ion-icon name="folder-open" item-left color="light"></ion-icon>
               <span>{{paid.session.nomConcours}}</span>
               <ion-badge item-right color="danger" *ngIf="isExpired(paid)">!</ion-badge>
         </ion-item>
@@ -79,7 +79,7 @@
        </ion-item> 
         <ion-grid [hidden]="paidConcours" style=" height: 100%;justify-content: center;" ion-item>
           <ion-row justify-content-center align-items-center padding>
-            <ion-spinner name="circles"></ion-spinner>
+            <ion-spinner name="dots"></ion-spinner>
           </ion-row>
         </ion-grid>
       </div>

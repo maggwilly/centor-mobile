@@ -2,7 +2,7 @@
 <ion-list *ngIf="resultatList&&resultatList.length"  no-border class="transparent-list">
   <ion-item  *ngFor="let resultat of resultatList" [hidden]="resultat.hide" text-wrap >
  {{resultat.description}}
- <p *ngIf="resultat.date"><small> publié le {{resultat.date|date: 'dd MMMM yyyy'}}</small></p>
+ <p *ngIf="resultat.date"><small>Depuis le {{resultat.date| date: 'dd/MM/yyyy'}}</small></p>
   <button ion-button icon-only clear item-right (click)="share(resultat)" >
     <ion-icon name="share-alt"></ion-icon>
   </button>

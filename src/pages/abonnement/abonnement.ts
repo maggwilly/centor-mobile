@@ -3,7 +3,7 @@ import { NavController, NavParams ,ViewController,ModalController} from 'ionic-a
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import { IonicPage } from 'ionic-angular';
-
+import firebase from 'firebase';
 @IonicPage()
 @Component({
   selector: 'page-abonnement',
@@ -34,7 +34,7 @@ export class AbonnementPage {
  isExpired(abonnement:any){
    if(!abonnement)
      return true;
-  let now=Date.now();
+   let now = firebase.database.ServerValue.TIMESTAMP;
   let endDate=new Date(abonnement.endDate).getTime();
    return now>endDate;
    }

@@ -1,5 +1,5 @@
-import {  Component} from "@angular/core";
-import { Events, App, NavController, LoadingController, ModalController, ActionSheetController, AlertController,ViewController , NavParams  } from 'ionic-angular';
+import { Component } from "@angular/core";
+import { Events, App, NavController, LoadingController, ModalController, ActionSheetController, AlertController, ViewController, NavParams } from 'ionic-angular';
 import { AppNotify } from '../../providers/app-notify';
 import { Storage } from '@ionic/storage';
 import { DataService } from '../../providers/data-service';
@@ -11,92 +11,91 @@ import firebase from 'firebase';
   templateUrl: 'setting.html'
 })
 export class SettingPage {
-    authInfo: any={}; 
-     loading;
-     user:any={};
-     paidConcours:any;
-     prefRef:any;
-     constructor(
-      public storage: Storage , 
-      public appCtrl: App, 
-      public events: Events,
-      public loadingCtrl: LoadingController,
-      public modalCtrl: ModalController,
-       public actionSheetCtrl: ActionSheetController,
-      public nav: NavController,
-      public navParams: NavParams,
-      public dataService:DataService,
-      public alertCtrl: AlertController,
-      public viewCtrl: ViewController,
-      public notify:AppNotify)
-       {
-        this.authInfo=this.navParams.get('authInfo');
+ // authInfo: any = {};
+  loading;
+  user: any = {};
+  paidConcours: any;
+  prefRef: any;
+  constructor(
+    public storage: Storage,
+    public appCtrl: App,
+    public events: Events,
+    public loadingCtrl: LoadingController,
+    public modalCtrl: ModalController,
+    public actionSheetCtrl: ActionSheetController,
+    public nav: NavController,
+    public navParams: NavParams,
+    public dataService: DataService,
+    public alertCtrl: AlertController,
+    public viewCtrl: ViewController,
+    public notify: AppNotify) {
+   
   }
   ionViewDidLoad() {
-      this.initPage();
+    //this.authInfo = firebase.auth().currentUser;
+    this.initPage();
   }
 
   initPage() {
-      this.user.info={displayName:this.authInfo.displayName,email:this.authInfo.email,photoURL:this.authInfo.photoURL};
-      this.getUserProfile().then(()=>{
-        this.loadAbonnement(); 
-      }); 
-     
+    this.user.info = firebase.auth().currentUser;//{ displayName: this.authInfo.displayName, email: this.authInfo.email, photoURL: this.authInfo.photoURL };
+    this.getUserProfile().then(() => {
+      this.loadAbonnement();
+    });
+
   }
 
 
-loadAbonnement(){
+  loadAbonnement() {
+    return this.dataService.getAbonnements(firebase.auth().currentUser.uid).then(data => {
+      this.paidConcours = data ? data : [];
+    }, error => {
+      this.notify.onError({ message: 'Petit problème de connexion.' });
+    });
+  }
 
-return this.dataService.getAbonnements(this.authInfo.uid).then(data=>{
-           this.paidConcours=data?data:[];
-         },error=>{ 
-            this.notify.onError({message:'Petit problème de connexion.'});       
-         });
-}
 
-
-getUserProfile(){
-return this.dataService.getInfo(this.authInfo.uid).then((info)=>{
-   if(info){
-   this.user.info=info;
+  getUserProfile() {
+    return this.dataService.getInfo(firebase.auth().currentUser.uid).then((info) => {
+      if (info) {
+        this.user.info = info;
       }
-     },
-    error=>{
-  this.notify.onError({message:'Petit problème de connexion.'}); 
- })
- }
+    },
+      error => {
+        this.notify.onError({ message: 'Petit problème de connexion.' });
+      })
+  }
 
 
-showAbonnement(abonnement){
- let modal=  this.modalCtrl.create('AbonnementPage',{abonnement:abonnement});
-  modal.onDidDismiss((data)=>{
- });
- modal.present();
-}
+  showAbonnement(abonnement) {
+    let modal = this.modalCtrl.create('AbonnementPage', { abonnement: abonnement });
+    modal.onDidDismiss((data) => {
+    });
+    modal.present();
+  }
 
 
 
- isExpired(abonnement:any){
-   if(abonnement==null)
-     return true;
-    let now=Date.now();
-    let endDate=new Date(abonnement.endDate).getTime();
-   return now>endDate;
-   }
+  isExpired(abonnement: any) {
+    if (abonnement == null)
+      return true;
+    let now = firebase.database.ServerValue.TIMESTAMP;
+    let endDate = new Date(abonnement.endDate).getTime();
+    return now > endDate;
+  }
 
-editProfileCandidat(){
- let modal=  this.modalCtrl.create('EditProfileCandidatPage',{authInfo:this.authInfo,profil:this.user.info})  ;
-  modal.onDidDismiss((data)=>{
-    if(data){
-      this.user.info = data;
-      this.events.publish('profil:updated', data);
-    //  this.getUserProfile();  
-    }
-//
-     
- });
- modal.present();
-}
+  editProfileCandidat() {
+    let modal = this.modalCtrl.create('EditProfileCandidatPage', { authInfo: firebase.auth().currentUser, profil: this.user.info });
+    modal.onDidDismiss((data) => {
+      if (data) {
+        this.user.info = data;
+        this.events.publish('profil:updated', data);
+        //  this.getUserProfile();  
+      }
+      //
+
+    });
+    modal.present();
+  }
 
   logout() {
     firebase.auth().signOut().then(() => {
@@ -123,7 +122,7 @@ editProfileCandidat(){
     this.loading.present();
   }
 
- 
+
 
   presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({

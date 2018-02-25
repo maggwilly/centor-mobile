@@ -1,8 +1,7 @@
 import { Component, ViewChild, NgZone, } from '@angular/core';
-import { Events, NavController, PopoverController, NavParams, ModalController, ViewController, LoadingController, AlertController, ActionSheetController, Platform } from 'ionic-angular';
+import { Events, NavController, Content, PopoverController, NavParams, MenuController, ModalController, ViewController, LoadingController, AlertController, ActionSheetController, Platform } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Utils } from '../../app/utils';
-import { SocialSharing } from '@ionic-native/social-sharing';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import firebase from 'firebase';
 import { DataService } from '../../providers/data-service';
@@ -17,6 +16,7 @@ import { IonicPage } from 'ionic-angular';
 export class ScorePage {
   @ViewChild('slides') slides: any;
   @ViewChild('slides2') slides2: any;
+  @ViewChild(Content) content: Content;
   partie: any = {};
   popover: any;
   _parties: any[];
@@ -39,18 +39,21 @@ export class ScorePage {
   zone: NgZone;
   loaded: boolean= false;
   connected: boolean = false;
+  openMenu = false;
+  concours:any;
+  notificationId:any;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public modalCtrl: ModalController,
     public events: Events,
     public dataService: DataService,
+    public menu: MenuController,
     public popoverCtrl: PopoverController,
     public viewCtrl: ViewController,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public platform: Platform,
-    private socialSharing: SocialSharing,
     public actionSheetCtrl: ActionSheetController,
     private iab: InAppBrowser,
     public notify: AppNotify,
@@ -71,8 +74,10 @@ export class ScorePage {
 
 
   initPage() {
+    this.notificationId = firebase.auth().currentUser.uid;
     this.partieToUpdate = this.navParams.get('partie');
     this.partie = Object.assign({}, this.partieToUpdate);
+    this.concours=this.partie.matiere.concours;
     return this.storage.get('_partie_' + this.partie.id).then((data) => {
       this.partie = data ? data : this.partie;
       this.isTheBegining = this.partie.lastIndex ? false : true;
@@ -92,6 +97,7 @@ export class ScorePage {
         }, error => { });
       }
     });
+   
   }
 
 
@@ -138,6 +144,11 @@ export class ScorePage {
     this.getSlides().slideNext();
   }
 
+  scrollto() {
+    setTimeout(() => {
+      if (this.content._scroll) this.content.scrollToTop(0);
+    }, 3000);
+  }
 
   /*Question precedente*/
   preview() {
@@ -171,9 +182,9 @@ export class ScorePage {
       this.isTheBegining = this.isBeginning();
       if (this.currentQuestion && this.isAmswering)
         this.counter();
+      this.scrollto();
     }
     this.storage.set('_partie_' + this.partie.id, this.partie).catch(error => { });
-    //this.storage.set('_questions_' + this.partie.id, this.partie.questions).catch(error => { });
   }
 
 
@@ -268,7 +279,7 @@ export class ScorePage {
   isOlympia(partie: any) {
     if (!partie || !(partie.type == 'OL' || partie.type == 'CB'))
       return false;
-      let now = Date.now();
+    let now = firebase.database.ServerValue.TIMESTAMP;;
         let endDate = new Date(partie.endDate).getTime();
     return now < endDate;
   }
@@ -328,7 +339,6 @@ export class ScorePage {
             this.dataService.saveAnalyse(this.authInfo.uid, this.partie.matiere.concours.id, this.partie.matiere.id, this.partie.id, this.partieToUpdate.analyse)
               .then(data => {
                 this.analyse = data.partie;
-              
                 this.partieToUpdate.analyse = data.partie;
                 this.isShow = true;
                 this.events.publish('score:partie:updated', data.parents);
@@ -426,33 +436,39 @@ export class ScorePage {
     alert.present();
   }
 
+  openModal(pageName, arg: any) {
+  return  this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
+     
+  }
+
+
   share() {
-    if (this.currentQuestion && this.currentQuestion.id) {
-      let textMessage = 'Question \n\n'
+    if (this.currentQuestion) {
+      let textMessage = '<strong>Question \n\n'
         + this.questionNumber() + '\n\t >'
         + this.partie.titre + '\n\t >'
         + this.partie.matiere.titre + '\n >'
-        + this.partie.matiere.concours.nom + ':\n\n'
-        + this.currentQuestion.text;
-
-      return this.presentActionSheet(textMessage, this.dataService._baseUrl + 'question/' + this.currentQuestion.id + '/show/from/mobile', this.currentQuestion.image ? this.currentQuestion.image : null);
+        + this.partie.matiere.concours.nomConcours + ':\n\n</strong>'
+      let modal = this.openModal('ShareQuestionPage', { groupName: this.partie.matiere.concours.id,question:this.currentQuestion, ref:textMessage})
+      modal.onDidDismiss((data)=>{
+        if(!data)
+        return
+        switch (data) {
+          case 1:
+            this.notify.onSuccess({ message: "Cette question a été partagée." })
+            break;   
+          default:
+            this.notify.onSuccess({ message: "Question envoyée à un enseignant" })
+            break;
+        }    
+      })
+      modal.present();
     }
-    let alert = this.alertCtrl.create({
-      title: 'Options de partage',
-      message: "Le partage n'est pas disponible pour cette question.",
-      buttons: [
-        {
-          text: "Ok",
-          role: 'cancel'
-        }
-      ]
-    });
-    alert.present();
   }
 
   presentActionSheet(textMessage, url, image: string = null) {
     let actionSheet = this.actionSheetCtrl.create({
-      title: 'Que voulez-vous faire ?',
+      title: 'Question trop dificile ?',
       buttons: [
         {
           text: 'Rechercher sur google',
@@ -463,32 +479,54 @@ export class ScorePage {
           }
         },
         {
-          text: 'Partager sur facebook',
-          icon: !this.platform.is('android') ? 'logo-facebook' : null,
-          role: 'destructive',
+          text: 'Partager avec les autres',
+          icon: !this.platform.is('android') ? 'ios-chatboxes-outline' : null,
           handler: () => {
-            console.log('Destructive clicked');
-            this.socialSharing.shareViaFacebook(textMessage, image /*Image*/, url).catch((error) => {
-            })
-          }
-        },
-        {
-          text: 'Envoyer à un ami',
-          icon: !this.platform.is('android') ? 'logo-whatsapp' : null,
-          handler: () => {
-            this.socialSharing.share(textMessage, null/*Subject*/, null/*File*/, url)
-              .then(() => {
-
-              },
-              () => {
-
-              });
-
+           this. share() 
           }
         }
       ]
     });
     actionSheet.present();
-
   }
+
+  togglePopupMenu() {
+    return this.openMenu = !this.openMenu;
+  }
+
+  goToAccount() {
+    this.togglePopupMenu();
+    this.navCtrl.push('SettingPage')
+  }
+  openChat() {
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
+  }
+
+  goToChat(){
+    this.togglePopupMenu();
+    this.navCtrl.push('GroupchatPage', { groupName: this.partie.matiere.concours.id });
+  }
+
+  goToHome() {
+ 
+    this.togglePopupMenu();
+    this.navCtrl.push('HomePage')
+  }
+
+  goToNotifications(){
+    this.togglePopupMenu();
+    this.navCtrl.push('NotificationsPage')
+  }
+
+
+  goToAbout() {
+    this.togglePopupMenu();
+    this.navCtrl.push('AboutPage')
+  }
+
+  goToMenu() {
+    this.togglePopupMenu();
+    this.menu.open("menu-material");
+    
+  }  
 }

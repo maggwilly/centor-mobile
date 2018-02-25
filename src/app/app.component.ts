@@ -10,7 +10,8 @@ import firebase from 'firebase';
 import { AppNotify } from '../providers/app-notify';
 import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
-const appVersion:'2.1.0';
+
+const appVersion='2.1.0';
 
 const options: PushOptions = {
   android: {
@@ -75,6 +76,7 @@ export class MyApp {
     public events: Events) {
     this.zone = new NgZone({});
     platform.ready().then(() => {
+     
      // alert(platform.platforms());
       // this.statusBar.styleBlackTranslucent();
       //this.statusBar.overlaysWebView(true);
@@ -98,6 +100,7 @@ export class MyApp {
 
 
   getUrlBase(obj: any) {
+
     let _baseUrl = 'https://concours.centor.org/v1/'
     if (this.mode=='dev')
       _baseUrl = 'http://localhost:8000/v1/'
@@ -127,8 +130,7 @@ export class MyApp {
     },error=>{
       this.notify.onError({ message: JSON.stringify(error) });
     })
-    console.log(this.platform.platforms());
-    
+
     if (!document.URL.startsWith('http') || this.platform.is('core') || this.platform.is('mobileweb'))
     this.storage.get('_preferences')
       .then((data) => {
@@ -248,7 +250,7 @@ checkInfo(info:any){
       console.log(registrationId);
       this.dataService.addRegistration(registrationId, { registrationId: registrationId }).then((data) => {
       }, error => {
-        / this.notify.onError({message:'problème de connexion.'}); 
+        this.notify.onError({message:'problème de connexion.'}); 
       })  
     });
 

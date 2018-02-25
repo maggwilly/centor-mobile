@@ -3,14 +3,16 @@ import { IonicPageModule } from 'ionic-angular';
 import { MatieresPage } from './matieres';
 import { SharedComponentsModule } from '../../app/shared.module';
 import { SharedDirectivesModule } from '../../app/shared.module';
+import { SharedProvidersModule } from '../../app/shared.module';
 @NgModule({
   declarations: [
     MatieresPage,
   ],
   imports: [
     IonicPageModule.forChild(MatieresPage),
-    SharedComponentsModule, SharedDirectivesModule
-  ],
- 
+    SharedComponentsModule,
+     SharedDirectivesModule,
+    SharedProvidersModule 
+  ]
 })
 export class MatieresPageModule {}

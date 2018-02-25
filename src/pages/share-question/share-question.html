@@ -1,0 +1,53 @@
+<ion-header transparent>
+  <ion-navbar >
+    <ion-title>Question dificile ?</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="dismiss()" >
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content  class="transparent-header">
+  <ion-row  style="margin-left:10px">
+    <p *ngIf="!sendToAdmin"><strong>Demandez l'avis des autres personnes qui on déjà traité cette question.</strong></p>
+    <p *ngIf="sendToAdmin"><strong>Soumettez cette question à un enseignant pour obtenir de l'aide</strong></p>
+  </ion-row>
+  <ion-row >
+    <ion-col>
+  <ion-card class="question">
+    <ion-card-content>
+    <p [MathJax]="question.text"> {{question.text}}</p>
+    <img *ngIf="question.image" [src]="question.image" style="width:200px;height:100px;">
+    <ion-item text-wrap *ngIf="question.propA">
+      <span item-left class="question-number">A. </span>
+      <ion-label [MathJax]="question.propA">{{question.propA}}</ion-label>
+    </ion-item>
+    </ion-card-content>
+  </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>
+<ion-footer >
+<ion-grid class="input-wrap">
+  <ion-row>
+    <ion-col col-2>
+      <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="sendToAdmin">
+        <ion-icon name="ios-chatboxes"></ion-icon>
+      </button>
+      <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="!sendToAdmin">
+        <ion-icon name="ios-chatboxes-outline"></ion-icon>
+      </button>
+    </ion-col>
+    <ion-col col-8>
+      <ion-textarea row="4" #chat_input placeholder="Saisir un message" [(ngModel)]="newmessage" (keyup.enter)="addgroupmsg()" (ionFocus)="onFocus()">
+      </ion-textarea>
+    </ion-col>
+    <ion-col col-2>
+      <button ion-button clear icon-only item-right (click)="addgroupmsg()" [disabled]="!newmessage">
+        <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-footer>

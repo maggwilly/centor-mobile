@@ -22,6 +22,7 @@ export class MatiereDetailsPage {
   authInfo: any;
   zone: NgZone;
   loaded: boolean= false;
+ 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -127,7 +128,7 @@ export class MatiereDetailsPage {
 
   /** Compare le score et le temps de reponse */
   show(partie: any) {
-    partie.matiere.concours = { id: this.matiere.concours.id, nom: this.matiere.concours.nom };
+    partie.matiere.concours = { id: this.concours.id, nom: this.concours.nomConcours, nomConcours: this.concours.nomConcours };
     partie.matiere.titre = this.matiere.titre;
     partie.matiere.id = this.matiere.id;
    // console.log(this.concours);
@@ -135,7 +136,9 @@ export class MatiereDetailsPage {
     this.navCtrl.push('ScorePage', { partie: partie });
   }
 
- 
+  openChat() {
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
+  }
 
   getClass(obj: any): string {
     if (!obj || obj.objectif == undefined)
@@ -148,5 +151,6 @@ export class MatiereDetailsPage {
       return 'success';
     return 'none';
   }
+
 
 }

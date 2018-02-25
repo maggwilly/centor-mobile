@@ -1,6 +1,7 @@
-import { COMPONENTS, DIRECTIVES, PIPES} from './app.imports';
+import { COMPONENTS, DIRECTIVES, PIPES,SHAREDPROVIDERS} from './app.imports';
 import { NgModule } from '@angular/core';
 import { IonicModule } from 'ionic-angular';
+
 
 @NgModule({
   declarations: [
@@ -31,3 +32,11 @@ export class SharedDirectivesModule { }
 })
 
 export class SharedComponentsModule { }
+
+@NgModule({
+
+  providers: [
+    SHAREDPROVIDERS,
+  ]
+})
+export class SharedProvidersModule { }

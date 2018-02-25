@@ -12,25 +12,31 @@
       <ion-icon name="md-refresh"></ion-icon>
     </button>
     </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="openChat()">
+        <ion-icon name="ios-chatboxes"></ion-icon>
+        <ion-badge class="notifications-badge" notification [groupname]="concours.id" *ngIf="concours" color="danger"></ion-badge>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content >
+<ion-content  hide-header [header]="head">
   <div class="card-background">
     <ion-card-header>Tableau de bord</ion-card-header>
     <ion-grid  style="height: 100%;justify-content: center;" *ngIf="!loaded">
         <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
-          <ion-spinner class="vertical-center"  name="circles" ></ion-spinner> 
+          <ion-spinner class="vertical-center"  name="dots" ></ion-spinner> 
         </ion-row>
        </ion-grid>     
     <dashboord-item [authInfo]="authInfo" [analyse]="analyse" [matiere]="matiere" [isShow]="isShow" *ngIf="analyse&&matiere && loaded"></dashboord-item>
   <ion-card-content *ngIf="!analyse && loaded" >
-  <p class="vertical-center" text-center>
+  <p class="vertical-center">
     Nous n'avons aucune information à vous présenter pour le moment car vous n'avez pas encore subi une évaluation.
   </p>
     </ion-card-content>
   </div>
   <div>
-    <ion-card-header>Contenu de la matière</ion-card-header>
+    <ion-card-header>Contenu de la matière<ion-spinner class="vertical-center" name="dots" *ngIf="!(matiere&&matiere.parties)"></ion-spinner> </ion-card-header>
     <ion-list class="borded-list-item special-item" inset *ngIf="matiere&&matiere.parties&&matiere.parties.length" >
       <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)" updater [user]="authInfo" [session]="concours" [matiere]="matiere" [partie]="partie">
         <ion-note item-right>{{partie.type}}</ion-note>
