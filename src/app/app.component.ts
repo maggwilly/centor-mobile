@@ -11,7 +11,7 @@ import { AppNotify } from '../providers/app-notify';
 import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
-const appVersion='2.1.0';
+const appVersion='2.3.1';
 
 const options: PushOptions = {
   android: {
@@ -24,9 +24,7 @@ const options: PushOptions = {
     sound: 'true'
   },
   windows: {},
-  browser: {
-    pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-  }
+  browser: {}
 };
 
 export interface PageInterface {
@@ -270,7 +268,6 @@ checkInfo(info:any){
       if (user) {
        // this.photoURL = user.photoURL;
         this.authInfo = user;
-        console.log(user.providerId);       
         this.user = { info: this.authInfo };
         this.notificationId = user.uid;
         this.getUserProfile().then(()=>{

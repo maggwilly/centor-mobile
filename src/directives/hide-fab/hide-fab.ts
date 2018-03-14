@@ -1,4 +1,4 @@
-import { Directive, Input, Renderer, ElementRef } from '@angular/core';
+import { Directive,Renderer, ElementRef } from '@angular/core';
 
 @Directive({
   selector: '[hide-fab]', // Attribute selector

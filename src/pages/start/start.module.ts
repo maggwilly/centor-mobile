@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { StartPage } from './start';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { SharedDirectivesModule } from '../../app/shared.module';
 @NgModule({
   declarations: [
     StartPage,
   ],
   imports: [
     IonicPageModule.forChild(StartPage),
+    SharedDirectivesModule
   ],
-  providers: [InAppBrowser]
 })
 export class StartPageModule {}

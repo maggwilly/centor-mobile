@@ -1,0 +1,68 @@
+<ion-header no-border  #head>
+  <ion-navbar>
+    <ion-title>
+      {{estateProperty.nom}}
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content fullscreen elestic-header class="bg-white" hide-header [header]="head">
+  <section class="housing-image" [ngStyle]="{ 'background-image': 'url(' + estateProperty.imageUrl + ')'}" *ngIf="estateProperty">
+    <section class="housing-banner" padding>
+      <span class="housing-title">{{estateProperty.nom}}</span>
+      <span class="price" *ngIf="estateProperty.price">{{estateProperty.price}}<sup>Fcfa</sup></span>
+      <span class="price" *ngIf="!estateProperty.price">GRATUIT</span>
+    </section>
+  </section>
+  <section class="main-content" *ngIf="estateProperty">
+    <ion-grid class="listing-details">
+      <ion-row>
+        <p margin-left margin-right no-margin-top style="text-align: justify">
+          {{estateProperty.description}}
+        </p>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-icon name="home"></ion-icon>{{estateProperty.style}}
+        </ion-col>
+        <ion-col>
+          <ion-icon name="pin"></ion-icon>{{estateProperty.size}}
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="estateProperty.detail1">
+        <ion-col>
+          {{estateProperty.detail1}}
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="estateProperty.detail2">
+        <ion-col>
+          {{estateProperty.detail2}}
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="estateProperty.detail3">
+        <ion-col>
+          {{estateProperty.detail3}}
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="estateProperty.detail4">
+        <ion-col>
+          {{estateProperty.detail4}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </section>
+</ion-content>
+<ion-footer>
+  <button *ngIf="(!estateProperty.price||!estateProperty.paymentUrl)&&estateProperty.url"  large full no-margin color="primary" icon-left (click)="downloadFile()">
+    <ion-icon name="md-download"></ion-icon>
+    Telecharger
+  </button>
+  <button *ngIf="estateProperty.price&&estateProperty.paymentUrl" ion-button large full no-margin icon-left color="orange" >
+    <ion-icon name="md-open"></ion-icon>
+    Obtenir
+  </button>
+          <ion-grid style="height: 56px;justify-content: center;" *ngIf="!estateProperty.url">
+            <ion-row justify-content-center align-items-center style="height: 56px;justify-content: center;">
+              <ion-spinner name="dots" class="vertical-center"></ion-spinner>
+            </ion-row>
+          </ion-grid>
+</ion-footer>

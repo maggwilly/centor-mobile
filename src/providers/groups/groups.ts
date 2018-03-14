@@ -150,7 +150,7 @@ export class GroupsProvider {
 
 
   joinSessionGroup(newmember) {
-    return this.firegroupsession.child(this.currentgroupname).child('members').child(newmember.uid).set(true).then(() => {
+    return this.firegroupsession.child(this.currentgroupname).child('members').child(newmember.uid).set(newmember).then(() => {
       this.getsessionownerimage().then(() => {
           this.firegroup.child(newmember.uid).child(this.currentgroupname).set({
             groupimage: this.grouppic ? this.grouppic:'',
@@ -222,67 +222,51 @@ export class GroupsProvider {
       })
     })
   }
-
+  addMsg(newmessage, addinlist = true){
+  let message = {
+    sentby: firebase.auth().currentUser.uid,
+    displayName: firebase.auth().currentUser.displayName,
+    photoURL: firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d',
+    message: newmessage,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  };
+    if (addinlist){
+      this.groupmsgs.push(message);
+      this.events.publish('groupmsg');
+    }
+  return message;
+}
 
   //nouvelle version cloud function send 
-  addgroupmsg(newmessage) {
+  addgroupmsg(newmessage, addinlist = true) {
+    let message = this.addMsg(newmessage,addinlist);
   return new Promise((resolve, reject) => {
-    console.log(this.currentgroupname);
-       this.firegroupsession.child(this.currentgroupname).child('msgboard').push({
-        sentby: firebase.auth().currentUser.uid,
-        displayName: firebase.auth().currentUser.displayName,
-         photoURL: firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' ,
-        message: newmessage,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-      }).then(() => {
-           this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push({
-            sentby: firebase.auth().currentUser.uid,
-            displayName: firebase.auth().currentUser.displayName,
-             photoURL: firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' ,
-            message: newmessage,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-           }).then(() => { 
-               //this.getgroupmsgs(this.currentgroupname);
+   this.firegroupsession.child(this.currentgroupname).child('msgboard').push(message).then(() => {
+      this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push(message).then(() => { 
                resolve(true);
              }).catch((err) => {
-               console.log(err.message);
+              
              })            
       }).catch((err) => {
-          console.log(err.message);
           reject(err);
       })
     })  
   }
 
 
-  postmsgstoadmin(newmessage) {
+  postmsgstoadmin(newmessage, addinlist = true) {
+    let message = this.addMsg(newmessage, addinlist);
     return new Promise((resolve, reject) => 
     { 
       this.firegroupsession.child(this.currentgroupname).child('owner').once('value', (snapshot) => {
         let groupowner = snapshot.val();
-        this.firegroup.child(groupowner).child(this.currentgroupname).child(firebase.auth().currentUser.uid).child('msgboard').push({
-          sentby: firebase.auth().currentUser.uid,
-          displayName: firebase.auth().currentUser.displayName,
-          photoURL: firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' ,
-          message: newmessage,
-          timestamp: firebase.database.ServerValue.TIMESTAMP,          
-        }).then(() => {
-          this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push({
-            sentby: firebase.auth().currentUser.uid,
-            displayName: firebase.auth().currentUser.displayName,
-            photoURL: firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' ,
-            message: newmessage,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-          }).then(() => {
-           // this.getgroupmsgs(this.currentgroupname);
+        this.firegroup.child(groupowner).child(this.currentgroupname).child(firebase.auth().currentUser.uid).child('msgboard').push(message).then(() => {
+          this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push(message).then(() => {
             resolve(true);
             }).catch((err) => {
               alert(err)
-              console.log(err.message);
             })
         }).catch((err) => {
-        
-          console.log(err.message);
           reject(err);
         })
       })
@@ -292,7 +276,6 @@ export class GroupsProvider {
   loockforgroupmsgs(groupname) {
     this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').off()
     this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').on('child_added', (snapshot) => {      
-    //  this.groupmsgs.push(snapshot.val());
       this.events.publish('newgroupmsg');
     })
   }

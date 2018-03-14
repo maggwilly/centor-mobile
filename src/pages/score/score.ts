@@ -33,7 +33,7 @@ export class ScorePage {
   isMathProcessed = false;
   start: number;
   authInfo: any;
-  partieToUpdate;
+ // partieToUpdate;
   analyse: any;
   option: any;
   zone: NgZone;
@@ -67,16 +67,16 @@ export class ScorePage {
     })
   }
 
-  ionViewDidEnter() {
+  ionViewDidLoad() {
     this.initPage();
-
   }
 
 
   initPage() {
     this.notificationId = firebase.auth().currentUser.uid;
-    this.partieToUpdate = this.navParams.get('partie');
-    this.partie = Object.assign({}, this.partieToUpdate);
+   // this.partieToUpdate = this.navParams.get('partie');
+   this.partie = this.navParams.get('partie');
+   // this.partie = Object.assign({}, this.partieToUpdate);
     this.concours=this.partie.matiere.concours;
     return this.storage.get('_partie_' + this.partie.id).then((data) => {
       this.partie = data ? data : this.partie;
@@ -286,8 +286,7 @@ export class ScorePage {
 
 
   showInfo() {
-    let modal = this.modalCtrl.create('StartPage', { partie: this.partie });
-    modal.present();
+    this.navCtrl.push('StartPage', { partie: this.partie  });
   }
 
   /*Parcour pour voir le corrigé*/
@@ -332,14 +331,15 @@ export class ScorePage {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.authInfo = user;
-        this.partieToUpdate.analyse = Utils.setScore(this.partie);
-        if (this.partieToUpdate.analyse)
+        //this.partieToUpdate.analyse =;
+        if (Utils.setScore(this.partie))
           this.zone.run(() => {
             this.loaded = false;
-            this.dataService.saveAnalyse(this.authInfo.uid, this.partie.matiere.concours.id, this.partie.matiere.id, this.partie.id, this.partieToUpdate.analyse)
+            this.dataService.saveAnalyse(this.authInfo.uid, this.concours.id, this.partie.matiere.id, this.partie.id, Utils.setScore(this.partie))
               .then(data => {
                 this.analyse = data.partie;
-                this.partieToUpdate.analyse = data.partie;
+                if (this.partie)
+                this.partie.analyse = data.partie;
                 this.isShow = true;
                 this.events.publish('score:partie:updated', data.parents);
                 this.storage.set('_partie_' + this.partie.id, this.partie).catch(error => { });
@@ -378,8 +378,9 @@ export class ScorePage {
 
   getAnalyse(show: boolean = true) {
     this.loaded = false;
-    return this.dataService.getAnalyseObservable(this.authInfo.uid, this.partie.matiere.concours.id, this.partie.matiere.id, this.partie.id).subscribe((analyse) => {
+    return this.dataService.getAnalyseObservable(this.authInfo.uid, this.concours.id, this.partie.matiere.id, this.partie.id).subscribe((analyse) => {
       this.analyse = analyse;
+      if (this.partie)
       this.partie.analyse = analyse;
       this.isMathProcessed = true;
       this.loaded = true;
@@ -410,11 +411,14 @@ export class ScorePage {
   }
 
   lireCours() {
-    if (this.partie.cours) {
+    if (this.partie.article) {
+      this.navCtrl.push('CoursViewPage', { partie: this.partie,concours:this.concours});
+      return;
+    }
+    else if (this.partie.cours) {
       this.iab.create(this.partie.cours);
       return;
     }
-
     this.navCtrl.push('NoclassPage', { partie: this.partie });
   }
 
@@ -444,11 +448,11 @@ export class ScorePage {
 
   share() {
     if (this.currentQuestion) {
-      let textMessage = '<strong>Question \n\n'
+      let textMessage = 'Question \n\n'
         + this.questionNumber() + '\n\t >'
         + this.partie.titre + '\n\t >'
         + this.partie.matiere.titre + '\n >'
-        + this.partie.matiere.concours.nomConcours + ':\n\n</strong>'
+        + this.partie.matiere.concours.nomConcours + ':\n\n'
       let modal = this.openModal('ShareQuestionPage', { groupName: this.partie.matiere.concours.id,question:this.currentQuestion, ref:textMessage})
       modal.onDidDismiss((data)=>{
         if(!data)

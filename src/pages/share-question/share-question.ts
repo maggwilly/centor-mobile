@@ -1,7 +1,6 @@
 import { Component, ViewChild  } from '@angular/core';
 import { IonicPage, NavController, NavParams, TextInput, ViewController } from 'ionic-angular';
 import { GroupsProvider } from '../../providers/groups/groups';
-import firebase from 'firebase';
 /**
  * Generated class for the ShareQuestionPage page.
  *
@@ -56,14 +55,16 @@ export class ShareQuestionPage {
   addgroupmsg() {
     this.showEmojiPicker = false;
     let newMessage: any = {
-      text: this.ref + '<br>' + this.urlify(this.newmessage),
+      text:  this.urlify(this.newmessage),
       type: this.mesagetype,
+      ref:this.ref,
       fileurl: '',
       question:JSON.parse(JSON.stringify(this.question)),
      toAdmin: this.sendToAdmin
     }
     if (!this.newmessage)
       return
+    this.newmessage = '';
     if (this.sendToAdmin)
       this.groupservice.postmsgstoadmin(newMessage).then(() => {
       //  this.newmessage = '';
@@ -81,13 +82,13 @@ export class ShareQuestionPage {
 
 
   urlify(text: string) {
-    var urlRegex = /(?:(?:(?:ftp|http)[s]*:\/\/|www\.)[^\.]+\.[^ \n]+)/g;
-    if (!text)
-      return "";
-    return text.replace(urlRegex, (url) => {
+    /* var urlRegex = /(?:(?:(?:ftp|http)[s]*:\/\/|www\.)[^\.]+\.[^ \n]+)/g;
+     if (!text)
+        return "";
+     return text.replace(urlRegex,  (url)=> {
       return '<a class="a" href="' + url + '">' + url + '</a>';
-    })
+     })*/
     // or alternatively
-    // return text.replace(urlRegex, '<a href="$1">$1</a>')
+    return text
   }
 }

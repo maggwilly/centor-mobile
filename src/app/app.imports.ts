@@ -11,6 +11,7 @@ import { FileChooser } from '@ionic-native/file-chooser';
 import { FilePath } from '@ionic-native/file-path';
 import { Transfer} from '@ionic-native/transfer';
 import { Clipboard } from '@ionic-native/clipboard';
+import { Camera } from '@ionic-native/camera';
 //mains providers
 import { Push } from '@ionic-native/push';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -21,6 +22,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { NotificationDirective } from '../directives/notification/notification';
 import { HideHeaderDirective } from '../directives/hide-header/hide-header';
 import { UpdaterDirective} from '../directives/updater/updater';
+import { AvalabilityDirective } from '../directives/avalability/avalability';
 import { MathJaxDirective } from '../directives/MathJax.directive';
 import { HideFabDirective } from '../directives/hide-fab/hide-fab';
 
@@ -86,7 +88,8 @@ export const MAINPROVIDERS = [
 ];
 
 export const SHAREDPROVIDERS = [
-  GroupsProvider,
+  Camera, 
+   GroupsProvider,
   ImghandlerProvider,
   File,
   FileChooser,
@@ -111,5 +114,6 @@ export const DIRECTIVES = [
   HideHeaderDirective,
   UpdaterDirective,
   MathJaxDirective,
-  HideFabDirective
+  HideFabDirective,
+  AvalabilityDirective
 ];

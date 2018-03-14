@@ -17,7 +17,7 @@ export interface PageInterface {
   templateUrl: 'about.html'
 })
 export class AboutPage {
-  
+  load:boolean=false;
   appPages: PageInterface[] = [
     { title: 'A propos de centor', link: 'http://abaout.centor.org', icon: 'information-circle' },
     { title: "Obtenir de l'aide", link: 'http://help.centor.org', icon: 'help-circle' },
@@ -64,13 +64,13 @@ export class AboutPage {
   checkAmbassador() {
     this.dataService.getAmbassadorObservable(this.authInfo.uid).subscribe(data => {
       this.ambassador =data;
+      this.load=true;
     }, error => {
       this.notify.onError({ message: 'Problème de connexion.' });
     });
 
   }
   openContact() {
-    // close the menu when clicking a link from the menu
     this.navCtrl.push('ContactPage');
   }
   signup() {
@@ -102,13 +102,15 @@ export class AboutPage {
   }
 
   setReference() {
-    this.alert()
+    if (!this.load)
+    return;
+      this.alert()
   }
 
   alert() {
     let alert = this.alertCtrl.create({
       title: 'Code de reférence',
-      message: "Si l'application vous a été recommandée par l'un de nos enseignants ou ambassadeurs, veillez renseigner son code de reférence de 03 chiffres",
+      message: "Si l'application vous a été recommandée par l'un de nos enseignants ou ambassadeurs, il vous a certainement remis un code de03 chiffres. Saisissez le puis vqlidez",
       inputs: [
         {
           name: 'ambassador',
@@ -122,7 +124,7 @@ export class AboutPage {
           role: 'cancel'
         },
         {
-          text: "Envoyer",
+          text: "Validé",
           handler: data => {
               this.dataService.editInfo(firebase.auth().currentUser.uid, data).then(data=>{
               this.ambassador=data;

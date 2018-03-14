@@ -7,6 +7,11 @@
 <ion-header>
   <ion-navbar color="hcolor">
     <ion-title>Options</ion-title>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="updateproceed()" *ngIf="uploapping">
+        <ion-icon name="md-done-all"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -20,6 +25,7 @@
           <img [src]="photoURL">
         </ion-avatar>
         <p class="username">Photo</p>
+     <ion-spinner item-right name="dots" *ngIf="uploapping"></ion-spinner>        
       </ion-item>
      <ion-item *ngIf="meingroup&&!leaved">
             <ion-icon name='person' item-start></ion-icon>

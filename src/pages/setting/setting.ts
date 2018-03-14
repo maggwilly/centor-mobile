@@ -11,7 +11,7 @@ import firebase from 'firebase';
   templateUrl: 'setting.html'
 })
 export class SettingPage {
- // authInfo: any = {};
+  authInfo: any = {};
   loading;
   user: any = {};
   paidConcours: any;
@@ -32,12 +32,16 @@ export class SettingPage {
    
   }
   ionViewDidLoad() {
-    //this.authInfo = firebase.auth().currentUser;
+    this.authInfo = firebase.auth().currentUser;
     this.initPage();
   }
 
   initPage() {
-    this.user.info = firebase.auth().currentUser;//{ displayName: this.authInfo.displayName, email: this.authInfo.email, photoURL: this.authInfo.photoURL };
+    this.user.info = { 
+      displayName: this.authInfo.displayName,
+       email: this.authInfo.email,
+      photoURL: this.authInfo.photoURL ? this.authInfo.photoURL: 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
+       };
     this.getUserProfile().then(() => {
       this.loadAbonnement();
     });

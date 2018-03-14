@@ -1,52 +1,30 @@
 
 <ion-header >
   <ion-navbar>
-  <ion-title>Détails</ion-title> 
-    <ion-buttons start>
-      <button ion-button (click)="dismiss()" showWhen="android,windows,core">
-        <ion-icon name="md-close" ></ion-icon>
-      </button> 
-      <button ion-button icon-left (click)="dismiss()"showWhen="ios" >
-        <span  ><ion-icon name="ios-arrow-back" ></ion-icon>Back</span>
-      </button>       
-     </ion-buttons>   
+  <ion-title *ngIf="partie">{{partie.titre}}</ion-title>  
   </ion-navbar>
 </ion-header>
 <ion-content >
-<div *ngIf="partie">
- <ion-card-header>{{partie.titre}}</ion-card-header> 
- <ion-card-content>
- <p *ngIf="partie.matiere"> {{partie.matiere.titre}}</p>
- </ion-card-content> 
-</div>  
-<div *ngIf="partie" ion-item>
-  <ion-card-header>Description</ion-card-header> 
-<ion-card-content>
-Sources
-<p>{{partie.sources}}</p>
-<p *ngIf="!partie.sources">
-  Aucun element à afficher.
-</p>
-</ion-card-content>
-<ion-card-content>
-  Objectif
- <p>{{partie.objectif}}</p>
-   <p *ngIf="!partie.objectif">
-    Aucun element à afficher.
-  </p> 
- </ion-card-content>  
- <ion-card-content> 
-Pré-requis
-<p>{{partie.prerequis}}</p>
- <p *ngIf="!partie.prerequis">
-    Aucun element à afficher.
-  </p>
+  <ion-card *ngIf="!partie.isAvalable"ion-item text-wrap no-lines text-center>
+    <h1><ion-icon name="ios-alert" color="danger"></ion-icon></h1>
+       Le moment n'est pas encore arrivé de vous présenter cette partie du programme.
+       Elle sera disponible pour vous en temps opportun selon la  progréssion.
+        Pour le moment, continuez d'exploiter les parties du programme déjà actives. 
+      <p>
+      <br>
+    <i>Il est important de respecter la progéssion définie. Ce-ci vous permet de rester mieux organisé dans votre préparation.
+    </i>
+    </p>
+  </ion-card>  
+<ion-card *ngIf="partie&&partie.objectif" ion-item text-wrap text-center>
+  <ion-card-title>Contenu </ion-card-title>
+  <ion-card-content>
+  <p>{{partie.objectif}}</p>
+  </ion-card-content>
+</ion-card>
+<ion-card *ngIf="partie&&partie.prerequis" ion-item text-wrap text-center>
+  <ion-card-title>Description  </ion-card-title> 
+ <ion-card-content  [MathJax]="partie.prerequis"> 
  </ion-card-content>
-</div>
-  <div padding>
-    <button  ion-button outline block (click)="lireCours()">
-      Lire le cours
-      <ion-icon name="ios-arrow-forward" item-right  ></ion-icon>
-    </button>
-  </div> 
+</ion-card>
 </ion-content>

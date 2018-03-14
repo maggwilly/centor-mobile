@@ -66,7 +66,7 @@ export class ResultatsPage {
   loadData() {
     return this.dataService.getResultats(0).then((data) => {
       this._resultats = data ? data : [];
-        this.search(this.queryText);
+        this.search();
         this.storage.set('_resultats', this._resultats).then(() => { }, error => { });
     }, error => {
       this.notify.onError({ message: 'problème de connexion.' });
@@ -111,24 +111,27 @@ export class ResultatsPage {
       return this.storage.set('_resultats', this._resultats);
   }
 
-  search(text?: any) {
+  search() {
+
     this.doSearch().then(() => {
       if (!(this._resultats && this._resultats.length))
         return;
-      let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') : '';
-      let queryWords = queryText.split(' ').filter(w => !!w.trim().length);
+
       this._resultats.forEach(item => {
         item.hide = true;
-        this.filter(item, queryWords);
+        this.filter(item, this.queryText);
 
       });
     });
   }
 
 
-  filter(item, queryWords) {
+  filter(item, text) {
+    let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') : '';
+    let queryWords = queryText.split(' ').filter(w => !!w.trim().length);
     let matchesQueryText = false;
     if (queryWords.length) {
+      console.log('filter');
       // of any query word is in the session name than it passes the query test
       queryWords.forEach(queryWord => {
         if (item.url && item.url.toLowerCase().indexOf(queryWord) > -1 || item.description && item.description.toLowerCase().indexOf(queryWord) > -1 ) {

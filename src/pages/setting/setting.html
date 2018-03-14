@@ -12,8 +12,7 @@
     <div id="profile-bg" ></div>
     <div id="content">
       <div id="profile-info" ion-item text-wrap>
-        <img id="profile-image" *ngIf="user&& user.info&& user.info.photoURL" [src]="user&& user.info&& user.info.photoURL" alt="image">
-        <img id="profile-image" *ngIf="!user||! user.info||!user.info.photoURL" src="assets/images/default-avatar.jpg">        
+        <img id="profile-image" *ngIf="user&& user.info&& user.info.photoURL" [src]="user&&user.info&& user.info.photoURL">      
         <h3 id="profile-name" *ngIf="user&& user.info&& user.info.displayName">{{user.info.displayName}}</h3>
         <p *ngIf="user&& user.info"><span >{{user.info.email}} </span></p>
        <!-- <p class="profile-description" >Modifiez et completez votre profil afin de nous aider à vous proposer les offres idéales .</p>

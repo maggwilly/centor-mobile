@@ -140,14 +140,14 @@ inscrire() {
    
   checkAbonnement() {
     this.abonnementExpired = this.isExpired(this.abonnement)
-    this.dataService.getAbonnementObservable(this.authInfo.uid, this.concours.id).subscribe(data => {
+    const ch=this.dataService.getAbonnementObservable(this.authInfo.uid, this.concours.id).subscribe(data => {
       this.abonnement = data.json();
       this.abonnementLoaded = true;
       if (this.abonnementExpired && !this.isExpired(this.abonnement) && !this.alert){
          this.notify.onError({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
          this.alert=true;
+         ch.unsubscribe();
       }
-       
       //   console.log(data.json());
     }, error => {
       this.notify.onError({ message: 'Problème de connexion.' });
@@ -220,7 +220,12 @@ show(matiere:any){
    }else
      this.appCtrl.getRootNav().push('MatiereDetailsPage',{matiere:matiere});  
  }
-
+  openRessources(){
+    if (!this.authInfo) {
+      this.signup();
+    } else
+      this.appCtrl.getRootNav().push('RessourcesPage', { concours: this.concours });  
+  }
 
  openModal(pageName,arg?:any) {
   this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' }).present();

@@ -1,3 +1,4 @@
+<ion-card-header *ngIf="(concours&&concours.matieres&&concours.matieres.length&&concours.price)">Programme de préparation</ion-card-header>
 <div text-wrap *ngIf="(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
 <div class="switch" *ngIf="!authInfo||isExpired(abonnement)" >
   <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" [@flash]="flashState"  (click)="inscrire()">
@@ -5,7 +6,7 @@
     <span *ngIf="!abonnement">Commencer la préparation</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
   </button>
   <button ion-button color="blue"   icon-left *ngIf="!authInfo" [@flash]="flashState" (click)="signup()">
-    <ion-icon name="person"></ion-icon> Créer un compte
+    <ion-icon name="person" color="white"></ion-icon> Créer un compte
   </button>
 </div>
   <ion-list  class="borded-list-item" inset>
@@ -22,8 +23,14 @@
 <div ion-item text-wrap text-center *ngIf="!matiereLoaded">
         <ion-spinner  name="dots"></ion-spinner>
   </div>
- <ion-item text-wrap text-center  *ngIf="matiereLoaded&&concours&&concours.matieres&&!(concours.matieres.length&&concours.price)">
+<div padding>
+ <button ion-item text-wrap (click)="openRessources()">
+  <ion-icon ios="ios-albums" md="md-albums" item-left></ion-icon>
+<ion-icon [hidden]="authInfo" name="lock-outline" item-right ></ion-icon>
+<ion-icon [hidden]="!authInfo" name="ios-arrow-forward" item-right ></ion-icon>
+   Ressources <ion-badge color="blue" *ngIf="concours.newressource">Nouveau</ion-badge>
       <p>
-        Aucun programme de préparation n'est disponible pour ce concours.
+        Sujets, Corrigés, Travaux dirigés,condensés de cours, etc.
       </p>    
-  </ion-item>
+</button>
+  </div>

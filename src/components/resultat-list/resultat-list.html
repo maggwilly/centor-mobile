@@ -3,11 +3,11 @@
   <ion-item  *ngFor="let resultat of resultatList" [hidden]="resultat.hide" text-wrap >
  {{resultat.description}}
  <p *ngIf="resultat.date"><small>Depuis le {{resultat.date| date: 'dd/MM/yyyy'}}</small></p>
-  <button ion-button icon-only clear item-right (click)="share(resultat)" >
+  <button ion-button icon-only outline item-right (click)="share(resultat)" >
     <ion-icon name="share-alt"></ion-icon>
   </button>
-  <a ion-button icon-only clear item-right [href]="resultat.url" target="'_blank'" >
+  <button ion-button icon-only outline item-right  (click)="downloadFile(resultat)" >
     <ion-icon [name]="name(resultat.url)"></ion-icon>
-  </a>
+  </button>
   </ion-item>
 </ion-list>

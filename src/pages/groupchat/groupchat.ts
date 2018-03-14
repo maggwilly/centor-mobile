@@ -8,6 +8,9 @@ import { DataService } from '../../providers/data-service';
 import { Transfer } from '@ionic-native/transfer';
 import { Clipboard } from '@ionic-native/clipboard';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { File } from '@ionic-native/file';
+import { Storage } from '@ionic/storage';
+import { DomSanitizer } from '@angular/platform-browser';
 /**
  * Generated class for the GroupchatPage page.
  *
@@ -33,29 +36,16 @@ export class GroupchatPage {
   showEmojiPicker = false;
   sendToAdmin = false;
   fileurl: any=''
-  mesagetype: any =''
+  fileData: any = ''
+  mesagetype: any ='simplemsg'
   abonnement:any;
   abonnementLoaded=false;
   groupdisplayname:any
   groupnberofmembers;
   meingroup={};
   scrollingToTop:boolean=false;
-  question: any = {
-    "id": 576,
-    "type": "text",
-    "showLink": "https:\/\/entrances.herokuapp.com\/v1\/question\/576\/show\/from\/mobile",
-    "text": "Soit la fonction <math xmlns=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"><mi>f<\/mi><\/math> d\u00e9finie sur <math xmlns=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"><mi mathvariant=\"normal\">&#x211D;<\/mi><\/math> par <math xmlns=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"><mi>f<\/mi><mo>(<\/mo><mi>x<\/mi><mo>)<\/mo><mo>&#xA0;<\/mo><mo>=<\/mo><mo>&#xA0;<\/mo><mo>(<\/mo><msup><mi>x<\/mi><mn>2<\/mn><\/msup><mo>+<\/mo><mi>x<\/mi><mo>+<\/mo><mn>1<\/mn><mo>)<\/mo><msup><mi>e<\/mi><mrow><mo>-<\/mo><mi>x<\/mi><\/mrow><\/msup><mo>-<\/mo><mn>1<\/mn><\/math>",
-    "validated": true,
-    "partie": {
-      "id": 43
-    },
-    "time": 7,
-    "rep": "c",
-    "propA": "<math xmlns=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"><munder><mi>lim<\/mi><mrow><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mi>x<\/mi><mo>&#x2192;<\/mo><mo>+<\/mo><mo>&#x221E;<\/mo><\/mrow><\/munder><mi>f<\/mi><mo>(<\/mo><mi>x<\/mi><mo>)<\/mo><mo>&#xA0;<\/mo><mo>=<\/mo><mo>&#xA0;<\/mo><mo>+<\/mo><mo>&#x221E;<\/mo><\/math>",
-    "propB": "<math xmlns=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"><munder><mi>lim<\/mi><mrow><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mi>x<\/mi><mo>&#x2192;<\/mo><mo>+<\/mo><mo>&#x221E;<\/mo><\/mrow><\/munder><mi>f<\/mi><mo>(<\/mo><mi>x<\/mi><mo>)<\/mo><mo>&#xA0;<\/mo><mo>=<\/mo><mo>&#xA0;<\/mo><mo>-<\/mo><mo>&#x221E;<\/mo><\/math>",
-    "propC": "<math xmlns=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"><munder><mi>lim<\/mi><mrow><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mi>x<\/mi><mo>&#x2192;<\/mo><mo>+<\/mo><mo>&#x221E;<\/mo><\/mrow><\/munder><mi>f<\/mi><mo>(<\/mo><mi>x<\/mi><mo>)<\/mo><mo>&#xA0;<\/mo><mo>=<\/mo><mo>&#xA0;<\/mo><mo>-<\/mo><mn>1<\/mn><\/math>",
-    "propD": "<math xmlns=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"><munder><mi>lim<\/mi><mrow><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mo>&#xA0;<\/mo><mi>x<\/mi><mo>&#x2192;<\/mo><mo>+<\/mo><mo>&#x221E;<\/mo><\/mrow><\/munder><mi>f<\/mi><mo>(<\/mo><mi>x<\/mi><mo>)<\/mo><mo>&#xA0;<\/mo><mo>=<\/mo><mo>&#xA0;<\/mo><mn>0<\/mn><\/math>"
-  }
+  showInfinite=false;
+
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public groupservice: GroupsProvider,
@@ -67,61 +57,74 @@ export class GroupchatPage {
     private transfer: Transfer, 
     public modalCtrl: ModalController,
     public dataService: DataService, 
+    private file: File,
+    public storage: Storage,
+    public _DomSanitizer: DomSanitizer,
     private socialSharing: SocialSharing,
     public loadingCtrl: LoadingController) {
+   
+  }
+  ionViewDidLoad() {
+    this.groupName = this.navParams.get('groupName');
     this.alignuid = firebase.auth().currentUser.uid;
-    this.photoURL = firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL:'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
-     firebase.auth().currentUser.photoURL;
-
+    this.photoURL = firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
+    this.storage.get('_messages_'+this.groupName).then(data=>{
+     this.allgroupmsgs = data?data:[];
+      this.groupservice.groupmsgs = data ? data : [];
+     this.scrollto();
+      setTimeout(() => {
+        this.showInfinite = true;
+      }, 2000);    
+      });
     this.events.subscribe('newgroupmsg', () => {
-      console.log('newgroupmsg');
-         this.scrollto();
+      this.scrollto();
     })
     this.events.subscribe('gotintogroup', () => {
       this.groupdisplayname = this.groupservice.groupdisplayname;
       this.groupnberofmembers = this.groupservice.groupmemberscount;
-      console.log('gotintogroup');
     })
     this.groupName = this.navParams.get('groupName');
-    this.groupservice.getintogroup(this.groupName)
+    this.groupservice.getintogroup(this.groupName).catch(error=>{
+      this.notify.onError({ message: 'Problème de connexion' }); 
+    })
     this.groupservice.loockforgroupmsgs(this.groupName);
     this.groupservice.getmeingroup(this.groupName).then(me => {
       this.meingroup = me;
       if (!this.meingroup)
         this.sendToAdmin = true;
     })
-
     this.groupservice.getgroupmsgs(this.groupName);
     this.events.subscribe('groupmsg', () => {
       this.allgroupmsgs = [];
       this.allgroupmsgs = this.groupservice.groupmsgs;
-      console.log('groupmsg');
+      this.storage.set('_messages_' + this.groupName, this.allgroupmsgs);
       this.scrollto();
-    })  
-    //eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
-  }
-
-  ionViewDidLoad() {
-    this.groupName = this.navParams.get('groupName');
+    })
+  
     if (!this.groupName)
       return
-      this.groupdisplayname = this.groupservice.groupdisplayname;
-     this.dataService.getAbonnement(firebase.auth().currentUser.uid, this.groupName).then(data => {
+    this.groupdisplayname = this.groupservice.groupdisplayname;
+    this.dataService.getAbonnement(firebase.auth().currentUser.uid, this.groupName).then(data => {
       this.abonnement = data;
       this.abonnementLoaded = true;
-    }, error => {  
+    }, error => {
+      this.notify.onError({ message: 'Problème de connexion' });
     });
+
   }
 
-  doInfinite(infiniteScroll?: any) {
+  ionViewWillLeave() {
+    this.events.unsubscribe('groupmsg');
+    this.events.unsubscribe('gotintogroup');
+  }
+
+  doInfinite(ev?: any) {
     this.scrollingToTop=true
-    setTimeout(() => {
+   setTimeout(() => {
     this.groupservice.getgroupmsgs(this.groupName);
-        infiniteScroll.complete();
-    },2000);
-    setTimeout(() => {
-      this.scrollingToTop = false
-    }, 3000);    
+     ev.complete();
+    },200);
+   
   }
 
 
@@ -140,7 +143,8 @@ export class GroupchatPage {
 
   cancelFile(){
     this.fileurl='';
-    this.mesagetype='';
+    this.mesagetype ='simplemsg';
+    this.fileData='';
   }
 
 
@@ -154,7 +158,7 @@ export class GroupchatPage {
   }
 
   download(msg:any) {
-    let desc=this.imgstore.guid();
+    let desc:string=this.file.dataDirectory+'/'+ this.imgstore.guid();
     let loader = this.loadingCtrl.create({
       content: 'Please wait'
     });
@@ -167,30 +171,12 @@ export class GroupchatPage {
       });
   }
 
-  sendpicmsg() {
-    let loader = this.loadingCtrl.create({
-      content: 'Please wait'
-    });
-    loader.present();
-    this.imgstore.picmsgstore().then((imgurl) => {
-      loader.dismiss();
-      this.groupservice.addgroupmsg(imgurl).then(() => {
-        this.scrollto();
-        this.newmessage = '';
-        this.fileurl = '';
-        this.mesagetype = ''
-      })
-    }).catch((err) => {
-      alert(err);
-      loader.dismiss();
-    })
-  }
+
+
 
   openGroupeSetting() {
       this.navCtrl.push('GroupinfoPage', { groupName: this.groupName });
   }
-
-
 
   addgroupmsg() {
     this.showEmojiPicker = false;
@@ -198,45 +184,54 @@ export class GroupchatPage {
        text: this.urlify(this.newmessage),
        type: this.mesagetype,
        fileurl:this.fileurl,
-        //fromAdmin: true,
-        //question:this.question,
        toAdmin: this.sendToAdmin
       }
     if(!this.newmessage && !this.fileurl)
         return
     if (this.sendToAdmin && this.isExpired(this.abonnement))
        return
-    if(this.sendToAdmin)
-      this.groupservice.postmsgstoadmin(newMessage).then(() => {
-        this.showEmojiPicker = false;
-        this.content.resize();
-        this.scrollto();
-        this.newmessage = '';
-        this.fileurl = '';
-        this.mesagetype = ''
+    this.newmessage = '';
+    this.fileurl = '';
+    this.mesagetype = 'simplemsg'
+    this.onFocus();
+    if (newMessage.type=='image'){
+      this.groupservice.addMsg(newMessage)
+      this.imgstore.storeImage(this.fileData).then(url=>{
+        newMessage.fileurl=url;
+        if (this.sendToAdmin)
+          this.groupservice.postmsgstoadmin(newMessage,false)
+        else
+          this.groupservice.addgroupmsg(newMessage, false)        
       })
+      return
+    }
+    if(this.sendToAdmin)
+     this.groupservice.postmsgstoadmin(newMessage)
       else
-      this.groupservice.addgroupmsg(newMessage).then(() => {
-        this.showEmojiPicker = false;
-        this.content.resize();
-        this.scrollto();
-      this.newmessage = '';
-        this.fileurl = '';
-        this.mesagetype = ''
-    })
+      this.groupservice.addgroupmsg(newMessage)
   }
+
   onFocus() {
     this.showEmojiPicker = false;
     this.content.resize();
     this.scrollto();
   }
 
+  onScroll(event){
+    if (this.content.directionY =='down')
+       this.scrollingToTop = false;
+    console.log(this.content.directionY);
+      
+  }
+
+
   scrollto() {
+    this.scrollingToTop = false;
     try {
       if (!this.scrollingToTop)
         setTimeout(() => {
-          if (this.content._scroll) this.content.scrollToBottom(0);
-        }, 1000);
+          if (this.content._scroll) this.content.scrollToBottom(500);
+        }, 200);
     }
     catch (e) {
       console.log((<Error>e).message);//conversion to Error type
@@ -245,18 +240,24 @@ export class GroupchatPage {
   }
 
   urlify(text:string) {
-    var urlRegex = /(?:(?:(?:ftp|http)[s]*:\/\/|www\.)[^\.]+\.[^ \n]+)/g;
+   /* var urlRegex = /(?:(?:(?:ftp|http)[s]*:\/\/|www\.)[^\.]+\.[^ \n]+)/g;
     if (!text)
        return "";
     return text.replace(urlRegex,  (url)=> {
      return '<a class="a" href="' + url + '">' + url + '</a>';
-    })
+    })*/
     // or alternatively
-    // return text.replace(urlRegex, '<a href="$1">$1</a>')
+     return text
   }
 
+  openRessource(ressource: any) {
+    this.navCtrl.push('RessourceDetailsPage', { ressource: ressource });
+  }
+
+
+
   presentSheet(msg: any){
-    if (msg.type=='question')
+    if (msg.type == 'question' || msg.type == 'ressource')
          return;
     let sheet = this.actionSheet.create({
       enableBackdropDismiss: true,
@@ -266,7 +267,7 @@ export class GroupchatPage {
           text: 'Transferer',
           icon: 'md-share-alt',
           handler: () => {
-            this.socialSharing.share(msg.message + ' ' + msg.fileurl, null , null,null)
+            this.socialSharing.share(msg.text + ' ' + msg.fileurl, null , null,null)
                 .catch((error) => {
                   this.notify.onSuccess({ message: error })
                   })
@@ -276,7 +277,7 @@ export class GroupchatPage {
           text: 'Copier',
           icon: 'md-copy',
           handler: () => {
-            this.clipboard.copy(msg.message).then(()=>{
+            this.clipboard.copy(msg.text).then(()=>{
               this.notify.onSuccess({ message: 'Copié' })
             });
            
@@ -304,11 +305,13 @@ export class GroupchatPage {
           text: 'Envoyer une image',
           icon: 'image',
           handler: () => {
-            //this.fileurl = "https://www.uml.edu/Images/Pic-of-CRC-for-About-Us-page_tcm18-229269.jpg?w=x";
-            //this.mesagetype = 'image' 
-           // this.scrollto();
-           
-            let loader = this.loadingCtrl.create({dismissOnPageChange:true,
+            this.imgstore.getImage().then(ImageData=>{
+              this.fileurl = 'data:image/png;base64, '+ImageData;
+              this.fileData =  ImageData;
+              this.mesagetype = 'image'  
+            })
+            /*
+           let loader = this.loadingCtrl.create({dismissOnPageChange:true,
               content: 'Chargement...'
             });
             
@@ -317,36 +320,28 @@ export class GroupchatPage {
               this.fileurl = fileurl;
               this.mesagetype = 'image'  
                this.scrollto();
+              this.content.resize();
             }).catch((err) => {
               alert(err);
               loader.dismiss();
             })
-            loader.present();
+           loader.present();*/
           }
         },
-        {
+   /*    {
           text: 'Envoyer un document',
           icon: 'md-document',
           handler: () => {
-           /* this.fileurl = "https://www.uml.edu/Images/Pic-of-CRC-for-About-Us-page_tcm18-229269.jpg?w=x";
-            this.mesagetype = 'file'  
-            this.scrollto();*/
-            let loader = this.loadingCtrl.create({
-              dismissOnPageChange: true,
-              content: 'Chargement...'
-            });
             this.imgstore.filemsgstore().then((imgurl) => {
-              loader.dismiss();
               this.fileurl = imgurl;
               this.mesagetype = 'file' 
                this.scrollto();
+              this.content.resize();
             }).catch((err) => {
               alert(err);
-              loader.dismiss();
             })
-            loader.present();
           }
-        },
+       },*/
         {
           text: 'Annuler',
           icon: 'md-close',

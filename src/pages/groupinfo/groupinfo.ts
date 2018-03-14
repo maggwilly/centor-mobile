@@ -22,6 +22,7 @@ export class GroupinfoPage {
   submited
   moveon: boolean = true;
   photoURL 
+  uploapping
   constructor(public navCtrl: NavController,
      public navParams: NavParams, 
      public groupservice: GroupsProvider,
@@ -37,6 +38,11 @@ export class GroupinfoPage {
     this.groupservice.getintogroup(this.groupName)
     this.groupservice.getmeingroup(this.groupName).then(me=>{
         this.meingroup=me;
+      if (this.meingroup){
+        this.meingroup.photoURL = firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' 
+        this.meingroup.displayName = firebase.auth().currentUser.displayName;
+      }
+       
     }) 
   }
   update(){
@@ -46,7 +52,7 @@ export class GroupinfoPage {
   joinGroup(){
     let newmember = { uid: firebase.auth().currentUser.uid, 
       displayName: firebase.auth().currentUser.displayName ? firebase.auth().currentUser.displayName:'',
-      photoURL: firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL:'',
+      photoURL: firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' ,
     }
    
     this.groupservice.joinSessionGroup(newmember).then(()=>{
@@ -84,18 +90,19 @@ export class GroupinfoPage {
   }  
   
   chooseimage() {
-    let loader = this.loadingCtrl.create({
+  /*  let loader = this.loadingCtrl.create({
       dismissOnPageChange:true,
       content: 'Please wait'
     })
-    loader.present();
+    loader.present();*/
+    this.uploapping=true;
     this.imgservice.uploadimage().then((uploadedurl: any) => {
-      loader.dismiss();
+    //  loader.dismiss();
       this.zone.run(() => {
         this.photoURL = uploadedurl;
         this.meingroup.photoURL = uploadedurl
         this.moveon = false;
-        this.updateproceed();
+       // this.updateproceed();
       })
     })
   }
@@ -105,6 +112,7 @@ export class GroupinfoPage {
     this.userservice.updateimage(this.photoURL).then((res: any) => {
       if (res.success) {
         this.update();
+        this.uploapping = false;
       }
       else {
         alert(res);

@@ -2,9 +2,14 @@ page-matiere-details {
 ion-note{
     border: 1px  solid map-get($colors, light);
     padding: 2px;
-    font-size: 0.5em;
+    font-size: 0.7em;
     border-radius: 50%;
 }
 
+ion-note.avalable{
+    border: 2px  solid map-get($colors, primary);
+    font-weight: bold;
+    color: map-get($colors, primary);
+}
  
 }

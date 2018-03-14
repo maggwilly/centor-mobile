@@ -29,7 +29,7 @@
         </ion-row>
        </ion-grid>     
     <dashboord-item [authInfo]="authInfo" [analyse]="analyse" [matiere]="matiere" [isShow]="isShow" *ngIf="analyse&&matiere && loaded"></dashboord-item>
-  <ion-card-content *ngIf="!analyse && loaded" >
+  <ion-card-content *ngIf="!analyse&&loaded" >
   <p class="vertical-center">
     Nous n'avons aucune information à vous présenter pour le moment car vous n'avez pas encore subi une évaluation.
   </p>
@@ -38,9 +38,10 @@
   <div>
     <ion-card-header>Contenu de la matière<ion-spinner class="vertical-center" name="dots" *ngIf="!(matiere&&matiere.parties)"></ion-spinner> </ion-card-header>
     <ion-list class="borded-list-item special-item" inset *ngIf="matiere&&matiere.parties&&matiere.parties.length" >
-      <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)" updater [user]="authInfo" [session]="concours" [matiere]="matiere" [partie]="partie">
-        <ion-note item-right>{{partie.type}}</ion-note>
+      <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)">
+        <ion-note item-right [class.avalable]="partie.isAvalable">{{partie.type}}</ion-note>
         {{partie.titre}}
+        <p>{{partie.objectif}}</p>
       </ion-item>
     </ion-list>
   </div>

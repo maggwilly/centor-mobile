@@ -33,14 +33,13 @@
           </ion-card-content>
         </div>
         <div>
-          <ion-card-header>Programme de préparation</ion-card-header>
+         
           <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
         </div>       
 <ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" >
   <button color="blue" id="cart-btn" ion-fab (click)=" openChat()">
-    <ion-icon name="ios-chatboxes"></ion-icon>
+    <ion-icon name="ios-chatboxes-outline"></ion-icon>
     <ion-badge color="blue"id="cart-badge"  notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
   </button>
 </ion-fab>
-
 </ion-content>

@@ -87,15 +87,13 @@ export class EditProfileCandidatPage {
 
     
     this.camera.getPicture(options).then((imageData) => {
-      this.candidat.base64Image = 'data:image/png;base64, ' + imageData;
+      this.candidat.base64Image = imageData;
        this.uploapping = true;
       firebase.storage().ref('profilePictures/' + firebase.auth().currentUser.uid)
       .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
         this.candidat.base64Image = picture.downloadURL;
         this.photoURL = picture.downloadURL;
         this.uploapping = false;
-        /*if (!this.candidat.photoURL)
-          this.editInfo(false);*/
         return   this.userProvider.updateimage(picture.downloadURL);
         }, error => {
         this.notify.onError({ message: 'Un problème est survenu !' });  
@@ -104,19 +102,7 @@ export class EditProfileCandidatPage {
       this.notify.onError({ message: 'Un problème est survenu !' }); 
     });
 
- /*  this.camera.getPicture(options).then((imageData) => {
-    // imageData is either a base64 encoded string or a file URI
-    // If it's base64:
-    this.base64Image = 'data:image/jpeg;base64,' + imageData;
-    this.candidat.base64Image='data:image/jpeg;base64,' + imageData;
-     this.imageData=imageData;
-     const selfieRef = firebase.storage().ref('profilePictures/' + this.authInfo.uid+'.jpeg');
-     selfieRef.putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture=>{
-       this.candidat.photoURl = picture.downloadURL;
-     });
-   },error=>{
-    alert(error);
-   }); */
+
    }
 
    cancelPicture(){

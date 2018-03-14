@@ -9,7 +9,7 @@ import { AppNotify } from '../../providers/app-notify';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { IonicPage } from 'ionic-angular';
-import { Facebook } from '@ionic-native/facebook'
+//import { Facebook } from '@ionic-native/facebook'
 @IonicPage()
 @Component({
   selector: 'page-concours-options',
@@ -84,7 +84,7 @@ export class ConcoursOptionsPage {
     public loadingCtrl: LoadingController,
     public notify: AppNotify,
     public appCtrl: App,
-    private facebook: Facebook,
+  //  private facebook: Facebook,
     private socialSharing: SocialSharing,
     public storage: Storage ) {
     this.initPage();
@@ -277,18 +277,16 @@ listenToEvents(){
 
   share(url: any) {
     let textMessage = this.concours.nomConcours;
-    this.facebook.showDialog({
+  /**   this.facebook.showDialog({
       method:'share',
       href:this.dataService._baseUrl + 'session/' + this.concours.id + '/show/from/mobile',
       caption: textMessage,
       hashtag: '#centor'
     }).catch(error => { })
-   /** 
-   *this.socialSharing.share(textMessage, null , null,this.dataService._baseUrl + 'session/' + this.concours.id + '/show/from/mobile')
+   */
+   this.socialSharing.share(textMessage, null , null,this.dataService._baseUrl + 'session/' + this.concours.id + '/show/from/mobile')
       .catch((error) => {
-      })*/
+      })
   }
 
-
-   
 }

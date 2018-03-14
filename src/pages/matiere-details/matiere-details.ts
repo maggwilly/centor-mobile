@@ -41,17 +41,21 @@ export class MatiereDetailsPage {
   }
 
 
-  ionViewDidEnter() {
+  ionViewDidLoad() {
     this.listenToEvents();
     this.initPage();
   }
+  
+  ionViewDidEnter() {
+    this.observeAuth(false);
+  }  
   /** Compare le score et le temps de reponse */
   initPage() {
     this.matiereToUpdate = this.navParams.get('matiere');
     this.matiere = Object.assign({}, this.matiereToUpdate);
     this.concours = this.matiere.concours;
     this.observeAuth(false);
-    this.setParties();
+    this.loadOnline()
 
   }
 
@@ -86,27 +90,12 @@ export class MatiereDetailsPage {
   }
 
 
-
-
-  setParties() {
-    return this.storage.get('_parties_' + this.matiere.id)
-      .then((data) => {
-        this.matiere.parties = data ? data : [];
-        //if (!this.matiere.parties || !this.matiere.parties.length) 
-          return this.loadOnline();
-       
-      }).catch(error => {
-        return this.loadOnline();
-      });;
-  }
-
   loadOnline() {
     this.loaded = false;
-    return this.dataService.getParties(this.matiere.contenu)
+    return this.dataService.getParties(this.matiere.contenu, this.concours.id, this.matiere.id)
       .then((data) => {
         this.matiere.parties = data;
         this.loaded = true;
-           this.storage.set('_parties_' + this.matiere.id, this.matiere.parties);
       }, error => {
         this.loaded = false;
         this.notify.onError({ message: 'Petit problème de connexion.' });
@@ -128,11 +117,13 @@ export class MatiereDetailsPage {
 
   /** Compare le score et le temps de reponse */
   show(partie: any) {
+ if (!partie.isAvalable)
+      return this.navCtrl.push('StartPage', { partie: partie });
+    partie.matiere=this.matiere;
     partie.matiere.concours = { id: this.concours.id, nom: this.concours.nomConcours, nomConcours: this.concours.nomConcours };
     partie.matiere.titre = this.matiere.titre;
     partie.matiere.id = this.matiere.id;
-   // console.log(this.concours);
-    console.log(partie.matiere.id);
+
     this.navCtrl.push('ScorePage', { partie: partie });
   }
 
@@ -141,16 +132,29 @@ export class MatiereDetailsPage {
   }
 
   getClass(obj: any): string {
-    if (!obj || obj.objectif == undefined)
+    if (!obj || obj.note == undefined)
       return 'none';
-    else if (obj.objectif < 20)
+    else if (obj.note < 5)
       return 'danger';
-    else if (obj.objectif < 50)
+    else if (obj.note < 10)
       return 'warning';
-    else if (obj.objectif > 50)
+    else if (obj.note > 10)
       return 'success';
     return 'none';
   }
 
-
+alert() {
+  let alert = this.alertCtrl.create({
+    subTitle: "Cette partie du programme n'est pas encore activée.",
+    message:"Cette partie du programme est encore verrouillée. Continuez de travailler sur la partie précedente.",
+    buttons: [
+      {
+        text: "Ok merci",
+        role: 'cancel'
+      }
+      
+    ]
+  });
+return  alert.present()
+}
 }
