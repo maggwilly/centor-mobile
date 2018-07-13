@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { DataService } from '../../providers/data-service';
 import { App} from 'ionic-angular';
 import { AppNotify } from '../../providers/app-notify';
+import { Storage } from '@ionic/storage';
 /**
  * Generated class for the ShortListComponent component.
  *
@@ -23,7 +24,7 @@ export class ShortListComponent {
   sessionList:any[]=[];
   @Input('styleShow')
   style: string;
-  constructor(public dataService: DataService, public notify: AppNotify, public appCtrl: App) {
+  constructor(public dataService: DataService, public storage: Storage, public notify: AppNotify, public appCtrl: App) {
 
   }
   ngOnInit() {
@@ -32,17 +33,16 @@ export class ShortListComponent {
 
   ngOnChanges() {
     this.loaded = false;
-    if(!this.target&&!this.authInfo){
-      this.loaded = true;
-      return 
-    }
-    this.dataService.getShortListOfSessions(this.target, this.authInfo?this.authInfo.uid:null).then((data)=>{
-    this.sessionList=data;
-      this.loaded=true;
-  },error=>{
-    console.log(error);
-    this.sessionList = []
-    this.notify.onError({ message: 'problème de connexion  !' });
+    return this.storage.get(this.target).then(dataLocaal=>{
+      this.sessionList = dataLocaal ? dataLocaal:[];
+            this.loaded = true;
+return  this.dataService.getShortListOfSessions(this.target, this.authInfo?this.authInfo.uid:null).then((data)=>{
+        this.sessionList=data;
+         this.storage.set(this.target, data);
+        this.loaded=true;
+      },error=>{
+         this.notify.onError({ message: 'problème de connexion  !' });
+  })
   })
   }  
 

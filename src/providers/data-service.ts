@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {  Http ,  Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/mergeMap';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
@@ -63,7 +64,7 @@ data: any;
         url = this._baseUrl + 'formated/session/owards/json'
         break;         
       default:
-        url = this._baseUrl + 'formated/session/for/user/' + uid + '/json' +'? uid= ' + this.getUserUID()
+        url = this._baseUrl + 'formated/session/for/user/' + uid + '/json' +'?uid= ' + this.getUserUID()
         break;
     }
     return this.http.get(url, { headers: this.headers })
@@ -74,6 +75,7 @@ data: any;
 
  /*Recherche la date de derniere mise a jour*/
   getMessages(registrationId: any, uid?: string, start?: number,all?:boolean){
+    
     return this.http.get(this._baseUrl + 'formated/sending/json?all=' + all + '&registrationId=' + registrationId + '&uid=' + uid  + '&start=' + start,  { headers:this. headers })
               .toPromise()
                .then(response =>response.json());    
@@ -81,25 +83,8 @@ data: any;
 }
 
  /*Recherche la date de derniere mise a jour*/
- readMessage(id:number){
-   return this.http.get(this._baseUrl +'formated/sending/edit/message/'+id+'/json',  { headers:this. headers })
-           .toPromise()
-            .then(response =>response.json());    
- 
-}
-
- /*Recherche la date de derniere mise a jour*/
- addRegistration(registrationId:string,registration:any){
-   return this.http.post(this._baseUrl +'formated/registration/'+registrationId+'/new/json',JSON.stringify(registration ),  { headers:this. headers })
-           .toPromise()
-            .then(response =>response.json());    
-}
-
-
-
- /*Recherche la date de derniere mise a jour*/
- getShowSession(id:number){
-   return this.http.get(this._baseUrl + 'formated/session/' + id + '/show/json' + '?uid= ' + this.getUserUID(),  { headers:this. headers })
+ readMessage(id:number,notificationId?:any,registrationId?:any){
+   return this.http.get(this._baseUrl + 'formated/sending/edit/message/' + id + '/json?notificationId=' + notificationId + '&registrationId=' + registrationId,  { headers:this. headers })
            .toPromise()
             .then(response =>response.json());    
  
@@ -112,6 +97,32 @@ getShowArticle(id:number){
     
 }
 
+  /*Recherche la date de derniere mise a jour*/
+  getShowNotification(id: number, registrationId?:any) {
+    return this.http.get(this._baseUrl + 'formated/notification/' + id + '/show/json?registrationId='+ registrationId+'&uid= ' + this.getUserUID(), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json());
+
+  }
+
+
+ /*Recherche la date de derniere mise a jour*/
+ addRegistration(registrationId:string,registration:any){
+   return this.http.post(this._baseUrl +'formated/registration/'+registrationId+'/new/json',JSON.stringify(registration ),  { headers:this. headers })
+           .toPromise()
+            .then(response =>response.json());    
+}
+
+
+
+ /*Recherche la date de derniere mise a jour*/
+ getShowSession(id:number){
+   
+   return this.http.get(this._baseUrl + 'formated/session/' + id + '/show/json' + '?uid= ' + this.getUserUID(),  { headers:this. headers })
+           .toPromise()
+            .then(response =>response.json());    
+ 
+}
 
  /*Recherche la date de derniere mise a jour*/
 getMatieres(programme:number){
@@ -123,7 +134,6 @@ getMatieres(programme:number){
 
 
   getParties(contenu: number, session: number, matiere: number){1
-    console.log(this._baseUrl + 'formated/partie/' + contenu + '/json' + '?session=' + session + '&matiere=' + matiere + '&uid=' + this.getUserUID());
     return this.http.get(this._baseUrl + 'formated/partie/' + contenu + '/json' + '?session=' + session + '&matiere=' + matiere+ '&uid=' + this.getUserUID(),  { headers:this. headers })
               .toPromise()
                .then(response =>response.json());    
@@ -148,10 +158,10 @@ getQuestions(qcm:number){
   }
 
   /*Recherche la date de derniere mise a jour*/
-  getRessourceObservable(id: number) {
+  getRessourceObservable(id: number, paymentUrl:any) {
     return IntervalObservable
       .create(1000)
-      .flatMap((i) => this.http.get(this._baseUrl + 'formated/ressource/' + id + '/show/json' + '?uid=' + this.getUserUID(), { headers: this.headers }));
+      .flatMap((i) => this.http.get(this._baseUrl + 'formated/ressource/' + id + '/show/json' + '?uid=' + this.getUserUID() + '&paymentUrl=' + paymentUrl, { headers: this.headers }));
   }
 
   /*Recherche la date de derniere mise a jour*/
@@ -164,7 +174,7 @@ getQuestions(qcm:number){
 
  /*Recherche la date de derniere mise a jour*/
 getAbonnements(uid:any){
- // console.log(this._baseUrl + 'formated/abonnement/' + uid + '/json');
+
   return this.http.get(this._baseUrl + 'formated/abonnement/' + uid + '/json' + '?uid=' + this.getUserUID(),  { headers:this. headers })
               .toPromise()
                .then(response =>response.json());      
@@ -179,8 +189,7 @@ getAbonnements(uid:any){
 
  /*Recherche la date de derniere mise a jour*/
 getAbonnement(uid:any,id:number){
- // console.log(this._baseUrl + 'formated/abonnement/' + uid + '/' + id + '/json' + '?uid=' + this.getUserUID());
-
+  console.log(this._baseUrl + 'formated/abonnement/' + uid + '/' + id + '/json' + '? uid=' + this.getUserUID());
   return this.http.get(this._baseUrl + 'formated/abonnement/' + uid + '/' + id + '/json' + '? uid=' + this.getUserUID(),  { headers:this. headers })
               .toPromise()
                .then(response =>response.json());    
@@ -188,20 +197,22 @@ getAbonnement(uid:any,id:number){
 }
 
   /*Recherche la date de derniere mise a jour*/
-  getAbonnementObservable(uid: number, id: number) {
+  getAbonnementObservable(uid: any, id: number) {
     return IntervalObservable
       .create(1000)
       .flatMap((i) => this.http.get(this._baseUrl + 'formated/abonnement/' + uid + '/' + id + '/json', { headers: this.headers }));
   }
 
   getAbonnementOneObservable( id: number) {
-   // console.log(this._baseUrl + 'formated/abonnement/one/' + id + '/json');
+    console.log(this._baseUrl + 'formated/abonnement/one/' + id + '/json');
     
     return IntervalObservable
       .create(1000)
       .flatMap((i) => this.http.get(this._baseUrl + 'formated/abonnement/' + id + '/show/one/json', { headers: this.headers }));
   }
+  
  startCommande(uid:any,sessionid:any,bundle:any){
+ 
     return  this.http.get(this._baseUrl+'formated/commende/'+uid+'/'+sessionid+'/'+bundle+'/json', { headers:this. headers })
              .toPromise()
               .then(response =>response.json());     
@@ -240,7 +251,7 @@ confirmCommande(id:any,status:any){
 
 getInfo(uid:any,registrationId?:any){
   console.log(this._baseUrl + 'formated/info/' + uid + '/show/json?registrationId=' + registrationId);
-  
+
   return this.http.get(this._baseUrl + 'formated/info/' + uid + '/show/json?registrationId='+registrationId, { headers:this. headers })
               .toPromise()
                .then(response =>response.json());      
@@ -261,6 +272,7 @@ getInfo(uid:any,registrationId?:any){
   }
 
 saveAnalyse(uid:any,concours:number,matiere:number,partie:number,analyse:any){
+  console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/new/json');
      return  this.http.post(this._baseUrl+'formated/analyse/'+uid+'/'+concours+'/'+matiere+'/'+partie+'/new/json',JSON.stringify(analyse ), { headers:this. headers })
               .toPromise()
                .then(response =>response.json());      
@@ -269,6 +281,7 @@ saveAnalyse(uid:any,concours:number,matiere:number,partie:number,analyse:any){
 
 
 getAnalyse(uid:any,concours:number,matiere:number,partie:number){
+  console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json');
  
      return  this.http.get(this._baseUrl+'formated/analyse/'+uid+'/'+concours+'/'+matiere+'/'+partie+'/json', { headers:this. headers })
               .toPromise()
@@ -276,7 +289,7 @@ getAnalyse(uid:any,concours:number,matiere:number,partie:number){
 }
 
 getAnalyseObservable(uid: any, concours: number, matiere: number, partie: number) {
-
+  console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json');
     return this.http.get(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json', { headers: this.headers })
     .map(response => response.json());
   }

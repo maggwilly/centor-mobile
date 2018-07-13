@@ -23,11 +23,13 @@ export class CoursViewPage {
   concours
   partie
   firecours = firebase.database().ref('/cours');
+  firecontent = firebase.database().ref('/content');
   start:number=0;
   currentContent:any;
   article: any
   nbrelecteurs
-  isEnd
+  isEnd;
+  rate
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
@@ -47,12 +49,18 @@ export class CoursViewPage {
     this.concours = this.navParams.get('concours');
     this.getShowArticle(id);
     this.groupservice.getintogroup(this.concours.id);
+    if (firebase.auth().currentUser&&id)
+    this.firecours.child(id).child(firebase.auth().currentUser.uid).child('rate').on('value', snaphost => {
+      this.rate = snaphost.val()
+    });
   }
 
   getShowArticle(id: number) {
     if (!id)
       return;
     return this.dataService.getShowArticle(id).then(cours => {
+      console.log(cours);
+      
       this.article =cours?cours:{} ;
       this.storage.get('start').then((data)=>{
         this.start=data?Number(data):0;
@@ -78,13 +86,16 @@ export class CoursViewPage {
         this.slides.slideTo(0, 1000);
     }, 1000)
   } 
-
+  next(){
+    
+  }
   change(slider) {
     this.isEnd=this.slides.isEnd();
     this.scrollto();
     this.storage.set('start',this.slides.getActiveIndex());
     this.currentContent = this.article.contents[this.slides.getActiveIndex()]
-    this.firecours.child(this.article.id).child(firebase.auth().currentUser.uid).set(this.progression(this.slides.getActiveIndex()));
+    if (firebase.auth().currentUser)
+       this.firecours.child(this.article.id).child(firebase.auth().currentUser.uid).update( {reading:this.progression(this.slides.getActiveIndex())});
   } 
 
   progression(index:number):number{
@@ -103,19 +114,31 @@ export class CoursViewPage {
   }
   presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({
-      title: 'Des difficultés ?',
+      title: 'Je ne comprends pas cette partie',
       buttons: [
         {
-          text: 'Completez sur google',
+          text: 'Marquer comme difficile',
+          icon: 'ios-bug',
+          handler: () => {
+            let id = this.currentContent.id;
+            this.marquerDificile(id);
+          }
+        },         
+        {
+          text: 'Rechercher sur google',
           icon: 'logo-google' ,
           handler: () => {
+            let id = this.currentContent.id;
+            this.marquerDificile(id);
             this.iab.create("https://www.google.com/search?q=" + this.currentContent.text, 'to _self', {});
           }
         },
         {
-          text: 'Partager avec les autres',
+          text: 'Partager dans le groupe',
           icon: 'ios-chatboxes-outline',
           handler: () => {
+            let id = this.currentContent.id;
+            this.marquerDificile(id);
             let newMessage: any = {
               text: this.currentContent.text,
               type: 'cours',
@@ -132,5 +155,15 @@ export class CoursViewPage {
     });
     actionSheet.present();
   }
- 
+  
+  marquerDificile(id) {
+    this.firecontent.child(this.article.id).child(id).child(firebase.auth().currentUser.uid).set(true);
+  }
+
+  onModelChange(event) {
+    if (!firebase.auth().currentUser)
+        return 
+       this.firecours.child(this.article.id).child(firebase.auth().currentUser.uid).update({rate:this.rate})
+  }
+
 }

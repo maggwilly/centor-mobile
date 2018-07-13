@@ -6,7 +6,7 @@ import { EmojiProvider } from "../../providers/emoji";
 import { QuestionViewComponent } from '../../components/question-view/question-view';
 import { SharedDirectivesModule } from '../../app/shared.module';
 import { SharedProvidersModule} from '../../app/shared.module';
-
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 @NgModule({
   declarations: [
     GroupchatPage,
@@ -17,6 +17,7 @@ import { SharedProvidersModule} from '../../app/shared.module';
     SharedDirectivesModule,
     SharedProvidersModule,
     EmojiPickerComponentModule,
+    LazyLoadImageModule
   ],
   exports: [
     GroupchatPage

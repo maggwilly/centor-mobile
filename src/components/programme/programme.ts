@@ -3,9 +3,9 @@ import { NavController,App, NavParams ,ModalController, AlertController,Events }
 import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
 import firebase from 'firebase';
+import { FcmProvider } from '../../providers/fcm/fcm';
 /*
   Generated class for the Programme component.
-
   See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
   for more info on Angular 2 Components.
 */
@@ -59,10 +59,10 @@ import firebase from 'firebase';
 
     trigger('flash', [
       state('first', style({
-        opacity: 1, offset: 0
+        opacity: 1, offset: 0.5
       })),
       state('second', style({
-        opacity: 0.1, offset: 0.2
+        opacity: 0.5, offset: 1
       })),
       state('third', style({
         opacity: 1, offset: 0.5
@@ -73,8 +73,8 @@ import firebase from 'firebase';
       state('fifth', style({
         opacity: 1, offset: 1
       })),
-      transition('first => second', animate('1500ms linear')),
-      transition('second => first', animate('500ms linear')),
+      transition('first => second', animate('200ms linear')),
+      transition('second => first', animate('200ms linear')),
       transition('second => third', animate('100ms linear')),
       transition('third => fourth', animate('100ms linear')),
       transition('fourth => fifth', animate('100ms linear')),
@@ -113,11 +113,13 @@ export class ProgrammeComponent {
     public events: Events,
     public alertCtrl: AlertController,
     public appCtrl: App,
+    private fcm: FcmProvider,
     public navParams: NavParams,
     public dataService:DataService,
     public modalCtrl: ModalController) {
     this.zone = new NgZone({});
     this.toggleFlash();
+
   }
 
 
@@ -144,8 +146,10 @@ inscrire() {
       this.abonnement = data.json();
       this.abonnementLoaded = true;
       if (this.abonnementExpired && !this.isExpired(this.abonnement) && !this.alert){
-         this.notify.onError({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
+        this.fcm.listenTopic('centor-group-' + this.concours.id);  
+         this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
          this.alert=true;
+        this.events.publish('payement:success', this.abonnement);
          ch.unsubscribe();
       }
       //   console.log(data.json());
@@ -188,23 +192,14 @@ getClass(obj:any):string{
   }
 
   toggleFlash() {
-
     this.flashState = 'first';
     setInterval(() => {
       this.flashState = 'second';
-    }, 2000);
-   setInterval(() => {
+    }, 1000);
+  setInterval(() => {
      this.flashState = 'first';
-    }, 4000);
-   /* setInterval(() => {
-      this.flashState = 'third';
-    }, 1000);
-    setInterval(() => {
-      this.flashState = 'fourth';
-    }, 1000);
-    setInterval(() => {
-      this.flashState = 'fifth';
-    }, 1000);*/
+    }, 2000);
+
   }
 show(matiere:any){
   if(!this.abonnementLoaded&&this.authInfo){

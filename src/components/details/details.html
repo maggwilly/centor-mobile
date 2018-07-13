@@ -5,7 +5,7 @@
 -->
 <ion-list no-lines no-padding >
     <div ion-item     *ngIf="concours.type" class="bg-transparent">{{concours.nom}}
-         <ion-note item-right>{{concours.type}}</ion-note>  
+         <ion-badge item-right>{{concours.type}}</ion-badge>  
     <ion-icon name="cube"class="light-icon" item-left></ion-icon>  
     </div> 
   <div ion-item text-wrap *ngIf="concours.dateLancement" class="bg-transparent">

@@ -6,8 +6,8 @@
   <button ion-button icon-only outline item-right (click)="share(resultat)" >
     <ion-icon name="share-alt"></ion-icon>
   </button>
-  <button ion-button icon-only outline item-right  (click)="downloadFile(resultat)" >
+  <a ion-button icon-only outline item-right  [href]="resultat.url" >
     <ion-icon [name]="name(resultat.url)"></ion-icon>
-  </button>
+  </a>
   </ion-item>
 </ion-list>

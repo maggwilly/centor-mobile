@@ -4,12 +4,16 @@ import { CoursViewPage } from './cours-view';
 import { SharedDirectivesModule } from '../../app/shared.module';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SharedProvidersModule } from '../../app/shared.module';
+import { Ionic2RatingModule } from 'ionic2-rating';
 @NgModule({
   declarations: [
     CoursViewPage,
   ],
   imports: [
-    IonicPageModule.forChild(CoursViewPage), SharedDirectivesModule, SharedProvidersModule
+    IonicPageModule.forChild(CoursViewPage),
+     SharedDirectivesModule,
+      SharedProvidersModule,
+    Ionic2RatingModule
   ],
   providers: [InAppBrowser]
 })

@@ -33,13 +33,6 @@ export class ImghandlerProvider {
         sourceType: sourceType
       }
 
-    /*  this.getImageTest().then((imageData) => {
-        firebase.storage().ref('/profileimages').child(firebase.auth().currentUser.uid)
-          .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
-            resolve(picture.downloadURL);
-          });
-      });   
-     */
         this.camera.getPicture(options).then((imageData) => {
         firebase.storage().ref('/profileimages').child(firebase.auth().currentUser.uid)
           .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
@@ -84,7 +77,7 @@ export class ImghandlerProvider {
       .then(response => response.text());
   } 
 
-  getImage() {
+  getImage(targetWidth?: number, targetHeight?:number) {
     const options: CameraOptions = {
       quality: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
@@ -92,12 +85,17 @@ export class ImghandlerProvider {
       cameraDirection: 1,
       mediaType: this.camera.MediaType.PICTURE,
       sourceType: 0
-    }  
+    }
+    if (targetWidth &&targetHeight){
+      options.targetWidth = targetWidth;
+      options.targetHeight = targetHeight;
+      options.allowEdit=true;
+    }
     return this.camera.getPicture(options)
   } 
 
-storeImage(imageData){
- return firebase.storage().ref('/picmsgs').child(this.guid())
+  storeImage(imageData, path: string = '/picmsgs'){
+    return firebase.storage().ref(path).child(this.guid())
     .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => picture.downloadURL)
 }
 
@@ -142,14 +140,6 @@ storeImage(imageData){
           mediaType: this.camera.MediaType.PICTURE,
           sourceType: sourceType
         }
-
-        /* this.getImageTest().then((imageData) => {
-          firebase.storage().ref('/profileimages').child(firebase.auth().currentUser.uid)
-            .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
-              resolve(picture.downloadURL);
-            });
-        });
-*/
        this.camera.getPicture(options).then((imageData) => {
          firebase.storage().ref('/picmsgs').child(this.guid())
           .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {

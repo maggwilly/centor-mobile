@@ -4,17 +4,17 @@
       <ion-header no-border no-shadow>
         <ion-navbar text-right>
           <ion-title>
-            <img class="logo-menu" item-right src="assets/images/logo-light.png" />
+            <img class="logo-menu" item-right src="assets/images/icon-text-white-left.png" />
           </ion-title>
         </ion-navbar>
       </ion-header>
- 
       <div id="profile-bg">
-        <img class="user-avatar round" *ngIf="user&& user.info&& user.info.photoURL" [src]="user&& user.info&& user.info.photoURL" >
-        <img class="user-avatar round" *ngIf="user&&(! user.info||!user.info.photoURL)" src="assets/images/default-avatar.jpg">
+          <!--<img class="user-avatar round" *ngIf="user&& user.info"  [src]="user.info.photoURL" image-cache>-->
+      <img class="user-avatar round" *ngIf="user&& user.info"
+          [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset"  image-cache>
         <p class="name" *ngIf="user">
-          <span>{{(user.info.displayName||user.info.email)| limitTo:15}}  </span>
-        </p>
+          <span>{{(user.info.displayName||user.info.email)| limitTo:16}} </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~&nbsp;&nbsp;<span *ngIf="!isExpired(abonnement)"><b>{{abonnement.id}}</b></span>
+        </p> 
       </div>
       <ion-list no-lines>
         <ion-item-group *ngIf="paidConcours&&paidConcours.length">
@@ -30,13 +30,14 @@
           {{p.title}}
         </button>
         <button menuClose="left" ion-item detail-none (click)="openMessages()">
-          <ion-icon name="ios-notifications" item-left></ion-icon>
+          <ion-icon name="paper" item-left></ion-icon>
           <span>Notifications</span>
-          <ion-badge id="notifications-badge" color="danger" item-end notification [notificationId]="notificationId"></ion-badge>
+<ion-badge class="notifications-badge" notification [notificationId]="notificationId" [registrationId]="registrationId" item-right
+  color="danger"></ion-badge>
         </button>
         <button menuClose="left" ion-item detail-none (click)="openSettingPage()">
           <ion-icon name="person" item-left ></ion-icon>
-          <span *ngIf="user">Options</span>
+          <span *ngIf="user">Mon compte</span>
           <span *ngIf="!user">Connexion</span>
         </button>
   

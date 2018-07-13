@@ -5,7 +5,7 @@ import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import firebase from 'firebase';
 import { IonicPage } from 'ionic-angular';
-
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 /**
  * Generated class for the ResultatsPage page.
  *
@@ -30,10 +30,11 @@ export class ResultatsPage {
     public dataService: DataService,
     public notify: AppNotify,
     public events: Events,
+    public firebaseNative: Firebase,
     public platform: Platform,
 
   ) {
-
+    this.firebaseNative.setScreemName('document_list');
   }
 
 

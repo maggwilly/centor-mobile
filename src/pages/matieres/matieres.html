@@ -2,10 +2,11 @@
   <ion-navbar hideBackButton>
     <button menuToggle ion-button icon-only>
       <ion-icon name="menu"></ion-icon>
+      <ion-badge class="notifications-badge" notification [notificationId]="notificationId" [registrationId]="registrationId" color="danger"></ion-badge>
     </button>
     <ion-title *ngIf="concours&&concours.concours"> {{concours.nomConcours}}</ion-title>
     <ion-buttons  end>
-      <button ion-button icon-only (click)="observeAuth(true)">
+      <button ion-button icon-only (click)="observeAuth(false)">
         <ion-icon name="md-refresh"></ion-icon>
       </button>
     </ion-buttons > 
@@ -36,8 +37,8 @@
          
           <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
         </div>       
-<ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" >
-  <button color="blue" id="cart-btn" ion-fab (click)=" openChat()">
+<ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" [@bounce]="bounceState">
+  <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
     <ion-icon name="ios-chatboxes-outline"></ion-icon>
     <ion-badge color="blue"id="cart-badge"  notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
   </button>

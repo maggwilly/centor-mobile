@@ -6,8 +6,9 @@ import { AppNotify} from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
 import firebase from 'firebase';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { SocialSharing } from '@ionic-native/social-sharing';
 import { IonicPage } from 'ionic-angular';
-
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 @IonicPage()
 @Component({
   selector: 'page-finalise',
@@ -32,21 +33,21 @@ export class FinalisePage {
   public viewCtrl: ViewController, 
   public notify:AppNotify,
   public dataService:DataService,
+  public firebaseNative: Firebase,
   public modalCtrl: ModalController,
   private iab: InAppBrowser,
+  private socialSharing: SocialSharing,
   public alertCtrl: AlertController,
   public storage: Storage ,
   public events: Events,
   public loadingCtrl: LoadingController,) {
-
+    this.firebaseNative.setScreemName('payment_page');
   }
 
   ionViewDidEnter() {
-    
      this.concours=this.navParams.get('concours'); 
      this.abonnement=this.navParams.get('abonnement');  
      this.uid= firebase.auth().currentUser.uid;
-    console.log(JSON.stringify(this.concours.price));
   }
 
 
@@ -67,6 +68,7 @@ export class FinalisePage {
           this.starter=data;
           this.commande=this.starter;
           this.commande.plan = bundle;
+          this.firebaseNative.logEvent('free_plan_start',{price:0});
         },error=>{
           this.notify.onError({ message: 'Problème de connexion.' });
         })
@@ -76,39 +78,17 @@ export class FinalisePage {
           this.standard=data;
           this.commande=this.standard;
           this.commande.plan = bundle;
-          console.log(this.commande);
-          
-          this.notify.onSuccess(
-            {
-            message: "Pour effectuer votre paiment,vous aurez besoin d'un CODE DE PAIMENT de 06 chiffres. Obtenez le par SMS en composant le #150*4*4*CODE_SECRET# sur votre telephone. Le code de paiment  est différent de votre code secret Orange Money",
-            duration: 120000,
-            dismissOnPageChange:true,
-            showCloseButton:true,
-            closeButtonText:'ok',
-            cssClass:'flash-message'
-          }
-          );
+          this.firebaseNative.logEvent('standard_plan_start', { price: this.concours.price.standard });         
         },error=>{
           this.notify.onError({ message: 'Problème de connexion.' });
         })
-       // else this.commande=this.standard;
         break;    
       default:
       this.dataService.startCommande(this.uid,this.concours.id,bundle).then(data=>{
         this.premium=data;
         this.commande=this.premium;
-        console.log(this.commande);
-        this.commande.plan = bundle;
-        this.notify.onSuccess(
-          {
-            message: "Pour effectuer votre paiment,vous aurez besoin d'un CODE DE PAIMENT de 06 chiffres. Obtenez le par SMS en composant le #150*4*4*CODE_SECRET# sur votre telephone. Le code de paiment  est différent de votre code secret Orange Money",
-            duration: 120000,
-            dismissOnPageChange: true,
-            showCloseButton: true,
-            closeButtonText: 'ok',
-            cssClass: 'toast-message'
-          }
-        );        
+        this.firebaseNative.logEvent('premium_plan_start', { price: this.concours.price.premium });
+        this.commande.plan = bundle;       
       },error=>{
         this.notify.onError({ message: 'Problème de connexion.' });
       }) 
@@ -116,6 +96,7 @@ export class FinalisePage {
         break;
     }
   }
+
 
   confirmCommende(){
     switch (this.commande.plan) {
@@ -126,8 +107,6 @@ export class FinalisePage {
           txnid: "CENTOR_" + this.commande.id
         };
         this.dataService.confirmCommande(this.commande.id, status).then(data => {
-          this.notify.onSuccess({ message: 'Vous êtes inscrit au programme !' });
-          this.events.publish('payement:success');
           this.dismiss();
         }, error => {
           this.notify.onError({ message: 'Nous avons rencontré un problème !' });
@@ -154,7 +133,6 @@ dismiss(data?:any) {
   }  
 
 openConcours() {
-    // close the menu when clicking a link from the menu
        this.navCtrl.setRoot(ConcoursPage);
   }
   
@@ -166,8 +144,32 @@ openConcours() {
    }
 
   help(){
-    let modal = this.modalCtrl.create('SlideCarouselPage');
-    modal.present();
+   // let modal = this.modalCtrl.create('SlideCarouselPage');
+    //modal.present();
+    this.notify.onSuccess(
+      {
+        message: `Vous êtes appelé à payer les frais pour vous inscrire à ce programme de préparation. 
+          Pour effectuer ce paiement, vous aurez besoin d'un CODE DE PAIMENT de 06 chiffres. 
+          Obtenez ce  code par SMS en composant le #150*4*4*CODE_SECRET_Orange_Money#
+         sur un téléphone aboné orange. Accedez ensuite à la page de paiement en appuyant 
+         sur le bouton de couleur orange; Remplissez les champs sur la page
+          avec le numéro de téléphone et le code de paiement.
+            Utilisez le bouton "CONFIRMER" de la page pour valider.`,
+        duration: 120000,
+        dismissOnPageChange: true,
+        showCloseButton: true,
+        closeButtonText: 'ok',
+        cssClass: 'flash-message'
+      }
+    );    
+  }
+
+  payForMe(){
+    let textMessage =
+      `CMD.` + this.commande.id;
+    this.socialSharing.share(textMessage, null, null, this.commande.data.payment_url)
+      .catch((error) => {
+      })
   }
 
   helpCore() {

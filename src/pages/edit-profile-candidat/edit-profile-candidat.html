@@ -1,10 +1,9 @@
 <ion-header no-border>
     <ion-navbar primary>
-      <ion-title>Paramètres</ion-title> 
-
+      <ion-title>Informations</ion-title> 
     <ion-buttons  right>
-          <ion-spinner name="dots" *ngIf="submited||uploapping"></ion-spinner>
-          <button ion-button icon-only (click)="editInfo()" *ngIf="!submited&&!uploapping">
+          <ion-spinner color="white" name="ios" *ngIf="submited"></ion-spinner>
+          <button ion-button icon-only (click)="editInfo()" *ngIf="!submited">
             <ion-icon name="md-done-all"></ion-icon>
           </button>
     </ion-buttons>
@@ -22,11 +21,10 @@
     </ion-navbar>
   </ion-header>
   <ion-content padding="5">
-      <ion-item class="list-item" (click)="pictureActionSheet()">
+      <ion-item class="list-item" (click)="chooseimage()">
         <ion-avatar item-start >
-          <img *ngIf="(!candidat||!candidat.photoURL)&&!photoURL" [src]="placeholderPicture">
-          <img *ngIf="(candidat&&candidat.photoURL)&&!photoURL" [src]="candidat.photoURL ">
-          <img *ngIf="photoURL" [src]="photoURL" >        
+          <img [src]="_DomSanitizer.bypassSecurityTrustUrl(photoURL)" *ngIf="uploapping">
+          <img [defaultImage]="defaultAvatar" [lazyLoad]="photoURL" [offset]="offset" *ngIf="!uploapping">
         </ion-avatar>
         <p class="username">Photo de profil</p>
         <button item-right  ion-button clear icon-only  *ngIf="!uploapping">
@@ -41,7 +39,7 @@
       </ion-item>
     <ion-list no-border>
         <ion-list-header>
-         Informations Génerales
+         Génerales
         </ion-list-header>
         <ion-item>
             <ion-icon name='person' item-start></ion-icon>
@@ -135,14 +133,16 @@
         </ion-select>
       </ion-item>
     </ion-list>-->
+<div padding>
+  <button ion-button block  (click)="editInfo()" icon-left [disabled]="submited">
+                <ion-icon name='md-person' ></ion-icon> 
+                 Enrégistrer les Informations
+   </button>
+</div>
     <ion-list>
       <ion-list-header>
         Actions
       </ion-list-header>
-          <button ion-item  (click)="openHelp()" >
-            <ion-icon name='md-help' item-left></ion-icon>
-          Obtenir de l'aide
-        </button>      
         <button ion-item   (click)="presentActionSheet()" >
           <ion-icon name='power' item-left></ion-icon>
         Me déconnecter

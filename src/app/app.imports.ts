@@ -13,11 +13,12 @@ import { Transfer} from '@ionic-native/transfer';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Camera } from '@ionic-native/camera';
 //mains providers
-import { Push } from '@ionic-native/push';
+import { Deeplinks } from '@ionic-native/deeplinks';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
+import { Firebase } from '@ionic-native/firebase';
 // Directives
 import { NotificationDirective } from '../directives/notification/notification';
 import { HideHeaderDirective } from '../directives/hide-header/hide-header';
@@ -25,7 +26,7 @@ import { UpdaterDirective} from '../directives/updater/updater';
 import { AvalabilityDirective } from '../directives/avalability/avalability';
 import { MathJaxDirective } from '../directives/MathJax.directive';
 import { HideFabDirective } from '../directives/hide-fab/hide-fab';
-
+import { ImageCacheDirective } from '../directives/image-cache/image-cache';
 // Components
 import { DashboordItemComponent } from '../components/dashboord-item/dashboord-item';
 import { ProgrammeComponent } from '../components/programme/programme';
@@ -55,10 +56,11 @@ const cloudSettings: CloudSettings = {
         sound: true
       },
       android: {
+        iconColor: "#00AEED",
         vibrate: true,
         forceShow:true,       
-        sound: true
-
+        sound: true,
+        icon: 'ic_notify'
       }
     }
   }
@@ -66,9 +68,7 @@ const cloudSettings: CloudSettings = {
 
 
 export const MODULES = [
- // BrowserModule,
   HttpModule,
-
   CloudModule.forRoot(cloudSettings),
   IonicStorageModule.forRoot()
 ];
@@ -81,7 +81,8 @@ export const PIPES = [
 export const MAINPROVIDERS = [
   StatusBar,
   SplashScreen,
-  Push,
+  Firebase,
+  Deeplinks,
   DataService,
   AppNotify,
   SocialSharing,
@@ -92,6 +93,7 @@ export const SHAREDPROVIDERS = [
    GroupsProvider,
   ImghandlerProvider,
   File,
+
   FileChooser,
   FilePath,
   UserProvider,
@@ -115,5 +117,6 @@ export const DIRECTIVES = [
   UpdaterDirective,
   MathJaxDirective,
   HideFabDirective,
-  AvalabilityDirective
+  AvalabilityDirective,
+  ImageCacheDirective
 ];

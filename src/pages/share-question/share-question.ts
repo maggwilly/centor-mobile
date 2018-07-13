@@ -36,7 +36,7 @@ export class ShareQuestionPage {
   ionViewDidLoad() {
     eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub])');
     this.messageInput.autocorrect = 'On';
-    this.messageInput.setFocus()
+   
   }
 
   switchEmojiPicker() {

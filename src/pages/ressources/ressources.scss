@@ -17,8 +17,8 @@ page-ressources {
 
   $default: #f53d3d;
   $cruzeiro: #387ef5;
-  $atletico: darken(#f4f4f4, 45%);
-  $javascript: #f7e023;
+  $atletico: #f53d3d;
+  $javascript: #0e9e4a;
 
   .item-ribbon{
     background-color: #fff;
@@ -79,12 +79,12 @@ page-ressources {
     @include ribbonize($cruzeiro);
   }
 
-  .ribbon.populaire {
+  .ribbon.urgent {
     @include ribbonize($atletico);
   }
 
   .ribbon.important {
-    @include ribbonize($javascript, black);
+    @include ribbonize($javascript);
   }
 
  .card img{

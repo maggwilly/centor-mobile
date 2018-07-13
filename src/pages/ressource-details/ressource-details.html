@@ -1,13 +1,22 @@
 <ion-header no-border  #head>
   <ion-navbar>
+  <button menuToggle ion-button icon-only *ngIf="showMenu">
+    <ion-icon name="menu"></ion-icon>
+  </button>
     <ion-title>
       {{estateProperty.nom}}
     </ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content fullscreen elestic-header class="bg-white" hide-header [header]="head">
-  <section class="housing-image" [ngStyle]="{ 'background-image': 'url(' + estateProperty.imageUrl + ')'}" *ngIf="estateProperty">
-    <section class="housing-banner" padding>
+<ion-content fullscreen elestic-header class="bg-white" >
+    <ion-grid style="height:100%;justify-content: center;" *ngIf="!loaded">
+            <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
+              <ion-spinner name="ios" class="vertical-center"></ion-spinner>
+            </ion-row>
+    </ion-grid>
+  <div *ngIf="loaded">
+  <section class="housing-image" [ngStyle]="{ 'background-image': 'url(' + estateProperty.imageUrl + ')'}"  *ngIf="estateProperty">
+    <section class="housing-banner" >
       <span class="housing-title">{{estateProperty.nom}}</span>
       <span class="price" *ngIf="estateProperty.price">{{estateProperty.price}}<sup>Fcfa</sup></span>
       <span class="price" *ngIf="!estateProperty.price">GRATUIT</span>
@@ -50,15 +59,21 @@
       </ion-row>
     </ion-grid>
   </section>
+  </div>
+<ion-fab top left #fab [hidden]="!(estateProperty.price&&estateProperty.paymentUrl)">
+  <button ion-fab mini color="orange" (click)="help()">
+    <ion-icon name="md-help"></ion-icon>
+  </button>
+</ion-fab>
 </ion-content>
 <ion-footer>
-  <button *ngIf="(!estateProperty.price||!estateProperty.paymentUrl)&&estateProperty.url"  large full no-margin color="primary" icon-left (click)="downloadFile()">
+  <a ion-button *ngIf="(!estateProperty.price||!estateProperty.paymentUrl)&&estateProperty.url"  large full no-margin color="primary" icon-left [href]="estateProperty.url">
     <ion-icon name="md-download"></ion-icon>
     Telecharger
-  </button>
-  <button *ngIf="estateProperty.price&&estateProperty.paymentUrl" ion-button large full no-margin icon-left color="orange" >
+  </a>
+  <button *ngIf="estateProperty.price&&estateProperty.paymentUrl" ion-button large full no-margin icon-left color="orange" (click)="telecharger()">
     <ion-icon name="md-open"></ion-icon>
-    Obtenir
+    Obtenir le document
   </button>
           <ion-grid style="height: 56px;justify-content: center;" *ngIf="!estateProperty.url">
             <ion-row justify-content-center align-items-center style="height: 56px;justify-content: center;">

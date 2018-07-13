@@ -71,7 +71,7 @@ export class ResultatListComponent {
       if (this.platform.is('ios')) {
         this.storageDirectory = cordova.file.documentsDirectory;
       }
-      else if (this.platform.is('android')) {
+      else if (this.platform.is('android') || this.platform.is('core')) {
         this.storageDirectory = cordova.file.dataDirectory;
       }
       else {
@@ -92,6 +92,7 @@ export class ResultatListComponent {
         loader.dismiss();
         this.notify.onSuccess({ message: "Le fichier n'a pas put être téléchargé", position: 'top' });
       });
+      loader.present();
     });
   }
 

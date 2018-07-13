@@ -10,45 +10,24 @@
   </ion-navbar>
 </ion-header>
 <ion-content  hide-header [header]="head">
-  <!--  <ion-grid *ngIf="ressources">
-     <ion-row>
-       <ion-col col-6 *ngFor="let item of ressources">
-         <ion-card  class="item-ribbon" (click)="openRessource(item)" ion-item>
-                <ion-thumbnail>
-                  <img src="assets/images/file-image.png">
-                </ion-thumbnail>
-              <span class="ribbon {{ item.label }}" *ngIf="item.label">
-                <span>{{ item.label }}</span>
-              </span>
-              <ion-card-content>
-          <h2>{{ item.nom }}</h2>
-          <p>{{item.detail1 }}
-          </p>
-          </ion-card-content>
-         </ion-card>
-       </ion-col>
-     </ion-row>
-    </ion-grid>-->
-<ion-list [virtualScroll]="ressources">
+<ion-list [virtualScroll]="ressources" inset>
     <ion-item *virtualItem="let item"  class="item-ribbon" (click)="openRessource(item)">
               <span class="ribbon {{ item.label }}" *ngIf="item.label">
                 <span>{{ item.label }}</span>
               </span>
-                <ion-avatar item-left>
-                  <img src="assets/images/file-image.png">
-                </ion-avatar>
+      <ion-icon item-left name="ios-copy"></ion-icon>
        <h2>{{ item.nom }}</h2>
         <p>{{item.description }}</p>
         <p>{{item.detail1 }} <span *ngIf="item.detail2">,{{item.detail2 }}</span></p>
     </ion-item>
   </ion-list>
-  <ion-grid *ngIf="!ressources" style=" height: 100%;justify-content: center;">
-    <ion-row justify-content-center align-items-center>
-      <ion-spinner name="dots"></ion-spinner>
+  <ion-grid *ngIf="!ressources" style="height: 100%;justify-content: center;">
+    <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
+      <ion-spinner name="ios"></ion-spinner>
     </ion-row>
   </ion-grid>
-  <ion-grid *ngIf="ressources&&!ressources.length">
-    <ion-row justify-content-center align-items-center>
+  <ion-grid *ngIf="ressources&&!ressources.length" style="height: 100%;justify-content: center;">
+    <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
       <div class="empty">
         <p>
           <svg fill="#C0C0C0" height="64" viewBox="0 0 24 24" width="64" xmlns="http://www.w3.org/2000/svg">

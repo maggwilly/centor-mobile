@@ -1,6 +1,9 @@
 
 <ion-header>
   <ion-navbar>
+  <button menuToggle ion-button icon-only *ngIf="showMenu">
+    <ion-icon name="menu"></ion-icon>
+  </button>
      <ion-title  *ngIf="concours&&concours.concours"> {{concours.nomConcours}}</ion-title>
     <ion-buttons right>
       <button ion-button icon-only (click)="loadOnline()" >
@@ -20,10 +23,9 @@
               </button>
             </ion-col> 
             <ion-col text-center col-4>
-              <button ion-button clear small color="primary" (click)="suivre(!status)" icon-left>
-                <ion-icon name='ios-notifications-outline' *ngIf="!status"></ion-icon>
-                <ion-icon name='ios-notifications' *ngIf="status"></ion-icon>
-               suivre
+              <button ion-button clear small color="primary" (click)="startabonnement()" icon-left>
+                <ion-icon name='ios-notifications' ></ion-icon>
+               M'abonner
               </button>
             </ion-col>                 
             <ion-col text-right col-4>
@@ -36,8 +38,8 @@
         <div>
           <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
         </div>
-<ion-fab bottom right #fab [hidden]="!abonnement||!authInfo">
-  <button color="blue" id="cart-btn" ion-fab (click)=" openChat()">
+<ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" [@bounce]="bounceState">
+  <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
     <ion-icon name="ios-chatboxes-outline"></ion-icon>
     <ion-badge color="blue" id="cart-badge"  notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
   </button>

@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{partie.titre}}</ion-title>
     <ion-buttons right [hidden]="!isTheEnd">
-      <button ion-button icon-only (click)="observeAuth(true)">
+      <button ion-button icon-only (click)="observeAuth(false)">
         <ion-icon name="md-refresh"></ion-icon>
       </button>
     </ion-buttons>
@@ -39,7 +39,7 @@
         <ion-col col-3>
           <div >
             <ion-fab center top>
-              <button color="facebook" mini ion-fab (click)="share()"><ion-icon name="ios-bug"></ion-icon></button>
+              <button color="facebook" mini ion-fab (click)="presentActionSheet()"><ion-icon name="ios-bug"></ion-icon></button>
             </ion-fab>
           </div>
         </ion-col>
@@ -180,32 +180,33 @@
     <div class="popup-menu-overlay" [ngClass]="{'in': openMenu}" (click)="togglePopupMenu()"></div>
     <div class="popup-menu-toggle" (click)="togglePopupMenu()" [ngClass]="{'out': openMenu}"></div>
     <div class="popup-menu-panel" [ngClass]="{'in': openMenu}">
-      <div class="popup-menu-item" (click)="goToMenu()">
-        <ion-icon name="menu"></ion-icon>
-        <span>Menu</span>
-      </div>
       <div class="popup-menu-item" (click)="goToChat()">
         <ion-icon name="ios-chatboxes"></ion-icon>
         <ion-badge notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
         <span>Discussion</span>
+      </div>
+      <div class="popup-menu-item" (click)="goToRessources()">
+        <ion-icon ios="ios-albums" md="md-albums"></ion-icon>
+        <span>Documents</span>
+      </div>
+      <div class="popup-menu-item" (click)="goToMenu()">
+        <ion-icon name="menu"></ion-icon>
+        <span>Menu</span>
       </div>
       <div class="popup-menu-item" (click)="goToHome()">
         <ion-icon name="home"></ion-icon>
         <span>Accueil</span>
       </div>
       <div class="popup-menu-item" (click)="goToNotifications()">
-        <ion-icon name="ios-notifications"></ion-icon>
-        <ion-badge notification notification [notificationId]="notificationId"></ion-badge>
-        <span>Objets</span>
+        <ion-icon name="paper"></ion-icon>
+        <ion-badge notification notification [registrationId]="registrationId" [notificationId]="notificationId"></ion-badge>
+        <span>Annonces</span>
       </div>
       <div class="popup-menu-item" (click)="goToAccount()">
         <ion-icon name="person"></ion-icon>
         <span>Profil</span>
       </div>
-      <div class="popup-menu-item" (click)="goToAbout()">
-        <ion-icon name="information-circle"></ion-icon>
-        <span>A propos</span>
-      </div>
+
     </div>
   </div>
 </ion-content>

@@ -1,5 +1,5 @@
 <!-- Generated template for the ShortListComponent component -->
-<div  ion-list  *ngIf="sessionList.length||!loaded"  class="pannel" [ngClass]="style" no-border>
+<div  ion-list  [hidden]="!sessionList.length&&loaded"  class="pannel" [ngClass]="style" no-border>
     <ion-item-divider sticky *ngIf="header" style="height: 17px;">
       <ion-label>
          {{header}}

@@ -1,0 +1,17 @@
+page-information {
+  h2 {
+        font-size: 2.4rem;
+      }    
+  .description {
+        color: #888;
+        font-size: 1.7rem;
+      }
+.empty {
+  text-align: center;
+  margin-top: 3%;
+  padding-left: 10%;
+  padding-right: 10%; 
+   font-size: 3.2em;
+  color:map-get($colors, light);  
+}      
+}

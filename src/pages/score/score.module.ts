@@ -3,6 +3,7 @@ import { IonicPageModule } from 'ionic-angular';
 import { ScorePage } from './score';
 import { SharedComponentsModule } from '../../app/shared.module';
 import { SharedDirectivesModule } from '../../app/shared.module';
+import { SharedProvidersModule } from '../../app/shared.module';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SocialSharing } from '@ionic-native/social-sharing';
 @NgModule({
@@ -13,7 +14,8 @@ import { SocialSharing } from '@ionic-native/social-sharing';
   imports: [
     IonicPageModule.forChild(ScorePage), 
     SharedComponentsModule,
-    SharedDirectivesModule
+    SharedDirectivesModule,
+    SharedProvidersModule
   ],
   providers: [InAppBrowser, SocialSharing]
 })

@@ -9,7 +9,7 @@ import { AppNotify } from '../../providers/app-notify';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { IonicPage } from 'ionic-angular';
-//import { Facebook } from '@ionic-native/facebook'
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 @IonicPage()
 @Component({
   selector: 'page-concours-options',
@@ -51,9 +51,9 @@ import { IonicPage } from 'ionic-angular';
           transform: 'translate3d(0,0,0)'
         })),
         transition('* => bouncing', [
-          animate('300ms ease-in', keyframes([
+          animate('900ms ease-in', keyframes([
             style({ transform: 'translate3d(0,0,0)', offset: 0 }),
-            style({ transform: 'translate3d(0,-10px,0)', offset: 0.5 }),
+            style({ transform: 'translate3d(0,-30px,0)', offset: 0.5 }),
             style({ transform: 'translate3d(0,0,0)', offset: 1 })
           ]))
         ])
@@ -74,12 +74,14 @@ export class ConcoursOptionsPage {
   flyInOutState: String = 'in';
   fadeState: String = 'visible';
   bounceState: String = 'noBounce';
+  showMenu
    constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private iab: InAppBrowser,
     public modalCtrl: ModalController,
     public dataService:DataService,
+     public firebaseNative: Firebase,
     public events: Events,
     public loadingCtrl: LoadingController,
     public notify: AppNotify,
@@ -87,14 +89,21 @@ export class ConcoursOptionsPage {
   //  private facebook: Facebook,
     private socialSharing: SocialSharing,
     public storage: Storage ) {
+     this.showMenu = this.navParams.get('showMenu');
     this.initPage();
     this.zone = new NgZone({});
-    //this.listenToEvents();
+    this.firebaseNative.setScreemName('concours_view');
   }
 
 ionViewDidEnter() {
    this.initPage();
-  
+  this.events.subscribe('payement:success', (data) => {
+    this.zone.run(() => {
+      this.abonnement = data;
+      this.toggleBounce(); 
+    });
+  });
+
   } 
 
   initPage() {
@@ -111,6 +120,8 @@ ionViewDidEnter() {
           this.observeAuth(); 
       })
   }
+
+
   toggleFlip() {
     this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
   }
@@ -133,25 +144,9 @@ ionViewDidEnter() {
     this.bounceState = (this.bounceState == 'noBounce') ? 'bouncing' : 'noBounce';
   }
 
-suivre(status:any=''){
-  if (!this.concours)
-    return;
-  if(this.authInfo){
-    this.status = status!='' ? status : this.status;
-    this.dataService.suivreSession(this.concours.id, this.authInfo.uid, status).then((data)=>{
-      this.status = data;
-     // if (this.status)
-       // this.notify.onSuccess({ message: 'Vous suivez ce concours.' });
-     }, error => {
-       this.status = !this.status
-         this.notify.onError({ message: 'problème de connexion  !' });
-     })
-   return ;
-}else if(!this.authInfo) 
-    this.signup();  
-}
 
-  openModal(pageName,arg?:any) {
+
+openModal(pageName,arg?:any) {
     this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
                   .present();
   }
@@ -162,6 +157,13 @@ explorer(){
    return;
    this.navCtrl.push(MatieresPage,{concours:this.concours})  ;
 }
+
+  startabonnement() {
+    if (firebase.auth().currentUser)
+      this.openPage('InformationPage');
+    else
+      this.signup()
+  }
 
   signup() {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -192,24 +194,28 @@ openConcours() {
  isExpired(abonnement:any){
    if(abonnement==null)
      return true;
-   let now = firebase.database.ServerValue.TIMESTAMP;
+   let now=Date.now();
   let endDate=new Date(abonnement.endDate).getTime();
    return now>endDate;
    }
 
+   
  getAbonnement(){
    if (!this.concours)
    return;
      this.dataService.getAbonnement(this.authInfo.uid,this.concours.id).then(data=>{
            this.abonnement=data;
            this.abonnementLoaded=true;
+           if(this.abonnement)
+             this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
+     
      },error=>{
         this.notify.onError({message:'Petit problème de connexion.'});
      });
   }
 
   openChat() {
-    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id, groupdisplayname: this.concours.nomConcours });
   }
 
   getShowConcours(id:number){
@@ -230,7 +236,7 @@ observeAuth(){
       { 
            this.authInfo=user;
            this.getAbonnement();
-           this.suivre();
+          this.toggleBounce();
        }else{
            this.authInfo=undefined;
           unsubscribe();    
@@ -252,6 +258,8 @@ loadMatieres(){
     });
 }
 
+
+
 loadOnline(){   
       return this.dataService.getMatieres(this.concours.preparation?this.concours.preparation.id:0).then((online)=>{
             this.concours.matieres=online;
@@ -262,18 +270,21 @@ loadOnline(){
       }) 
 }
 
+
 listenToEvents(){
   this.events.subscribe('score:matiere:updated',(data)=>{
        this.zone.run(() => {
          if (!this.concours)
             return
               this.storage.set('_matieres_'+this.concours.id, this.concours.matieres)           
-        });
-        
+        });  
   });
+
 }
 
-
+  openPage(page) {
+    this.navCtrl.push(page)
+  }
 
   share(url: any) {
     let textMessage = this.concours.nomConcours;

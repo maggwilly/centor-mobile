@@ -6,33 +6,33 @@
     <ion-title>Accueil</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="openArticles()" >
-        <ion-icon name="ios-notifications"></ion-icon>
-        <ion-badge class="notifications-badge" notification [notificationId]="notificationId" color="danger"></ion-badge>
+        <ion-icon name="paper"></ion-icon>
+        <ion-badge class="notifications-badge" notification [notificationId]="notificationId" [registrationId]="registrationId" color="danger"></ion-badge>
       </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content hide-header [header]="head">
+<ion-content  hide-header [header]="head">
+    <button ion-item no-lines text-wrap  class="inform abonne" *ngIf="isExpired(abonnement)" (click)="startabonnement()">
+      <ion-icon name="ios-notifications" item-left [@flip]="flipState" *ngIf="abonnementLoaded||!authInfo"></ion-icon>
+      <ion-spinner item-left color="white" name="ios" *ngIf="!abonnementLoaded&&authInfo"></ion-spinner>
+      <h2>Abonnez-vous maintenant</h2>
+      <p>Recevez des alertes sur les concours et les bourses d'étude pendant 1 an.</p>
+      <ion-icon name="ios-arrow-forward" item-right ></ion-icon>
+    </button>
+    <a ion-item no-lines text-wrap class="inform" *ngIf="!isExpired(abonnement)&&abonnementLoaded" href="https://api.whatsapp.com/send?phone=237655874410&text=Salut%20Mr%2FMme%20!%0D%0AJe%20suis%20le%20candidat%20N%C2%B0%20{{abonnement.id}}%0D%0AJe%20voudrais%20plus%20d%27information%20%C3%A0%20propos%20de">
+      <ion-icon name="logo-whatsapp" item-left [@flip]="flipState"></ion-icon>
+      <h2>Discutez avec un conseiller</h2>
+      <p>Cliquez pour discuter avec un conseiller.</p>
+      <ion-icon name="ios-arrow-forward" item-right></ion-icon>
+    </a>
 <ion-grid >
-  <ion-row>
+ <ion-row>
     <ion-col col-sm-12 col-xl-8 col-md-12 col-lg-8>
-    <ion-row>
-      <ion-col col-8>
-    <ion-card-header text-left>
-      Concours disponibles
-    </ion-card-header>
-    </ion-col>
-    <ion-col text-right col-4>
-        <button ion-button small outline item-right icon-right class="open-button" (click)="openPage('ConcoursPage')">
-                      Consulter
-             <ion-icon name="ios-arrow-round-forward-outline"></ion-icon>
-        </button>
-    </ion-col>
-    </ion-row>
-      <short-list target="owards" header="Les olympiades"></short-list>
+    <short-list target="owards" header="Les olympiades"></short-list>
      <short-list target="en_vus" header="Concours les plus en vue"></short-list>
     <short-list target="recents" header="Concours récemment ouverts "></short-list>
-    <short-list [authInfo]="authInfo" header="Concours pouvant vous interesser"></short-list>
+    <short-list [authInfo]="authInfo" target="interessants" header="Concours pouvant vous interesser"></short-list>
     </ion-col>
     <ion-col col-sm-12 col-xl-4 col-md-12 col-lg-4  id="right-pannel">
     <ion-row >
@@ -66,4 +66,9 @@
     </ion-col>
   </ion-row>
 </ion-grid>
+<ion-fab bottom right #fab [@flyInOut]="flyInOut">
+  <button ion-fab mini (click)="openPage('ConcoursPage')" tooltip="I'm a beautiful tooltip" positionV="top" arrow="true" event="hover" duration="3000">
+    <ion-icon name="ios-arrow-forward-outline"></ion-icon>
+  </button>
+</ion-fab>
 </ion-content>

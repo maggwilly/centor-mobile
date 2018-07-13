@@ -1,4 +1,4 @@
-<ion-content  class="transparent-header">
+<ion-content  class="transparent-header" #container>
     <ion-header>
       <ion-navbar hideBackButton>
             <button menuToggle ion-button icon-only>
@@ -10,10 +10,10 @@
       </ion-navbar>
     </ion-header>
     <div id="profile-bg" ></div>
-    <div id="content">
+    <div id="content" >
       <div id="profile-info" ion-item text-wrap>
-        <img id="profile-image" *ngIf="user&& user.info&& user.info.photoURL" [src]="user&&user.info&& user.info.photoURL">      
-        <h3 id="profile-name" *ngIf="user&& user.info&& user.info.displayName">{{user.info.displayName}}</h3>
+        <img id="profile-image" *ngIf="user&&user.info"  [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset"   image-cache>  
+        <h3 id="profile-name" *ngIf="user&& user.info&&user.info.displayName">{{user.info.displayName}}</h3>
         <p *ngIf="user&& user.info"><span >{{user.info.email}} </span></p>
        <!-- <p class="profile-description" >Modifiez et completez votre profil afin de nous aider à vous proposer les offres idéales .</p>
         <button ion-button  class="follow-button" small outline icon-left color="purple" (click)="editProfileCandidat()" [disabled]="user&&!user.info">Modifier <ion-icon name="settings"></ion-icon></button>-->
@@ -23,10 +23,11 @@
             <ion-col col-12>
       <div *ngIf="user.info">
         <br>
-        <ion-card-header text-left>Profil</ion-card-header>
-          <button ion-button   clear icon-left color="purple" (click)="editProfileCandidat()" class="edit-button">
-            Modifier   
-             <ion-icon name="settings"></ion-icon>
+        <ion-card-header text-left>Informations</ion-card-header>
+          <button ion-button small icon-left (click)="editProfileCandidat()" class="edit-button" >
+            <ion-icon name='md-create'></ion-icon>
+           <span *ngIf="user.info.phone&&user.info.displayName"> Modifier mon profil</span>
+          <span *ngIf="!user.info.phone||!user.info.displayName"> Completer mon profil</span>
           </button>
         <ion-list no-lines>
           <ion-item *ngIf="user.info.email">

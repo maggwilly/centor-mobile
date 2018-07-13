@@ -22,18 +22,15 @@ export class HideFabDirective {
   }
 
   onContentScroll(e) {
-    console.log("DOWN");
     if (e.scrollTop - this.oldScrollTop > 1) {
-      console.log("DOWN");
       this.renderer.setElementStyle(this.fabToHide, 'opacity', '0');
       this.renderer.setElementStyle(this.fabToHide, 'webkitTransform', 'scale3d(.1,.1,.1)');
     } else if (e.scrollTop - this.oldScrollTop < 0) {
-      console.log("UP");
       this.renderer.setElementStyle(this.fabToHide, 'opacity', '1');
       this.renderer.setElementStyle(this.fabToHide, 'webkitTransform', 'scale3d(1,1,1)');
     }
 
-    this.oldScrollTop = e.scrollTop;
+    this.oldScrollTop = e? e.scrollTop:0;
   }
 
 }

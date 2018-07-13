@@ -18,11 +18,11 @@ export class AppNotify {
     AppNotify.isShow = true;
     let succesToast = this.toastCtrl.create({
       message: toastOpts.message,
-      closeButtonText: toastOpts.closeButtonText || 'Ok',
+      closeButtonText: toastOpts.closeButtonText || 'X',
       duration: toastOpts.duration || 4000,
       position: toastOpts.position || 'bottom',
       showCloseButton: toastOpts.showCloseButton || true,
-      //cssClass: 'success',
+      cssClass: 'toast-success',
     });
     succesToast.onDidDismiss(() => {
       AppNotify.isShow = false;
@@ -40,13 +40,25 @@ export class AppNotify {
       message: toastOpts.message,
       duration: toastOpts.duration || 5000,
       position: toastOpts.position || 'bottom',
-      showCloseButton: toastOpts.showCloseButton || true,
-      //cssClass: 'danger',
+      showCloseButton: toastOpts.showCloseButton || false,
+      cssClass: 'toast-error',
     });
     errorToast.onDidDismiss(() => {
       AppNotify.isShow = false;
     })
     errorToast.present();
+
+  }
+  onInfo(toastOpts: ToastOptions) {
+    let errorToast = this.toastCtrl.create({
+      message: toastOpts.message,
+      closeButtonText: toastOpts.closeButtonText || 'O',
+      duration: toastOpts.duration || 15000,
+      position: toastOpts.position || 'top',
+      showCloseButton: toastOpts.showCloseButton || true,
+      cssClass: 'toast-info',
+    });
+    return errorToast;
 
   }
 

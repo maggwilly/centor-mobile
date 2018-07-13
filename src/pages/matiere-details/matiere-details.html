@@ -8,7 +8,7 @@
   <ion-navbar>
     <ion-title *ngIf="matiere">{{matiere.titre}}</ion-title>
     <ion-buttons right>
-      <button ion-button icon-only (click)="observeAuth(true)">
+      <button ion-button icon-only (click)="observeAuth(false)">
       <ion-icon name="md-refresh"></ion-icon>
     </button>
     </ion-buttons>
@@ -36,9 +36,26 @@
     </ion-card-content>
   </div>
   <div>
-    <ion-card-header>Contenu de la matière<ion-spinner class="vertical-center" name="dots" *ngIf="!(matiere&&matiere.parties)"></ion-spinner> </ion-card-header>
-    <ion-list class="borded-list-item special-item" inset *ngIf="matiere&&matiere.parties&&matiere.parties.length" >
-      <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)">
+<ion-card-header *ngIf="matiere&&matiere.ressources&&matiere.ressources.length">
+  Les fiches de préparation
+</ion-card-header>
+<ion-list *ngIf="matiere&&matiere.ressources&&matiere.ressources.length" inset>
+
+  <ion-item *ngFor="let item of matiere.ressources" (click)="openRessource(item)" class="item-ribbon" >
+    <span class="ribbon {{ item.label }}" *ngIf="item.label">
+      <span>{{ item.label }}</span>
+    </span>
+    <ion-icon item-left name="ios-copy"></ion-icon>
+    <h2>{{ item.nom }}</h2>
+    <p>{{item.description }}</p>
+  </ion-item>
+</ion-list>
+    <ion-card-header *ngIf="matiere&&matiere.parties&&matiere.parties.length">Les évaluations </ion-card-header>
+    <ion-list class="borded-list-item special-item" inset *ngIf="matiere&&matiere.parties&&matiere.parties.length">
+      <ion-item *ngFor="let partie of matiere.parties" (click)="show(partie)" text-wrap [ngClass]="getClass(partie.analyse)" class="item-ribbon">
+        <span class="ribbon {{ partie.label }}" *ngIf="partie.label">
+          <span>{{ partie.label }}</span>
+        </span>
         <ion-note item-right [class.avalable]="partie.isAvalable">{{partie.type}}</ion-note>
         {{partie.titre}}
         <p>{{partie.objectif}}</p>

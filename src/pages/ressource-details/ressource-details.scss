@@ -5,16 +5,16 @@ page-ressource-details {
      $content-color: whitesmoke;
      $detail-background:rgba(236,236,236,.8);
 
-    /* Header */
-   /* .toolbar-background {
+    /* Header 
+   .toolbar-background {
         border-color: transparent;
         background: $black-overlay;
-    }*/
+    }
 
     .bar-button,
     .toolbar-title {
         color: $banner-text-color;
-    }
+    }*/
 
     /* Image */
     .housing-image{
@@ -26,22 +26,26 @@ page-ressource-details {
     .housing-banner {
         color: $banner-text-color;
         background: $black-overlay;
-        height: 10vh;
+        height: 12vh;
         width: 100vw;
         position: absolute;
         bottom: -1px;
-
+        padding-left:16px ;
+        padding-right:16px ;
+         padding-top:3px ;
+          padding-bottom:3px ;
         .housing-title {
             display: block;
-            font-size: 1.2rem;
+            font-size: 1.6rem;
         }
 
         .price {
-            font-size: 3rem;
-            color: color($colors, orange);
+            font-size: 3.4rem;
+            color:  orange;
             font-style: bold;
             sup{
                 font-style: normal;
+                font-size: 2.0rem;
             }
         }
     }

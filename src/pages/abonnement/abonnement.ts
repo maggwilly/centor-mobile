@@ -12,6 +12,7 @@ import firebase from 'firebase';
 export class AbonnementPage {
   abonnementExpired: any;  
  abonnement:any;
+  ch: any;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -24,7 +25,10 @@ export class AbonnementPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad AbonnementPage');
     this.abonnement=this.navParams.get('abonnement') ;   }
-
+  ionViewWillLeave() {
+    if (this.ch)
+      this.ch.unsubscribe();
+  }
     
    dismiss(data?:any) {
       this.viewCtrl.dismiss(data);
@@ -49,12 +53,16 @@ export class AbonnementPage {
 
   checkAbonnement() {
     this.abonnementExpired = this.isExpired(this.abonnement)
-    this.dataService.getAbonnementOneObservable(this.abonnement.id).subscribe(data => {
+   this. ch= this.dataService.getAbonnementOneObservable(this.abonnement.id).subscribe(data => {
       this.abonnement = data.json();
-      if (this.abonnementExpired && !this.isExpired(this.abonnement))
-        this.notify.onError({ message: "Felicitation ! Votre renouvellement a été pris en compte.",position:'top' });
+      if (this.abonnementExpired && !this.isExpired(this.abonnement)){
+        this.ch.unsubscribe();
+        this.notify.onError({ message: "Felicitation ! Votre renouvellement a été pris en compte.", position: 'top' });
+      }
+
     }, error => {
       this.notify.onError({ message: 'Problème de connexion.' });
+      this.ch.unsubscribe();
     });
   }
 }

@@ -3,7 +3,7 @@
     <ion-slide *ngFor="let slide of slides" >
       <ion-row *ngIf="slide.type=='html_image'">
         <ion-col col-4>
-            <img [src]="slide.base64Image" class="vertical-center center"/>
+           <!-- <img [src]="slide.base64Image" class="vertical-center center"/>-->
         </ion-col>
         <ion-col col-8 text-right>
           <div [innerHTML]="slide.html" padding>

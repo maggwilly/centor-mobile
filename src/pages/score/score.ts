@@ -7,7 +7,8 @@ import firebase from 'firebase';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import { IonicPage } from 'ionic-angular';
-
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
+import { GroupsProvider } from '../../providers/groups/groups';
 @IonicPage()
 @Component({
   selector: 'page-score',
@@ -42,6 +43,8 @@ export class ScorePage {
   openMenu = false;
   concours:any;
   notificationId:any;
+  registrationId
+  firequestion = firebase.database().ref('/question');
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -50,41 +53,49 @@ export class ScorePage {
     public dataService: DataService,
     public menu: MenuController,
     public popoverCtrl: PopoverController,
+    public firebaseNative: Firebase,
     public viewCtrl: ViewController,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public platform: Platform,
     public actionSheetCtrl: ActionSheetController,
     private iab: InAppBrowser,
+     public groupservice: GroupsProvider,
     public notify: AppNotify,
     public storage: Storage) {
+   
     this.slideOptions = { parallax: true };
     this.zone = new NgZone({});
-    this.initPage();
     this.isShow = false;
     this.events.subscribe('questions:loaded', (data) => {
 
     })
+    this.firebaseNative.setScreemName('evaluation');
   }
 
   ionViewDidLoad() {
+    this.storage.get('registrationId').then((data) => {
+      //this.notificationId=data;
+      this.registrationId = data;
+    })
     this.initPage();
   }
 
 
   initPage() {
-    this.notificationId = firebase.auth().currentUser.uid;
+    this.notificationId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;
    // this.partieToUpdate = this.navParams.get('partie');
    this.partie = this.navParams.get('partie');
    // this.partie = Object.assign({}, this.partieToUpdate);
     this.concours=this.partie.matiere.concours;
-    return this.storage.get('_partie_' + this.partie.id).then((data) => {
+    this.groupservice.getintogroup(this.concours.id);
+    return this.storage.get('_partie_'+this.partie.id+'_' + this.partie.matiere.id).then((data) => {
       this.partie = data ? data : this.partie;
       this.isTheBegining = this.partie.lastIndex ? false : true;
      if (!this.partie.questions || (this.partie.questions && !this.partie.questions.length)) {
         return this.dataService.getQuestions(this.partie.qcm).then((data) => {
           this.partie.questions = data;
-          this.storage.set('_partie_' + this.partie.id, this.partie);  
+          this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie);  
           this.evalMathlowly().then(() => {
             this.observeAuth();
           }, error => { });
@@ -129,7 +140,7 @@ export class ScorePage {
   }
 
 
-  observeAuth(loading?: boolean) {
+  observeAuth(loading: boolean=true) {
     Utils.setScore(this.partie);
   firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -184,7 +195,7 @@ export class ScorePage {
         this.counter();
       this.scrollto();
     }
-    this.storage.set('_partie_' + this.partie.id, this.partie).catch(error => { });
+    this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie).catch(error => { });
   }
 
 
@@ -279,7 +290,8 @@ export class ScorePage {
   isOlympia(partie: any) {
     if (!partie || !(partie.type == 'OL' || partie.type == 'CB'))
       return false;
-    let now = firebase.database.ServerValue.TIMESTAMP;;
+    //let now = firebase.database.ServerValue.TIMESTAMP;;
+        let now = Date.now();
         let endDate = new Date(partie.endDate).getTime();
     return now < endDate;
   }
@@ -342,11 +354,11 @@ export class ScorePage {
                 this.partie.analyse = data.partie;
                 this.isShow = true;
                 this.events.publish('score:partie:updated', data.parents);
-                this.storage.set('_partie_' + this.partie.id, this.partie).catch(error => { });
+                this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie).catch(error => { });
                 this.loaded=true;
               }, error => {
                this.loaded = true;
-                this.storage.set('_partie_' + this.partie.id, this.partie);
+                this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie);
                 let alert = this.alertCtrl.create({
                   message: "Les données n'ont pas put être enrégistrée.Votre connexion à internet est peut-être perturbée.",
                   buttons: [
@@ -376,17 +388,22 @@ export class ScorePage {
     return Utils.format(s, hrSep, minSep);
   }
 
-  getAnalyse(show: boolean = true) {
-    this.loaded = false;
+  getAnalyse(show: boolean ) {
+    this.storage.get('_analyse_Partie_' + this.concours.id + '_' + this.partie.matiere.id + '_'+this.partie.id).then(data => {
+      this.analyse = data;
+      this.partie.analyse = data;
+      this.loaded = show;
     return this.dataService.getAnalyseObservable(this.authInfo.uid, this.concours.id, this.partie.matiere.id, this.partie.id).subscribe((analyse) => {
       this.analyse = analyse;
       if (this.partie)
       this.partie.analyse = analyse;
+      this.storage.set('_analyse_Partie_' + this.concours.id + '_' + this.partie.matiere.id + '_' , analyse);
       this.isMathProcessed = true;
       this.loaded = true;
     }, error => {
+      this.loaded = show;
       this.notify.onError({ message: 'Petit problème de connexion.' });
-      
+      })  
     })
   }
 
@@ -453,7 +470,19 @@ export class ScorePage {
         + this.partie.titre + '\n\t >'
         + this.partie.matiere.titre + '\n >'
         + this.partie.matiere.concours.nomConcours + ':\n\n'
-      let modal = this.openModal('ShareQuestionPage', { groupName: this.partie.matiere.concours.id,question:this.currentQuestion, ref:textMessage})
+
+      let newMessage: any = {
+        text: "Je voudrais votre avis sur cette question SVP",
+        type: 'question',
+        ref: textMessage,
+        fileurl: '',
+        question: JSON.parse(JSON.stringify(this.currentQuestion)),
+        toAdmin: false
+      }
+      this.groupservice.addgroupmsg(newMessage).then(() => {
+        this.notify.onSuccess({ message: "Cette question a été partagée dans le groupe de discussion." })
+      })
+    /*  let modal = this.openModal('ShareQuestionPage', { groupName: this.partie.matiere.concours.id,question:this.currentQuestion, ref:textMessage})
       modal.onDidDismiss((data)=>{
         if(!data)
         return
@@ -466,33 +495,51 @@ export class ScorePage {
             break;
         }    
       })
-      modal.present();
+      modal.present();*/
     }
   }
 
-  presentActionSheet(textMessage, url, image: string = null) {
+  presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({
-      title: 'Question trop dificile ?',
+      title: 'Question difficile ?',
       buttons: [
         {
+          text: 'Oui trop difficile',
+          icon: 'ios-bug-outline' ,
+          handler: () => {
+            let id = this.currentQuestion.id;
+            this.marquerDificile(id);
+          }
+        },        
+        {
           text: 'Rechercher sur google',
-          icon: !this.platform.is('android') ? 'logo-google' : null,
+          icon: 'logo-google' ,
           handler: () => {
             let topic = this.currentQuestion.text;
+            let id = this.currentQuestion.id;
+            this.marquerDificile(id);
             this.iab.create("https://www.google.com/search?q=" + topic, 'to _self', {});
           }
         },
         {
           text: 'Partager avec les autres',
-          icon: !this.platform.is('android') ? 'ios-chatboxes-outline' : null,
+          icon:'ios-chatboxes-outline',
           handler: () => {
-           this. share() 
+            let id = this.currentQuestion.id;
+             this.marquerDificile(id);
+             this. share() 
           }
         }
       ]
     });
     actionSheet.present();
   }
+
+marquerDificile(id){
+  this.firequestion.child(this.partie.id).child(id).child(firebase.auth().currentUser.uid).set(true).then(()=>{
+    this.notify.onSuccess({ message: "Cette question a été marquée et envoyée à un enseignant." })
+  });
+}
 
   togglePopupMenu() {
     return this.openMenu = !this.openMenu;
@@ -503,12 +550,12 @@ export class ScorePage {
     this.navCtrl.push('SettingPage')
   }
   openChat() {
-    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id, groupdisplayname: this.concours.nomConcours});
   }
 
   goToChat(){
     this.togglePopupMenu();
-    this.navCtrl.push('GroupchatPage', { groupName: this.partie.matiere.concours.id });
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
   }
 
   goToHome() {
@@ -523,9 +570,9 @@ export class ScorePage {
   }
 
 
-  goToAbout() {
+  goToRessources() {
     this.togglePopupMenu();
-    this.navCtrl.push('AboutPage')
+    this.navCtrl.push('RessourcesPage', { concours: this.concours })
   }
 
   goToMenu() {

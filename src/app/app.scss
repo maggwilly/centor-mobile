@@ -354,3 +354,36 @@
 	background-color: rgba(0,0,0,1);
 }
 
+.toast-error{
+   .toast-wrapper{
+       width: 100%;
+       .toast-message{
+         background:  color($colors,danger);
+         background-color:  color($colors,danger);
+         margin-top:0px;
+        text-align:center;
+         color:#fff;}
+  } 
+}
+
+.toast-success{
+       .toast-message{
+         width: 100%;
+         background:  color($colors,orange);
+         background-color:  color($colors,orange);
+         margin-top:0px;
+         color:#fff;}
+  } 
+
+.toast-info{
+       .toast-wrapper{
+         width: 98%;
+         background:  color($colors,white);
+         background-color:  color($colors,white);
+         margin-top:0px;
+         border-radius: 10px;
+          .toast-message,.toast-button{
+            color:rgb(46, 44, 44);
+          }
+        }
+  } 

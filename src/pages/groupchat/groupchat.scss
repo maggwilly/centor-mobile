@@ -6,10 +6,16 @@ page-groupchat {
   $toUserBackgroundColor: #fcfcfc;
 
   ion-content .scroll-content {
-   background-color: #f7eff5;
-   background-image: url("../assets/img/background/chat.jpg" );
+   //background-color: #f7eff5;
+   // background-image: url("../assets/img/background/chat.jpg" );
   }
-
+img.ng-lazyloaded {
+  animation: fadein .5s;
+}
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
   ion-footer {
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
     background-color: #fff;
@@ -41,9 +47,13 @@ page-groupchat {
     }
   }
 .file-preview{
-  position: -webkit-sticky;
-  position: sticky;
+//  position: -webkit-sticky;
+ // position: sticky;
   bottom: 0px;
+  height: 100px;
+  img{
+     border-radius: 5px;
+  }
 }
 .send-message{
   position: -webkit-sticky;
@@ -104,19 +114,26 @@ img.profile-pic.right {
 }
 
 .message-wrapper:last-child {
-  margin-bottom: 10px;
+ // margin-bottom: 10px;
 }
 
 .chat-bubble {
   border-radius: 5px;
   display: inline-block;
-  padding: 10px 18px;
+  padding: 5px 5px;
   position: relative;
-  margin: 10px;
+  margin: 5px;
   max-width: 83%;
-  img{
-    height: 100px;
-    width: 100%
+  .message-img{
+    //height: 160px;
+     height: auto;
+    width: 100% ;
+    border-radius: 5px;
+  }
+
+  button{
+    text-transform: none;
+    font-size: 1.2rem;
   }
 }
 

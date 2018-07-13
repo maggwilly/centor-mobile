@@ -8,4 +8,32 @@ page-home {
           font-size: 2.5rem;
         }
       }
+
+  .inform{
+          background-color: map-get($colors, primary);
+    h2{
+      font-size: 1.7rem; 
+       color: color($colors,white);
+    } 
+    ion-icon{
+        color: color($colors,white);// #7F7F7F;
+    } 
+    .item-md,.label-md,{     
+      background-color: transparent !important; 
+     p{
+       color: rgb(224, 230, 230);
+    }            
+   }
+  }
+
+  .inform.abonne{
+     background-color: map-get($colors, orange);
+      p{
+       color: rgb(238, 245, 245);
+    }
+  }
+
+ion-item:active a {
+  background-color: map-get($colors, primary) !important;
+}     
 }

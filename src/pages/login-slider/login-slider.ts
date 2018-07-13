@@ -7,7 +7,7 @@ import { RepasswordValidator } from '../../validators/repassword';
 import { Facebook } from '@ionic-native/facebook'
 import firebase from 'firebase';
 import { AppNotify } from '../../providers/app-notify';
-
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 @IonicPage()
 @Component({
   selector: 'page-login-slider',
@@ -29,11 +29,13 @@ export class LoginSliderPage {
     public alertCtrl: AlertController,
     public navParams: NavParams, 
      private facebook: Facebook,
+      public firebaseNative: Firebase,
     public notify: AppNotify, 
     public renderer: Renderer,
     public platform: Platform,
     public appCtrl: App
   ) {
+
     this.singupStape=this.navParams.get('redirectTo');
     this.resetPasswordForm = formBuilder.group({
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
@@ -48,6 +50,7 @@ export class LoginSliderPage {
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
       password: ['', Validators.compose([ Validators.required])]
 });
+this.firebaseNative.setScreemName('login_page');
    }
   // Slider methods
  // @ViewChild('slider') slider: Slides;
@@ -76,12 +79,13 @@ export class LoginSliderPage {
   }
 
   facebookLogin(){
+    this.firebaseNative.logEvent('facebook_signup_start', { signup: false });
     let provider = new firebase.auth.FacebookAuthProvider(); 
    firebase.auth().useDeviceLanguage();
     if (this.platform.is('core'))
       firebase.auth().signInWithRedirect(provider).then((result) => {
         this.appCtrl.getRootNav().pop();
-        this.notify.onSuccess({ message: 'Vous êtes connectés à votre compte' });
+        this.notify.onSuccess({ message: 'Vous êtes connecté à votre compte' });
       }).catch( (error) =>{
         let alert = this.alertCtrl.create({
           message: error.message,
@@ -100,7 +104,7 @@ export class LoginSliderPage {
         firebase.auth().signInWithCredential(facebookCredential)
           .then((success) => {
             this.appCtrl.getRootNav().pop();
-            this.notify.onSuccess({ message: 'Vous êtes connectés à votre compte' });
+            this.notify.onSuccess({ message: 'Vous êtes connecté à votre compte' });
           })
           .catch((error) => {
             let alert = this.alertCtrl.create({
@@ -124,6 +128,7 @@ export class LoginSliderPage {
 }
 
   getSignup(){
+    this.firebaseNative.logEvent('signup_start', { signup: false });
     if (!this.signupForm.valid){
       this.presentLoading('Certains champs ne sont pas valides !');
         return;
@@ -151,6 +156,7 @@ export class LoginSliderPage {
      }
 
   getLogin(){
+    this.firebaseNative.logEvent('login_start', { login: false });
     if (!this.loginForm.valid){
         this.presentLoading('Certains champs ne sont pas valides !');
     } else {
@@ -215,13 +221,11 @@ let json=JSON.stringify(error);
 let code=JSON.parse(json).code;
 switch (code) {
 case "auth/wrong-password":  
-  return "Le mot de passe ne corresponds pas.";
+  return "Le mot de passe ne correspond pas.";
 case "auth/user-not-found":  
-  return "Ce compte n'est pas encore créé.";
-case "auth/user-not-found":  
-  return "Ce compte n'est pas encore créé.";   
+  return "Ce compte n'a  pas encore été créé.";  
 case "auth/email-already-in-use":  
-  return "Cette adresse e-mail est déjà utilisé pour un autre compte.";
+  return "Cette adresse e-mail est déjà utilisée pour un autre compte.";
  case "auth/network-request-failed":  
   return "Votre connexion internet est peut-être pertubée.";      
 default:

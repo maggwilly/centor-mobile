@@ -8,7 +8,8 @@
   <ion-navbar color="hcolor">
     <ion-title>Options</ion-title>
     <ion-buttons right>
-      <button ion-button icon-only (click)="updateproceed()" *ngIf="uploapping">
+      <ion-spinner color="white" name="ios" *ngIf="uploapping&&submitedp"></ion-spinner>
+      <button ion-button icon-only (click)="updateproceed()" *ngIf="!submitedp&&uploapping">
         <ion-icon name="md-done-all"></ion-icon>
       </button>
     </ion-buttons>
@@ -22,15 +23,16 @@
     </ion-list-header>
       <ion-item  (click)="chooseimage()" *ngIf="meingroup&&!leaved">
         <ion-avatar item-start>
-          <img [src]="photoURL">
+          <img [src]="_DomSanitizer.bypassSecurityTrustUrl(photoURL)" *ngIf="uploapping">
+          <img  [defaultImage]="defaultAvatar" [lazyLoad]="photoURL" [offset]="offset" *ngIf="!uploapping">
         </ion-avatar>
         <p class="username">Photo</p>
      <ion-spinner item-right name="dots" *ngIf="uploapping"></ion-spinner>        
       </ion-item>
      <ion-item *ngIf="meingroup&&!leaved">
             <ion-icon name='person' item-start></ion-icon>
-            <ion-label floating>Pseudo</ion-label>
-            <ion-input type="text" [(ngModel)]="meingroup.displayName" name="displayName" (ionChange)="updateDisplayName()"></ion-input>
+            <ion-label floating>Vore nom</ion-label>
+            <ion-input type="text" [(ngModel)]="meingroup.displayName" placeholder="saisir votre nom" name="displayName" (ionChange)="updateDisplayName()"></ion-input>
    </ion-item>
     <ion-item *ngIf="meingroup&&!leaved">
       <ion-icon name='ios-notifications' item-start></ion-icon>

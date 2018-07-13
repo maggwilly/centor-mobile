@@ -1,14 +1,16 @@
 
 <ion-list *ngIf="concoursList&&concoursList.length">
             <ion-item  (click)="showOptions(concours)" *ngFor="let concours of concoursList" [hidden]="concours.hide">
-                <ion-row no-padding>
-                    <ion-col col-12>
                         <div [hidden]="contract" class="item-title" *ngIf="concours&&concours.concours">
                             {{concours.nomConcours}}
                             <p>{{concours.concours.ecole}}
                             </p>
-                            <small> {{ concours.nom}}</small>
                         </div>
+                <ion-row no-padding>
+                    <ion-col col-4>
+                        <small> {{ concours.nom}}</small>
+                    </ion-col>
+                    <ion-col col-8>
                         <p class="info-bar" *ngIf="concours">
                             <a class="primary" *ngIf="concours.type">{{concours.type}} </a>
                             <a class="primary" *ngIf="concours.dateConcours">{{concours.dateConcours| date: 'dd/MM/yyyy'}}</a>

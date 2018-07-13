@@ -1,0 +1,38 @@
+<ion-content class="transparent-header">
+    <ion-header>
+      <ion-navbar hideBackButton>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+      </ion-navbar>
+    </ion-header>
+    <div id="profile-bg"></div>
+  <div id="content" >
+    <div id="profile-info" ion-item text-wrap>
+        <img id="profile-image" *ngIf="info" [defaultImage]="defaultAvatar" [lazyLoad]="info.photoURL" [offset]="offset"
+          image-cache>
+        <h3 id="profile-name" *ngIf="info&&info.displayName">{{info.displayName}}</h3>
+        <p *ngIf="info">
+          <span>{{info.email}} </span>
+        </p>
+  <p class="profile-description" >Completez votre profil pour recevoir  des offres de concours plus adaptées à vous.</p>            
+   </div>
+
+  </div>
+</ion-content>
+<ion-footer no-border>
+  <ion-row class="align-center" padding>
+    <ion-col col-6>
+      <button ion-button color="light" full (click)="dismiss()">
+        Plus tard
+      </button>
+    </ion-col>
+    <ion-col col-6>
+      <button ion-button full  (click)="completer()">
+        Completer
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

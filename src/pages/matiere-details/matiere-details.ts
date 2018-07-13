@@ -1,11 +1,11 @@
 import { Component, NgZone } from '@angular/core';
 import { Events, NavController, NavParams, ViewController, ModalController, LoadingController, AlertController } from 'ionic-angular';
-
 import { Storage } from '@ionic/storage';
 import firebase from 'firebase';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import { IonicPage } from 'ionic-angular';
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 
 @IonicPage()
 @Component({
@@ -33,8 +33,9 @@ export class MatiereDetailsPage {
     public storage: Storage,
     public events: Events,
     public notify: AppNotify,
+    public firebaseNative: Firebase,
     public viewCtrl: ViewController) {
-    
+    this.firebaseNative.setScreemName('matiere_start');
     this.isShow = false;
     this.zone = new NgZone({});
     this.authInfo = firebase.auth().currentUser;
@@ -47,16 +48,15 @@ export class MatiereDetailsPage {
   }
   
   ionViewDidEnter() {
-    this.observeAuth(false);
+    this.observeAuth();
   }  
   /** Compare le score et le temps de reponse */
   initPage() {
     this.matiereToUpdate = this.navParams.get('matiere');
     this.matiere = Object.assign({}, this.matiereToUpdate);
     this.concours = this.matiere.concours;
-    this.observeAuth(false);
+    this.observeAuth();
     this.loadOnline()
-
   }
 
 
@@ -77,8 +77,7 @@ export class MatiereDetailsPage {
 
   }
 
-  observeAuth(loading: boolean = false) {
-    
+  observeAuth(loading: boolean = true) {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.authInfo = user
@@ -91,25 +90,39 @@ export class MatiereDetailsPage {
 
 
   loadOnline() {
-    this.loaded = false;
-    return this.dataService.getParties(this.matiere.contenu, this.concours.id, this.matiere.id)
+    return this.storage.get('_Matieres_' + this.concours.id + '_' + this.matiere.contenu).then(data => {
+         this.matiere.parties = data;
+        return this.dataService.getParties(this.matiere.contenu, this.concours.id, this.matiere.id)
       .then((data) => {
         this.matiere.parties = data;
+        this.storage.set('_Matieres_' + this.concours.id + '_' + this.matiere.contenu, this.matiere.parties)
         this.loaded = true;
       }, error => {
-        this.loaded = false;
         this.notify.onError({ message: 'Petit problème de connexion.' });
       });
+    });     
 
   }
-  getAnalyse(show: boolean = true) {
-    this.loaded = false;
-    return this.dataService.getAnalyseObservable(this.authInfo.uid, this.matiere.concours.id, this.matiere.id, 0).subscribe((analyse) => {
+
+ openRessource(ressource:any){
+  this.navCtrl.push('RessourceDetailsPage',{ressource:ressource});
+ }
+
+  
+  getAnalyse(show: boolean) {
+    return this.storage.get('_analyse_Matiere_' + this.concours.id+'_' + this.matiere.id).then(data => {
+       this.analyse = data;
+       this.matiere.analyse = data;
+       this.loaded = show;
+     return this.dataService.getAnalyseObservable(this.authInfo.uid, this.matiere.concours.id, this.matiere.id, 0).subscribe((analyse) => {
       this.analyse = analyse;
       this.loaded = true;
       this.matiere.analyse = analyse;
+       this.storage.set('_analyse_Matiere_' + this.concours.id + '_' + this.matiere.id, analyse);
     }, error => {
+      this.loaded = show;
       this.notify.onError({ message: 'Petit problème de connexion.' });
+    });
     });
   }
 
@@ -128,7 +141,7 @@ export class MatiereDetailsPage {
   }
 
   openChat() {
-    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
+    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id, groupdisplayname: this.concours.nomConcours });
   }
 
   getClass(obj: any): string {

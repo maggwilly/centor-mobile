@@ -2,7 +2,7 @@
 <div text-wrap *ngIf="(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
 <div class="switch" *ngIf="!authInfo||isExpired(abonnement)" >
   <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" [@flash]="flashState"  (click)="inscrire()">
-    <ion-icon name="list"></ion-icon>
+    <ion-icon name="list" color="white"></ion-icon>
     <span *ngIf="!abonnement">Commencer la préparation</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
   </button>
   <button ion-button color="blue"   icon-left *ngIf="!authInfo" [@flash]="flashState" (click)="signup()">
@@ -28,7 +28,7 @@
   <ion-icon ios="ios-albums" md="md-albums" item-left></ion-icon>
 <ion-icon [hidden]="authInfo" name="lock-outline" item-right ></ion-icon>
 <ion-icon [hidden]="!authInfo" name="ios-arrow-forward" item-right ></ion-icon>
-   Ressources <ion-badge color="blue" *ngIf="concours.newressource">Nouveau</ion-badge>
+   Documents <ion-badge color="blue" *ngIf="concours.newressource">Nouveau</ion-badge>
       <p>
         Sujets, Corrigés, Travaux dirigés,condensés de cours, etc.
       </p>    

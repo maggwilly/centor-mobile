@@ -1,4 +1,4 @@
-import { Component,ViewChild } from '@angular/core';
+import { Component, NgZone, ViewChild } from '@angular/core';
 import {Events, Searchbar,Platform,  NavController,NavParams, LoadingController,AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { DataService } from '../../providers/data-service';
@@ -16,6 +16,8 @@ export class ConcoursPage {
   queryText=null;
   authInfo:any;
   segment = 'all';
+  zone: NgZone
+  abonnement: any;
  notificationId:string=window.localStorage.getItem('registrationId');
   @ViewChild("searchbar") searchbar:Searchbar;
   constructor(
@@ -29,6 +31,7 @@ export class ConcoursPage {
      public events: Events,
     public platform: Platform,
     ) {
+    this.zone = new NgZone({});
     this.observeAuth();
   }
 
@@ -42,14 +45,21 @@ export class ConcoursPage {
     },error=>{})  
 }
 
-
+  getAbonnement() {
+    this.dataService.getAbonnement(firebase.auth().currentUser.uid, 0).then(data => {
+      this.abonnement = data;
+    }, error => {
+      this.notify.onError({ message: 'Petit problème de connexion.' });
+    });
+  } 
 
 
 observeAuth(){
   const  unsubscribe=firebase.auth().onAuthStateChanged((user) => {
 if (user) {
   this.authInfo = user;
-     unsubscribe();
+     this.getAbonnement();
+      unsubscribe();
 } else {
   this.authInfo = undefined;
   unsubscribe();
@@ -57,7 +67,33 @@ if (user) {
 }); 
 }
 
+  openPage(page, arg?: any) {
+    this.navCtrl.push(page, arg)
+  }
 
+  startabonnement() {
+    if (firebase.auth().currentUser)
+      this.openPage('InformationPage', { abonnement: this.abonnement });
+    else
+      this.signup()
+  }
+
+  signup() {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.zone.run(() => {
+        if (user) {
+          this.authInfo = user;
+          this.getAbonnement();
+          this.notify.onSuccess({ message: "Vous êtes connecté à votre compte." });
+          unsubscribe();
+        } else {
+          this.authInfo = undefined;
+          unsubscribe();
+        }
+      });
+    });
+    this.navCtrl.push('LoginSliderPage', { redirectTo: true });
+  }
 loadData(){
     return  this.dataService.getSessions(0).then((data)=>{
                this._concours=data?data:[];    
@@ -68,7 +104,13 @@ loadData(){
         });
   }
 
-
+  isExpired(abonnement: any) {
+    if (abonnement == null)
+      return true;
+    let now = Date.now();
+    let endDate = new Date(abonnement.endDate).getTime();
+    return now > endDate;
+  } 
 
 
   doInfinite(infiniteScroll?:any) {

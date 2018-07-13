@@ -1,28 +1,44 @@
 <ion-header>
   <ion-navbar color="hcolor" text-center>
+  <button menuToggle ion-button icon-only *ngIf="showMenu">
+    <ion-icon name="menu"></ion-icon>
+  </button>
+    <div *ngIf="!sendToAdmin&&!toUser">
     <ion-title>
-      <span *ngIf="!meingroup">Connexion...</span>
-      <span *ngIf="meingroup"> {{groupdisplayname}}</span>
+      <span >{{groupdisplayname}}</span>
     </ion-title>
     <small style="color:beige;" *ngIf="meingroup">
       <i *ngIf="groupnberofmembers>15">{{groupnberofmembers}} participants</i>
-      <i *ngIf="!groupnberofmembers||groupnberofmembers<=15">Groupe de discussion</i>
+      <i *ngIf="!groupnberofmembers||groupnberofmembers<=15">Discussion en groupe</i>
     </small>
-    <ion-buttons end *ngIf="meingroup">
-      <button ion-button icon-only (click)="openGroupeSetting()">
+   </div>
+    <div *ngIf="sendToAdmin||toUser">
+      <ion-title>
+        <span *ngIf="!meingroup">{{groupdisplayname}}</span>
+        <span *ngIf="meingroup&&toUser"> {{toUser.displayName}}</span>
+        <span *ngIf="meingroup&&sendToAdmin">Un enseignant</span>
+      </ion-title>
+      <small style="color:beige;" *ngIf="meingroup">
+        <i *ngIf="meingroup&&sendToAdmin">Discussion avec un enseignant</i>
+        <i *ngIf="meingroup&&toUser">Discussion en privée</i>
+      </small>
+    </div>
+    <ion-buttons end >
+      <button ion-button icon-only (click)="openGroupeSetting()" *ngIf="!sendToAdmin&&!toUser">
         <ion-icon name="md-options"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="goBackToGroup()" *ngIf="sendToAdmin||toUser">
+        <ion-icon name="ios-people"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content class="bg-white" hide-fab>
+
+<ion-content  hide-fab #container  [ngStyle]="{ 'background-image': 'url(' + groupBg + ')'}">
+<div *ngIf="allgroupmsgs&&allgroupmsgs.length">
   <ion-item *ngIf="(!sendToAdmin&&!meingroup)&&!isExpired(abonnement)" class="send-message" text-wrap no-border>
     <ion-icon name="person" item-left></ion-icon>
     <p>Vous ne pouvez plus échanger dans cette discussion car vous avez quitté le groupe.</p>
-  </ion-item>
-  <ion-item *ngIf="(sendToAdmin||!meingroup)&&!isExpired(abonnement)" class="send-message" text-wrap no-border>
-    <ion-icon name="person" item-left></ion-icon>
-    <p>Vous écrivez à un responsable enseignant. Les autres participants ne verront pas ce message.</p>
   </ion-item>
   <ion-item *ngIf="(sendToAdmin||!meingroup)&&isExpired(abonnement)" class="send-message" text-wrap>
     <ion-icon name="ios-alert" color="danger" item-left></ion-icon>
@@ -41,21 +57,22 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   <div class="message-wrap">
-    <div *ngFor="let item of allgroupmsgs" class="message-wrapper message-wrap">
-      <div *ngIf="item&&item.message&&item.message.fromAdmin" (press)="presentSheet(item.message)">
-        <img class="profile-pic left" [src]="item.photoURL" />
+    <div *ngFor="let item of allgroupmsgs" class="message-wrapper message-wrap" [hidden]="sendToAdmin&&(!item.message.fromAdmin&&!item.message.toAdmin)||toUser&&(item.sentby!=toUser.uid&&item.sentTo!=toUser.uid)"  (press)="presentSheet(item)">
+      <div *ngIf="item&&item.message&&item.message.fromAdmin" >
+        <img class="profile-pic left"   [src]="item.photoURL"  image-cache />
         <!--  wave-->
         <div class="chat-bubble admin slide-left">
-          <a  *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl">
-            <img [src]="_DomSanitizer.bypassSecurityTrustUrl(item.message.fileurl)" *ngIf="item.message&&item.message.type=='image'">
-          </a>
+        <a *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl">
+          <img  [src]="item.message.fileurl" (onLoad)="onImageLoad($event)"
+            *ngIf="item.message&&item.message.type=='image'" class="message-img" image-cache>
+        </a>
           <question-view *ngIf="item.message&&item.message.type=='question'" [question]="item.message.question"></question-view>
           <ion-list *ngIf="item.message&&item.message.type=='ressource'">
             <ion-row *ngIf="item.message.ressource" text-wrap no-margin>
               <ion-col col-4>
-                <ion-thumbnail item-left>
+                <ion-avatar item-left>
                   <img src="assets/images/file-image.png">
-                </ion-thumbnail>
+                </ion-avatar>
               </ion-col>
               <ion-col col-8>
                 <h4>{{item.message.ressource.nom}}</h4>
@@ -65,34 +82,55 @@
               <p>{{item.message.ressource.description}}</p>
             </div>
             <div *ngIf="item.message.ressource" ion-item no-lines class="view">
-              <button small ion-button color="primary" outline (click)="openRessource(item.message.ressource)" item-right>Consulter</button>
+              <strong *ngIf="item.message.ressource.price" item-left>{{item.message.ressource.price}}
+                <sup>Fcfa</sup>
+              </strong>
+            <button small ion-button color="primary" outline (click)="openRessource(item.message.ressource)" item-right icon-left>
+              <ion-icon name="md-download"></ion-icon>
+              Télécharger
+            </button>
             </div>
           </ion-list>
           <p *ngIf="item.message&&item.message.ref">
             <strong>{{item.message.ref}}</strong>
           </p>
-          <div class="message" [MathJax]="item.message.text" autolinker>
+          <div *ngIf="item.message&&item.message.text" class="message" [MathJax]="item.message.text" autolinker>
           </div>
           <div class="message-detail">
-            <span class="bold">{{item.displayName| limitTo:15}}</span>,
-            <small *ngIf="item" item-right>&nbsp;&nbsp;&nbsp;{{item.timestamp| relativeTime}}</small>
+            <ion-row no-marging>
+              <ion-col>
+                <span class="bold">{{item.displayName| limitTo:15}}</span>
+              </ion-col>
+              <ion-col>
+                <small *ngIf="item&&!item.pending" item-left>&nbsp;&nbsp;&nbsp;
+                  <ion-icon *ngIf="!item.sentTo&&!item.message.fromAdmin&&!item.message.toAdmin" name="ios-people"></ion-icon>
+                  <ion-icon *ngIf="item.sentTo" name="ios-person"></ion-icon>
+                  <ion-icon *ngIf="item.message.fromAdmin||item.message.toAdmin" name="md-person"></ion-icon>
+                </small>
+                <ion-spinner item-right name="dots" *ngIf="item&&item.pending"></ion-spinner>
+              </ion-col>
+              <ion-col>
+                <small *ngIf="item" item-right>&nbsp;&nbsp;&nbsp; {{item.timestamp| relativeTime}}
+                </small>
+              </ion-col>
+            </ion-row>
           </div>
         </div>
       </div>
-      <div *ngIf="item&&item.message&&(item.sentby != alignuid)&&!item.message.fromAdmin" (press)="presentSheet(item.message)">
-        <img class="profile-pic left" [src]="item.photoURL" />
-        <!--  wave-->
+      <div *ngIf="item&&item.message&&(item.sentby != alignuid)&&!item.message.fromAdmin" >
+        <img class="profile-pic left"  [src]="item.photoURL" image-cache/>
         <div class="chat-bubble left slide-left">
-          <a  *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl">
-            <img [src]="_DomSanitizer.bypassSecurityTrustUrl(item.message.fileurl)" *ngIf="item.message&&item.message.type=='image'">
-          </a>
+       <a *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl">
+          <img  [src]="item.message.fileurl"  (onLoad)="onImageLoad($event)"
+            *ngIf="item.message&&item.message.type=='image'" class="message-img" image-cache>
+        </a>
           <question-view *ngIf="item.message&&item.message.type=='question'" [question]="item.message.question"></question-view>
           <ion-list *ngIf="item.message&&item.message.type=='ressource'">
             <ion-row *ngIf="item.message.ressource" text-wrap no-margin>
               <ion-col col-4>
-                <ion-thumbnail item-left>
-                     <img src="assets/images/file-image.png">
-                   </ion-thumbnail>
+                <ion-avatar item-left>
+                  <img src="assets/images/file-image.png">
+                </ion-avatar>
               </ion-col>
               <ion-col col-8><h4>{{item.message.ressource.nom}}</h4></ion-col>          
             </ion-row>
@@ -100,34 +138,56 @@
               <p>{{item.message.ressource.description}}</p>
             </div>
             <div *ngIf="item.message.ressource" ion-item no-lines class="view">
-              <button ion-button small color="primary" outline (click)="openRessource(item.message.ressource)" item-right>Consulter</button>
-            </div>
+                            <strong *ngIf="item.message.ressource.price" item-left>{{item.message.ressource.price}}
+                              <sup>Fcfa</sup>
+                            </strong>
+            <button small ion-button color="primary" outline (click)="openRessource(item.message.ressource)" item-right icon-left>
+              <ion-icon name="md-download"></ion-icon>
+              Télécharger
+            </button>            
+          </div>
           </ion-list>
           <p *ngIf="item.message&&item.message.ref">
             <strong>{{item.message.ref}}</strong>
           </p>
-          <div class="message" [MathJax]="item.message.text" autolinker>
+          <div *ngIf="item.message&&item.message.text" class="message" [MathJax]="item.message.text" autolinker>
           </div>
           <div class="message-detail">
-            <span class="bold">{{item.displayName| limitTo:15}}</span>,
-            <small *ngIf="item" item-right>&nbsp;&nbsp;&nbsp;{{item.timestamp| relativeTime}}</small>
+            <ion-row no-marging>
+              <ion-col>
+                <span class="bold">{{item.displayName| limitTo:15}}</span>
+              </ion-col>
+              <ion-col>
+                <small *ngIf="item&&!item.pending" item-left>&nbsp;&nbsp;&nbsp;
+                  <ion-icon *ngIf="!item.sentTo&&!item.message.fromAdmin&&!item.message.toAdmin" name="ios-people"></ion-icon>
+                  <ion-icon *ngIf="item.sentTo" name="ios-person"></ion-icon>
+                  <ion-icon *ngIf="item.message.fromAdmin||item.message.toAdmin" name="md-person"></ion-icon>
+                </small>
+                <ion-spinner item-right name="dots" *ngIf="item&&item.pending"></ion-spinner>
+              </ion-col>
+              <ion-col>
+                <small *ngIf="item" item-right>&nbsp;&nbsp;&nbsp; {{item.timestamp| relativeTime}}
+                </small>
+              </ion-col>
+            </ion-row>
           </div>
         </div>
       </div>
-      <div *ngIf="item&&item.sentby===alignuid" (press)="presentSheet(item.message)">
-        <img class="profile-pic right" [src]="photoURL" />
+      <div *ngIf="item&&item.sentby===alignuid" >
+        <img class="profile-pic right"  [src]="item.photoURL" image-cache/>
         <div class="chat-bubble right slide-right">
-          <a  *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl">
-            <img [src]="_DomSanitizer.bypassSecurityTrustUrl(item.message.fileurl)" *ngIf="item.message&&item.message.type=='image'">
-            
+         <a  *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl" >
+            <img   [src]="item.message.fileurl" (onLoad)="onImageLoad($event)"
+             *ngIf="!item.pending&&item.message&&item.message.type=='image'"  class="message-img" image-cache>
           </a>
+          <img  [src]="secureUrl(item.message.fileurl)" *ngIf="item.pending&&item.message&&item.message.type=='image'" class="message-img">
           <question-view *ngIf="item.message&&item.message.type=='question'" [question]="item.message.question"></question-view>
           <ion-list  *ngIf="item.message&&item.message.type=='ressource'">
             <ion-row *ngIf="item.message.ressource" text-wrap no-margin>
               <ion-col col-4>
-                <ion-thumbnail item-left>
+                <ion-avatar item-left>
                   <img src="assets/images/file-image.png">
-                </ion-thumbnail>
+                </ion-avatar>
               </ion-col>
               <ion-col col-8>
                 <h4>{{item.message.ressource.nom}}</h4>
@@ -137,38 +197,67 @@
             <p>{{item.message.ressource.description}}</p>
           </div>
           <div *ngIf="item.message.ressource" ion-item no-lines class="view">
-            <button small ion-button color="primary" outline (click)="openRessource(item.message.ressource)" item-right>Consulter</button>
+              <strong *ngIf="item.message.ressource.price" item-left>{{item.message.ressource.price}}
+                <sup>Fcfa</sup>
+              </strong>
+            <button small ion-button color="primary" outline (click)="openRessource(item.message.ressource)" item-right icon-left>
+              <ion-icon name="md-download"></ion-icon>
+              Télécharger
+            </button>
           </div>
           </ion-list>
           <p *ngIf="item.message&&item.message.ref">
             <strong>{{item.message.ref}}</strong>
           </p>
-          <div class="message" *ngIf="item.message" [MathJax]="item.message.text" autolinker>
+          <div *ngIf="item.message&&item.message.text" class="message"  [MathJax]="item.message.text" autolinker>
           </div>
           <div class="message-detail">
-            <span class="bold">Moi</span>,
-            <small *ngIf="item" item-right>&nbsp;&nbsp;&nbsp;{{item.timestamp| relativeTime}}</small>
+            <ion-row no-marging>
+              <ion-col>
+                <span class="bold">Moi</span>
+              </ion-col>
+              <ion-col>
+                <small *ngIf="item&&!item.pending" item-left>&nbsp;&nbsp;&nbsp;
+                   <ion-icon *ngIf="!item.sentTo&&!item.message.fromAdmin&&!item.message.toAdmin" name="ios-people"></ion-icon>
+                  <ion-icon  *ngIf="item.sentTo" name="ios-person"></ion-icon>
+                  <ion-icon *ngIf="item.message.fromAdmin||item.message.toAdmin" name="md-person"></ion-icon>
+                </small>
+                <ion-spinner item-right name="dots" *ngIf="item&&item.pending"></ion-spinner>
+              </ion-col>
+              <ion-col>
+                <small *ngIf="item&&!item.pending" item-right>&nbsp;&nbsp;&nbsp; {{item.timestamp| relativeTime}}
+                </small>
+              </ion-col>
+            </ion-row>
           </div>
         </div>
       </div>
       <div class="cf"></div>
     </div>
   </div>
+</div>
+<ion-fab bottom right #fab [hidden]="!(allgroupmsgs&&allgroupmsgs.length)">
+  <button ion-fab mini color="light" (click)="scrollto(true)">
+    <ion-icon name="ios-arrow-down-outline"></ion-icon>
+  </button>
+</ion-fab>
+  <ion-grid [hidden]="(allgroupmsgs&&allgroupmsgs.length)" style="height: 100%;justify-content: center;">
+    <ion-row justify-content-center align-items-center>
+      <ion-spinner name="ios" color="white"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ion-footer no-border [style.height]="footerHeight()">
   <ion-item class="file-preview" *ngIf="fileurl">
     <ion-thumbnail item-left *ngIf="mesagetype=='image'">
       <img [src]="_DomSanitizer.bypassSecurityTrustUrl(fileurl)">
     </ion-thumbnail>
-    <span *ngIf="mesagetype=='image'">Image</span>
-    <p>Saisir une legende </p>
+    <span *ngIf="mesagetype=='image'">Envoyer cette image</span>
+    <p>Saisir une description de l'image </p>
     <button ion-button item-right clear icon-only (click)="cancelFile()" item-right class="button-close">
       <ion-icon name="ios-close-circle-outline"></ion-icon>
     </button>
   </ion-item>
-<ion-fab bottom right  #fab>
-  <button ion-fab mini color="light" (click)="scrollto()" ><ion-icon name="ios-arrow-down-outline"></ion-icon></button>
-</ion-fab>
-</ion-content>
-<ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
   <ion-grid class="input-wrap" no-border>
     <ion-row>
       <ion-col col-1>
@@ -178,14 +267,14 @@
       </ion-col>
       <ion-col col-1>
         <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="sendToAdmin">
-          <ion-icon name="ios-chatboxes"></ion-icon>
+          <ion-icon name="md-person"></ion-icon>
         </button>
         <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="!sendToAdmin">
-          <ion-icon name="ios-chatboxes-outline"></ion-icon>
+          <ion-icon name="ios-people-outline"></ion-icon>
         </button>
       </ion-col>
       <ion-col col-8>
-        <ion-textarea #chat_input placeholder="Saisir un message" [(ngModel)]="newmessage" (keyup.enter)="addgroupmsg()" (ionFocus)="onFocus()"
+        <ion-textarea #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()"
           autosize>
         </ion-textarea>
       </ion-col>

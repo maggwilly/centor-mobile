@@ -33,19 +33,17 @@ page-article-details {
          }
      }
 }
-   .article-titre{
-        width: 100%;
-       background-color: #f4f4f2;
-        margin-top:-10px;
-        padding: 5px 15px;
-        height: auto;
-        font-size: 1.0em;
-        font-weight: bold;
-         color:color($colors,primary); 
-         p{
-         color: color($colors,primary);
-         font-weight: normal;
-         font-size: 1.1em;
-        }   
+ul {
+  padding: 0px;
+
+  &.rating li {
+    padding: 5px 10px !important;
+    background: none;
+    color: #ffb400;
+
+    ion-icon {
+      font-size: 30px;
     }
+  }
+}   
 }

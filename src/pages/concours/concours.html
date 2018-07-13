@@ -11,7 +11,7 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content hide-header [header]="head">
+<ion-content hide-fab hide-header [header]="head">
     <ion-row>
       <ion-col col-sm-12 col-xl-8 col-md-12 col-lg-9>
         <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (ionInput)="search()" placeholder="Rechercher un concours">
@@ -33,7 +33,7 @@
         <concours-list [concoursList]="_concours"></concours-list>
         <ion-grid [hidden]="_concours&&_concours.length" style=" height: 100%;justify-content: center;">
           <ion-row justify-content-center align-items-center>
-            <ion-spinner name="circles"></ion-spinner>
+            <ion-spinner name="ios"></ion-spinner>
           </ion-row>
         </ion-grid>
         <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
@@ -52,7 +52,16 @@
         <ion-card-header text-left>
           Pouvant m'interesser
         </ion-card-header>
-        <short-list [authInfo]="authInfo" styleShow='transparent-list'></short-list>
+        <short-list [authInfo]="authInfo" target="interessants" styleShow='transparent-list'></short-list>
       </ion-col>
     </ion-row>
+<ion-fab bottom right #fab>
+  <a  ion-fab  color="primary" (click)="startabonnement()" >
+<svg fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
+  <path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-3.5h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"
+  />
+  <path fill="none" d="M0 0h24v24H0z" />
+</svg>
+</a>
+</ion-fab>
 </ion-content>

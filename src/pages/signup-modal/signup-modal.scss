@@ -1,0 +1,56 @@
+page-signup-modal {
+       #profile-bg {
+        position: absolute;
+        left: 0;
+        background: linear-gradient(rgba(6,92,121,0),  rgba(6,92,121,0.61)) ,url('../assets/images/material-design-background.jpg');
+        width: 100%;
+        margin-top: -16px;
+        background-size: cover;
+        height: 22vh;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        text-align: center;
+        box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
+      }
+      // Profile content
+      #content {
+        position: relative;
+        margin-top: 130px;
+        padding-top: 100px;
+        text-align: center;
+      }
+      #profile-image {
+        display: block;
+        border-radius: 50%;
+        border: 1px solid #fff;
+        height: 15vh;
+        width: 15vh;  
+        margin: 2.76vh auto 0;
+        box-shadow: 0px 0px 4px rgba(0,0,0,0.7);
+      }
+      #profile-info {
+        position: absolute;
+        top: -95px;
+        width: 100%;
+        z-index: 2;
+        text-align: center;
+        background: transparent;
+      }
+      #profile-name {
+        color: #444;
+        font-size: 18px;
+      }
+      .profile-description {
+        color: #888;
+      }
+      .follow-button {
+        text-transform: none;
+        border-radius: 3px !important;
+        ion-icon {
+          font-weight: bold;
+          padding-left: 5px;
+          font-size: 2.5rem;
+        }
+      }
+}

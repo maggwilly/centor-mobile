@@ -5,6 +5,7 @@ import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
 import firebase from 'firebase';
 import { IonicPage } from 'ionic-angular';
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 
 /**
  * Generated class for the NotificationsPage page.
@@ -20,6 +21,7 @@ import { IonicPage } from 'ionic-angular';
 })
 export class NotificationsPage {
 _articles:any[]; 
+loaded:any=false;
 notificationId: string //= window.localStorage.getItem('registrationId');
 registerId:any;
   constructor(
@@ -28,11 +30,12 @@ registerId:any;
       public storage: Storage , 
       public alertCtrl: AlertController,
       public notify:AppNotify,
+    public firebaseNative: Firebase,
       public dataService: DataService,
       public loadingCtrl: LoadingController,    
       public platform: Platform,
       ) {
-  
+      this.firebaseNative.setScreemName('notification_list');
   }
 
 
@@ -55,6 +58,8 @@ registerId:any;
              this.loadData(true);
     });
   }
+
+  
 getIcon(article:any):string{
   let iconName = (!article.readed) ? 'ios-' + article.notification.format : 'ios-' + article.notification.format + '-outline';
   return iconName;
@@ -64,8 +69,10 @@ loadData(all?:boolean){
   this._articles=null;
   return this.storage.get('_articles').then((data) => {
     this._articles = data ? data : [];
+    this.loaded = this._articles&& this._articles.length;
     this.dataService.getMessages(this.notificationId, this.registerId,0, all).then((data) => {
       this._articles = data.messages;
+      this.loaded=true;
       this.storage.set('_articles', this._articles).then(() => { });
     }, error => {
       this.notify.onError({ message: 'Petit problème de connexion.' });

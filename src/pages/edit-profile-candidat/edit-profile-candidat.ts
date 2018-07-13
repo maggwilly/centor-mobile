@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, NgZone  } from '@angular/core';
 import { NavController, App,   NavParams ,ViewController,ActionSheetController,LoadingController,AlertController} from 'ionic-angular';
-import { Camera, CameraOptions } from '@ionic-native/camera';
+//import { Camera, CameraOptions } from '@ionic-native/camera';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import firebase from 'firebase';
@@ -8,6 +8,9 @@ import { Storage } from '@ionic/storage';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { IonicPage } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
+import { ImghandlerProvider } from '../../providers/imghandler/imghandler';
+import { DomSanitizer } from '@angular/platform-browser';
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 @IonicPage()
 @Component({
   selector: 'page-edit-profile-candidat',
@@ -17,11 +20,14 @@ export class EditProfileCandidatPage {
   candidat:any={branche:'science',enableNotifications:true};
   imageData: string = '';
   loading;
-  authInfo:any;
+ // authInfo:any;
   photoURL
   fileName
   uploapping
   placeholderPicture = 'assets/images/default-avatar.jpg';
+  defaultAvatar = 'assets/images/default-avatar.jpg';
+
+  offset = 100;
   submited:boolean=false;
  constructor(
   public storage: Storage , 
@@ -34,16 +40,22 @@ export class EditProfileCandidatPage {
   public navParams: NavParams,
   public dataService:DataService,
   public alertCtrl: AlertController,
+   public firebaseNative: Firebase,
    public userProvider: UserProvider,
-  private camera: Camera,
+  //private camera: Camera,
+   public zone: NgZone,
+   public _DomSanitizer: DomSanitizer,
+   public imgservice: ImghandlerProvider,  
   public notify:AppNotify
-) {}
+) {
+
+   this.firebaseNative.setScreemName('partie_edit');
+}
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad EditProfileCandidatPage');
     let candidat=this.navParams.get('profil');
     this.candidat = Object.assign({ dateMax:'2010-12-31' }, candidat);
-    this.authInfo=this.navParams.get('authInfo');
+    this.photoURL = candidat.photoURL ? candidat.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' 
   }
 
    dismiss(data?:any) {
@@ -51,98 +63,54 @@ export class EditProfileCandidatPage {
   } 
 
 
-  editInfo(close:boolean=true){
-    this.submited=true;
-    this.candidat.photoURL = this.photoURL ? this.photoURL : this.candidat.photoURL ;
-    this.dataService.editInfo(this.authInfo.uid, this.candidat).then((info)=>{
-    this.candidat=info;
-    this.submited = false;
-      this.userProvider.updatedisplayname(this.candidat.displayName).then(()=>{
-        if (close) {
-          this.notify.onSuccess({ message: 'Votre profil a été mis à jour !' })
-          this.viewCtrl.dismiss(info);
-        }
-
+  editInfo(){
+    this.submited = true;
+    if(this.uploapping)
+      return this.updateproceed();
+    return this.dataService.editInfo(firebase.auth().currentUser.uid, this.candidat).then((info)=>{
+        this.candidat=info;
+        this.userProvider.updatedisplayname(this.candidat.displayName).then(()=>{
+        this.submited = false;
+        this.firebaseNative.logEvent('profil_update', { profil: true });
+        this.notify.onSuccess({ message: 'Votre profil a été mis à jour !' })
+        this.viewCtrl.dismiss(info);
       })
-
-   },error=>{
+    },error=>{
       this.submited=false;
-     this.notify.onError({ message:'Petit problème de connexion !'});      
+      this.notify.onError({ message:'Petit problème de connexion !'});      
    })
   }
 
-
-  getPicture(sourceType:number){
-    const options: CameraOptions = {
-     quality: 100,
-     destinationType: this.camera.DestinationType.DATA_URL,
-     encodingType: this.camera.EncodingType.JPEG,
-     allowEdit:true,
-     cameraDirection:1,
-     targetWidth:200,
-     targetHeight:200,
-     mediaType: this.camera.MediaType.PICTURE,
-     sourceType:sourceType
-   } 
-
-    
-    this.camera.getPicture(options).then((imageData) => {
-      this.candidat.base64Image = imageData;
-       this.uploapping = true;
-      firebase.storage().ref('profilePictures/' + firebase.auth().currentUser.uid)
-      .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
-        this.candidat.base64Image = picture.downloadURL;
-        this.photoURL = picture.downloadURL;
-        this.uploapping = false;
-        return   this.userProvider.updateimage(picture.downloadURL);
+  updateproceed() {
+    this.imgservice.storeImage(this.imageData, '/profileimages').then(url => {
+      this.candidat.photoURL = url;
+      this.userProvider.updateimage(url).then((res: any) => {
+        this.dataService.editInfo(firebase.auth().currentUser.uid,this.candidat).then(info=>{
+          this.candidat = info;
+          this.submited = false;
+          this.uploapping = false;
         }, error => {
-        this.notify.onError({ message: 'Un problème est survenu !' });  
-       });
-     }, error => {
-      this.notify.onError({ message: 'Un problème est survenu !' }); 
-    });
-
-
-   }
-
-   cancelPicture(){
-     firebase.storage().ref('profilePictures/' + firebase.auth().currentUser.uid).delete().then(()=>{
-       this.photoURL = undefined;
-       //this.userProvider.updateimage(this.photoURL); defqult avatar
-     }, error => {
-      this.notify.onError({ message: 'Un problème est survenu !' }); 
-     });
-   }
-   
-   pictureActionSheet() {
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'Prendre une photo',
-      buttons: [
-        {
-          text: 'Appareil photo',
-          icon:'camera',
-          handler: () => {
-           this.getPicture(1);
-          }
-        },
-        {
-          text: 'Gallerie',
-          icon:'images',
-          handler: () => {
-            this.getPicture(0);
-          }
-        },
-        {
-          text: 'Annuler',
-          icon:'md-close',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    actionSheet.present();
+          this.submited = false;
+          this.notify.onError({ message: 'Petit problème de connexion !' });
+        })
+      })
+    })
   }
+
+
+  chooseimage() {
+    this.imgservice.getImage(200, 200).then(imageData => {
+      this.zone.run(() => {
+        this.uploapping = true;
+        this.photoURL = 'data:image/png;base64, ' + imageData;
+        this.imageData = imageData;
+      })
+    });
+  }
+
+
+
+
 
    logout() {
     firebase.auth().signOut().then(() => {      

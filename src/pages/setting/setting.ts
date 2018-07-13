@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { DataService } from '../../providers/data-service';
 import { IonicPage } from 'ionic-angular';
 import firebase from 'firebase';
+import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 @IonicPage()
 @Component({
   selector: 'page-setting',
@@ -16,6 +17,8 @@ export class SettingPage {
   user: any = {};
   paidConcours: any;
   prefRef: any;
+  defaultAvatar = 'assets/images/default-avatar.jpg';
+  offset = 100;
   constructor(
     public storage: Storage,
     public appCtrl: App,
@@ -26,10 +29,11 @@ export class SettingPage {
     public nav: NavController,
     public navParams: NavParams,
     public dataService: DataService,
+    public firebaseNative: Firebase,
     public alertCtrl: AlertController,
     public viewCtrl: ViewController,
     public notify: AppNotify) {
-   
+    this.firebaseNative.setScreemName('profile_view');
   }
   ionViewDidLoad() {
     this.authInfo = firebase.auth().currentUser;
@@ -41,7 +45,8 @@ export class SettingPage {
       displayName: this.authInfo.displayName,
        email: this.authInfo.email,
       photoURL: this.authInfo.photoURL ? this.authInfo.photoURL: 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
-       };
+      
+    };
     this.getUserProfile().then(() => {
       this.loadAbonnement();
     });
@@ -49,24 +54,36 @@ export class SettingPage {
   }
 
 
+
   loadAbonnement() {
-    return this.dataService.getAbonnements(firebase.auth().currentUser.uid).then(data => {
-      this.paidConcours = data ? data : [];
-    }, error => {
-      this.notify.onError({ message: 'Petit problème de connexion.' });
-    });
+    this.storage.get('_abonnements').then((dtata) => {
+      this.paidConcours = dtata ? dtata : [];
+      this.dataService.getAbonnementsObservable(firebase.auth().currentUser.uid).subscribe(data => {
+        this.paidConcours = data ? data : [];
+        this.storage.set('_abonnements', data);
+      }, error => {
+        this.notify.onError({ message: 'Problème de connexion.' });
+      })
+    })
   }
 
-
   getUserProfile() {
-    return this.dataService.getInfo(firebase.auth().currentUser.uid).then((info) => {
-      if (info) {
-        this.user.info = info;
-      }
-    },
-      error => {
-        this.notify.onError({ message: 'Petit problème de connexion.' });
-      })
+    return this.storage.get(firebase.auth().currentUser.uid).then((info)=>{
+      this.user.info = info ? info : firebase.auth().currentUser;
+     
+      return this.dataService.getInfo(firebase.auth().currentUser.uid).then((info) => {
+        if (info) {
+          this.user.info = info;
+          this.defaultAvatar = info.photoURL;
+          this.user.info.photoURL=this.user.info.photoURL ? this.user.info.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
+          this.storage.set(firebase.auth().currentUser.uid, info);
+        }
+      },
+        error => {
+          this.notify.onError({ message: 'Petit problème de connexion.' });
+        })
+    })
+
   }
 
 
@@ -82,7 +99,8 @@ export class SettingPage {
   isExpired(abonnement: any) {
     if (abonnement == null)
       return true;
-    let now = firebase.database.ServerValue.TIMESTAMP;
+      let now = Date.now();
+   // let now = firebase.database.ServerValue.TIMESTAMP;
     let endDate = new Date(abonnement.endDate).getTime();
     return now > endDate;
   }
@@ -93,7 +111,7 @@ export class SettingPage {
       if (data) {
         this.user.info = data;
         this.events.publish('profil:updated', data);
-        //  this.getUserProfile();  
+        this.storage.set(firebase.auth().currentUser.uid, data);
       }
       //
 
@@ -104,7 +122,6 @@ export class SettingPage {
   logout() {
     firebase.auth().signOut().then(() => {
       this.storage.clear().catch(error => { });
-      this.viewCtrl.dismiss(true);
       this.notify.onSuccess({ message: 'Vous êtes déconnectés !' });
       this.appCtrl.getRootNav().setRoot('HomePage');
     }, (error) => {

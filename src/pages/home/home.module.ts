@@ -4,6 +4,7 @@ import { HomePage } from './home';
 import { SharedComponentsModule } from '../../app/shared.module';
 import { SharedDirectivesModule } from '../../app/shared.module';
 import { CarouselComponent } from '../../components/carousel/carousel';
+import { SharedProvidersModule } from '../../app/shared.module';
 @NgModule({
   declarations: [
     HomePage, CarouselComponent
@@ -11,7 +12,8 @@ import { CarouselComponent } from '../../components/carousel/carousel';
   imports: [
     IonicPageModule.forChild(HomePage),
     SharedComponentsModule,
-    SharedDirectivesModule,
+    SharedDirectivesModule, 
+    SharedProvidersModule
     
   ],
 })
