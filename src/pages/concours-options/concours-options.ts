@@ -152,6 +152,8 @@ openModal(pageName,arg?:any) {
   }
 
 
+
+    
 explorer(){
    if(!this.concours.matieres||!this.concours.matieres.length)
    return;

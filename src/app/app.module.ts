@@ -9,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { firebaseConfig} from './app.firebaseconfig';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { AngularFireAuthModule } from 'angularfire2/auth';
+//import { AngularFireAuthModule } from 'angularfire2/auth';
 import { ImageCacheProvider } from '../providers/image-cache/image-cache';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { TooltipsModule } from 'ionic-tooltips';
@@ -29,7 +29,7 @@ import { FcmProvider } from '../providers/fcm/fcm';
       pageTransition: 'ios-transition'
     }),
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireAuthModule,
+  //  AngularFireAuthModule,
     AngularFireDatabaseModule,
     MODULES,
     BrowserAnimationsModule,

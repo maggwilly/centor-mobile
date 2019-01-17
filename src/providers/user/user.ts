@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from 'angularfire2/auth';
 import firebase from 'firebase';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
@@ -14,7 +13,7 @@ export class UserProvider {
   firedata = firebase.database().ref('/users');
   _baseUrl = 'https://concours.centor.org/v1/'
   private headers = new Headers({ 'Content-Type': 'application/json' });
-  constructor(public http: Http,public afireauth: AngularFireAuth) {
+  constructor(public http: Http) {
    
   }
 
@@ -28,13 +27,13 @@ export class UserProvider {
 
   adduser(newuser) {
     var promise = new Promise((resolve, reject) => {
-      this.afireauth.auth.createUserWithEmailAndPassword(newuser.email, newuser.password).then(() => {
-        this.afireauth.auth.currentUser.updateProfile({
+      firebase.auth().createUserWithEmailAndPassword(newuser.email, newuser.password).then(() => {
+        firebase.auth().currentUser.updateProfile({
           displayName: newuser.displayName,
           photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
         }).then(() => {
-          this.firedata.child(this.afireauth.auth.currentUser.uid).set({
-            uid: this.afireauth.auth.currentUser.uid,
+          this.firedata.child( firebase.auth().currentUser.uid).set({
+            uid:  firebase.auth().currentUser.uid,
             displayName: newuser.displayName,
             photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
           }).then(() => {
@@ -84,17 +83,17 @@ export class UserProvider {
 
   updateimage(imageurl) {
       var promise = new Promise((resolve, reject) => {
-          this.afireauth.auth.currentUser.updateProfile({
-              displayName: this.afireauth.auth.currentUser.displayName,
+           firebase.auth().currentUser.updateProfile({
+              displayName:  firebase.auth().currentUser.displayName,
               photoURL: imageurl      
           }).then(() => {
               firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({
-              displayName: this.afireauth.auth.currentUser.displayName,
+              displayName:  firebase.auth().currentUser.displayName,
               photoURL: imageurl,
               uid: firebase.auth().currentUser.uid
               }).then(() => {
                   this.http.post(this._baseUrl + 'formated/info/' + firebase.auth().currentUser.uid + '/edit/json', JSON.stringify({
-                  displayName: this.afireauth.auth.currentUser.displayName,
+                  displayName:  firebase.auth().currentUser.displayName,
                   photoURL: imageurl,
                 }), { headers: this.headers })
                   .toPromise()
@@ -124,17 +123,17 @@ export class UserProvider {
 
   updatedisplayname(newname) {
     var promise = new Promise((resolve, reject) => {
-      this.afireauth.auth.currentUser.updateProfile({
+       firebase.auth().currentUser.updateProfile({
       displayName: newname,
-      photoURL: this.afireauth.auth.currentUser.photoURL
+      photoURL:  firebase.auth().currentUser.photoURL
     }).then(() => {
       this.firedata.child(firebase.auth().currentUser.uid).update({
         displayName: newname,
-        photoURL: this.afireauth.auth.currentUser.photoURL,
-        uid: this.afireauth.auth.currentUser.uid
+        photoURL:  firebase.auth().currentUser.photoURL,
+        uid:  firebase.auth().currentUser.uid
       }).then(() => {
         this.http.post(this._baseUrl + 'formated/info/' + firebase.auth().currentUser.uid + '/edit/json', JSON.stringify({
-          displayName: this.afireauth.auth.currentUser.displayName,
+          displayName:  firebase.auth().currentUser.displayName,
         }), { headers: this.headers })
           .toPromise()
           .then(response => {

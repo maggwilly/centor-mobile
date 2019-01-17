@@ -1,6 +1,4 @@
 
-import { AngularFireDatabase } from 'angularfire2/database';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { Platform } from 'ionic-angular'
 import { Injectable } from '@angular/core';
 import { Firebase } from '@ionic-native/firebase';

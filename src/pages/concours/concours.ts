@@ -94,6 +94,7 @@ if (user) {
     });
     this.navCtrl.push('LoginSliderPage', { redirectTo: true });
   }
+  
 loadData(){
     return  this.dataService.getSessions(0).then((data)=>{
                this._concours=data?data:[];    
@@ -126,7 +127,7 @@ loadData(){
 
   doSearch() {
   return  this.dataService.getSessions(this._concours.length,true).then(data => {
-     // this.updateList(data);
+     this.updateList(data);
     this._concours = data;
       //this.storage.set('_concours', this._concours).then(() => { }, error => { });
     }, error => {

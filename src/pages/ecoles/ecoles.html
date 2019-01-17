@@ -1,0 +1,34 @@
+<!--
+  Generated template for the EcolesPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Ecoles et facultés</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+    <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (ionInput)="search()" placeholder="Rechercher une école">
+      </ion-searchbar>
+  <ion-list *ngIf="_concours&&_concours.length">
+    <ion-item (click)="showSelections(concours)" *ngFor="let concours of _concours" [hidden]="concours.hide" text-wrap detail-push>
+      <ion-thumbnail item-left>
+          <img  [defaultImage]="defaultAvatar" [lazyLoad]="concours.imageUrl" [offset]="offset"  image-cache>
+      </ion-thumbnail>
+        {{concours.nom}}
+        <p>{{concours.ecole}}
+        </p>
+    </ion-item>
+  </ion-list>
+  <ion-grid [hidden]="_concours&&_concours.length" style=" height: 100%;justify-content: center;">
+    <ion-row justify-content-center align-items-center>
+      <ion-spinner name="ios"></ion-spinner>
+    </ion-row>
+  </ion-grid>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

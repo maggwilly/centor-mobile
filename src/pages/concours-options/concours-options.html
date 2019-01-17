@@ -35,9 +35,7 @@
               </button>
             </ion-col> 
       </ion-row>          
-        <div>
-          <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
-        </div>
+   <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>  
 <ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" [@bounce]="bounceState">
   <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
     <ion-icon name="ios-chatboxes-outline"></ion-icon>

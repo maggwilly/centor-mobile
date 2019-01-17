@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { AppNotify } from '../providers/app-notify';
 import firebase from 'firebase';
+
 @Injectable()
 export class DataService {
 data: any;
@@ -42,6 +43,29 @@ data: any;
             .then(response =>response.json());    
  
 }
+
+getEcoles(start:number){
+  return this.http.get(this._baseUrl + 'formated/concours/json?start=' + start,  { headers:this. headers })
+          .toPromise()
+           .then(response =>response.json());    
+
+}
+getSelectedSessions(ecole:number,uid?:string,filter?:string){
+  console.log(this._baseUrl + 'formated/session/selected/' + ecole + '/' + uid + '/json?filter='+filter);
+  
+  return this.http.get(this._baseUrl + 'formated/session/selected/' + ecole + '/' + uid + '/json?filter='+filter,  { headers:this. headers })
+          .toPromise()
+           .then(response =>response.json());    
+
+}
+
+getCountSessions(uid?:string){
+  console.log(this._baseUrl + 'formated/session/home/count/' + uid + '/json');
+  return this.http.get(this._baseUrl + 'formated/session/home/count/' + uid + '/json',  { headers:this. headers })
+          .toPromise()
+           .then(response =>response.json());    
+}
+
 
   /*Recherche la date de derniere mise a jour*/
   getResultats(start: number, all?: boolean, order?: string) {

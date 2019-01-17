@@ -108,8 +108,8 @@ export class MyApp {
 
 
   getUrlBase(obj: any) {
-//this.registerForNotification();
-this.registerForNotificationWeb();
+this.registerForNotification();
+//this.registerForNotificationWeb();
     this.storage.set('_baseUrl', _baseUrl).then(()=>{
       this.startApp();
     }, error => {
@@ -311,7 +311,7 @@ checkInfo(info:any){
     });
 
 
-    firebase.messaging().requestPermission()
+   firebase.messaging().requestPermission()
       .then(() => {
         return firebase.messaging().getToken().then(token => {
           console.log(token);

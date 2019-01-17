@@ -13,8 +13,9 @@ img {
     ion-icon{
         color:  #7F7F7F;
     } 
-         .switch {
+         .switch-button {
             position: fixed;
+            display: block;
             bottom: -30px;
             left: 50%;
             transform: translate3d(-50%, -50%, 0);

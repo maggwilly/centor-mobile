@@ -44,6 +44,7 @@ import { CloudSettings } from '@ionic/cloud-angular';
 // Pipes
 import { LimitToPipe } from '../pipes/limit-to/limit-to';
 import { RelativeTime } from '../pipes/relative-time/relative-time';
+import { ConcoursListComponent } from '../components/concours-list/concours-list';
 const cloudSettings: CloudSettings = {
   core: {
     app_id: 'c3ad15a6'
@@ -103,6 +104,7 @@ export const SHAREDPROVIDERS = [
 
 export const COMPONENTS = [
   DashboordItemComponent,
+  ConcoursListComponent,
   ProgrammeComponent,
   ShortListComponent,
   ResultatListComponent,

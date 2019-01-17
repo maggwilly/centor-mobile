@@ -1,0 +1,14 @@
+
+<ion-header no-border #head>
+  <ion-navbar>
+    <ion-title>{{targetTitle}}</ion-title>
+    <ion-buttons end>
+
+      </ion-buttons>   
+  </ion-navbar>
+</ion-header>
+<ion-content  hide-header [header]="head">
+  <short-list *ngIf="target=='en_vus'" target="en_vus" header="Concours les plus en vue"></short-list>
+  <short-list *ngIf="target=='recents'" target="recents" header="Concours récemment ouverts "></short-list>
+  <short-list *ngIf="target=='interessants'" [authInfo]="authInfo" target="interessants" header="Concours pouvant minteresser"></short-list>
+</ion-content>

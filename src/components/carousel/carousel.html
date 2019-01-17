@@ -1,13 +1,11 @@
 <!-- Generated template for the CarouselComponent component -->
 <ion-slides pager class="carousel"  autoplay="15000"   loop *ngIf="slides.length">
-    <ion-slide *ngFor="let slide of slides" >
-      <ion-row *ngIf="slide.type=='html_image'">
+    <ion-slide *ngFor="let slide of slides" [ngStyle]="{'background-image': 'url(' + slide.base64Image +')'}" class="cover">
+      <ion-row >
         <ion-col col-4>
-           <!-- <img [src]="slide.base64Image" class="vertical-center center"/>-->
         </ion-col>
         <ion-col col-8 text-right>
-          <div [innerHTML]="slide.html" padding>
-          </div>         
+            <a ion-button small round color="orange" class="classic-button" [href]="slide.text" *ngIf="slide.text">{{slide.type}}</a>                  
           </ion-col> 
       </ion-row>
     </ion-slide>
