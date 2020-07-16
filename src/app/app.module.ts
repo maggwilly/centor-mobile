@@ -1,11 +1,9 @@
-
 import { NgModule, ErrorHandler} from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { MODULES, MAINPROVIDERS } from './app.imports';
 import { SharedDirectivesModule } from './shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { firebaseConfig} from './app.firebaseconfig';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
@@ -14,6 +12,7 @@ import { ImageCacheProvider } from '../providers/image-cache/image-cache';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { TooltipsModule } from 'ionic-tooltips';
 import { FcmProvider } from '../providers/fcm/fcm';
+import { AbonnementProvider } from '../providers/abonnement/abonnement';
 @NgModule({
   declarations: [
     MyApp,
@@ -44,6 +43,7 @@ import { FcmProvider } from '../providers/fcm/fcm';
   providers: [MAINPROVIDERS, { provide: ErrorHandler, useClass: IonicErrorHandler },
     ImageCacheProvider,
     ImageCacheProvider,
-    FcmProvider]
+    FcmProvider,
+    AbonnementProvider]
 })
 export class AppModule {}

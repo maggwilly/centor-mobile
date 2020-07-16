@@ -14,7 +14,7 @@
 
 </ion-header>
 <ion-content hide-header [header]="head">
-    <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (ionInput)="search()" placeholder="Rechercher un resultat">
+    <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (keyup)="searchTerm$.next($event.target.value)" placeholder="Rechercher un resultat">
     </ion-searchbar>
     <resultat-list [resultatList]="_resultats" ></resultat-list>
     <ion-grid [hidden]="_resultats&&_resultats.length" style=" height: 100%;justify-content: center;">

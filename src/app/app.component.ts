@@ -16,7 +16,7 @@ import 'rxjs/add/operator/take';
 
 
 const appVersion ='2.8.12';
-const _baseUrl = 'https://concours.centor.org/v1/'
+const _baseUrl = 'http://127.0.0.1:8000'
 
 
 export interface PageInterface {
@@ -74,7 +74,7 @@ export class MyApp {
   ) {
     this.zone = new NgZone({});
     platform.ready().then(() => {
-    
+
       this.storage.get('registrationId').then((data)=>{
         this.registrationId = data;
       })
@@ -91,7 +91,7 @@ export class MyApp {
   }
 
   getAbonnement() {
-    this.dataService.getAbonnement(firebase.auth().currentUser.uid, 0).then(data => {
+    this.dataService.checkAbonnementValidity(firebase.auth().currentUser.uid, 0).then(data => {
       this.abonnement = data;
     }, error => {
       this.notify.onError({ message: 'Petit problème de connexion.' });
@@ -108,15 +108,9 @@ export class MyApp {
 
 
   getUrlBase(obj: any) {
-this.registerForNotification();
+//this.registerForNotification();
 //this.registerForNotificationWeb();
-    this.storage.set('_baseUrl', _baseUrl).then(()=>{
       this.startApp();
-    }, error => {
-      this.notify.onError({ message: JSON.stringify(error) }); 
-      this.startApp();
-    });
-
   }
 
   startApp() {
@@ -204,7 +198,7 @@ checkInfo(info:any){
 
 
   openSettingPage() {
-  
+
     if (firebase.auth().currentUser)
       this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
     else {
@@ -239,16 +233,16 @@ checkInfo(info:any){
     this.storage.set('_baseUrl',_baseUrl).then(() => {
       this.observeAuth();
     });
-   
+
     if (this.platform.is('android')) {
       this.fcm.getToken().then(token => {
          this.registration(token);
       });
       this.fcm.onTokenRefresh().subscribe(token => {
         this.registration(token);
-      }); 
+      });
 
-      this.fcm.listenTopic('centor-public');  
+      this.fcm.listenTopic('centor-public');
      this.fcm.onNotification().subscribe(data => {
       if (data.tap) {
         if (data.page) {
@@ -259,13 +253,13 @@ checkInfo(info:any){
             break;
             case 'rappel':
               this.nav.setRoot('NotificationsPage', { showMenu: true });
-              break;            
+              break;
             case 'document':
               this.nav.setRoot('RessourceDetailsPage', { ressource_id: data.id, showMenu: true});
               break;
             case 'concours':
               this.nav.setRoot('ConcoursOptionsPage', { id: data.id, showMenu: true});
-              break;              
+              break;
             case 'notification':
               this.nav.setRoot('ArticleDetailsPage', { notification_id: data.id, showMenu: true });
               break;
@@ -280,7 +274,7 @@ checkInfo(info:any){
       }else {
         if (!data.body)
           return
-        
+
         let alert = this.notify.onInfo({ message: '' + data.title.substring(0, 30) +' ... '+data.body.substring(0, 50)+''});
         alert.present();
       };
@@ -288,7 +282,7 @@ checkInfo(info:any){
     }
 
   }
-  ngAfterViewInit() {
+  ngAfterViewInitr() {
     this.deeplinks.routeWithNavController(this.nav, {
       '/resultat': 'ResultatsPage',
       '/document/:ressource_id': 'RessourceDetailsPage',
@@ -337,13 +331,13 @@ checkInfo(info:any){
     this.storage.set('registrationId', registrationId).then(()=>{
       this.dataService.addRegistration(registrationId, { registrationId: registrationId ,appVersion: appVersion }).then((data) => {
       }, error => {
-        this.notify.onError({message:'problème de connexion.'}); 
-      })  
+        this.notify.onError({message:'problème de connexion.'});
+      })
     },error=>{
       this.dataService.addRegistration(registrationId, { registrationId: registrationId, appVersion: appVersion }).then((data) => {
       }, error => {
-        this.notify.onError({message:'problème de connexion.'}); 
-      })  
+        this.notify.onError({message:'problème de connexion.'});
+      })
     });
 
   }
@@ -353,7 +347,7 @@ checkInfo(info:any){
   loadAbonnement() {
     this.storage.get('_abonnements').then((dtata)=>{
       this.paidConcours = dtata ? dtata : [];
-    this.dataService.getAbonnementsObservable(this.authInfo.uid).subscribe(data => {
+    this.dataService.getAbonnementsObservable().subscribe(data => {
       this.paidConcours = data ? data : [];
       this.storage.set('_abonnements', data);
     }, error => {
@@ -382,7 +376,7 @@ checkInfo(info:any){
     this.events.subscribe('payement:success', (data) => {
       this.zone.run(() => {
         this.loadAbonnement();
-   
+
       });
     });
 
@@ -401,7 +395,7 @@ checkInfo(info:any){
     this.storage.set('_preferences', abonnement).catch(error => { });
     this.menu.close();
   }
- 
+
 }
 
 

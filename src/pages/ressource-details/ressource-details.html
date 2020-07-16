@@ -15,7 +15,7 @@
             </ion-row>
     </ion-grid>
   <div *ngIf="loaded">
-  <section class="housing-image" [ngStyle]="{ 'background-image': 'url(' + estateProperty.imageUrl + ')'}"  *ngIf="estateProperty">
+<section class="housing-image" [ngStyle]="{ 'background-image': 'url(' + estateProperty.imageUrl + ')'}"  *ngIf="estateProperty">
     <section class="housing-banner" >
       <span class="housing-title">{{estateProperty.nom}}</span>
       <span class="price" *ngIf="estateProperty.price">{{estateProperty.price}}<sup>Fcfa</sup></span>

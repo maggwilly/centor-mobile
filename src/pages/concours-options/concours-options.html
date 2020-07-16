@@ -16,26 +16,20 @@
           <details-item [concours]="concours" *ngIf="concours"></details-item>
           <br>
           <ion-row no-padding justify-content-center align-items-center >
-            <ion-col text-left col-4 >
+            <ion-col text-left col-6 >
               <button ion-button clear small color="primary" (click)="share()" icon-left>
                 <ion-icon name='share-alt'></ion-icon>
                 Partager
               </button>
-            </ion-col> 
-            <ion-col text-center col-4>
+            </ion-col>
+            <ion-col text-right col-6>
               <button ion-button clear small color="primary" (click)="startabonnement()" icon-left>
                 <ion-icon name='ios-notifications' ></ion-icon>
                M'abonner
               </button>
-            </ion-col>                 
-            <ion-col text-right col-4>
-              <button ion-button clear small color="primary" (click)="more()" icon-left>
-                <ion-icon name='ios-more'></ion-icon>
-               détails
-              </button>
-            </ion-col> 
-      </ion-row>          
-   <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>  
+            </ion-col>
+      </ion-row>
+   <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
 <ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" [@bounce]="bounceState">
   <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
     <ion-icon name="ios-chatboxes-outline"></ion-icon>

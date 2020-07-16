@@ -1,0 +1,9 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title *ngIf="result">{{result.title}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+<p *ngIf="result">{{result.description? result.description: result.title }}</p>
+ <a *ngIf="result&&result.url" [href]="result.url">En savoir plus ...</a>
+</ion-content>

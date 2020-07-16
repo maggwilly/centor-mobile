@@ -30,13 +30,13 @@ export class ArticleDetailsPage {
      public storage: Storage,
      public loadingCtrl: LoadingController,
      public dataService:DataService,) {
-   
+
     this.showMenu = this.navParams.get('showMenu');
       this.storage.get('registrationId').then((data) => {
       this.registrationId = data;
     })
     this.zone = new NgZone({});
-    this.firebaseNative.setScreemName('message_view');
+    //this.firebaseNative.setScreemName('message_view');
   }
 
   ionViewDidLoad() {
@@ -62,21 +62,21 @@ export class ArticleDetailsPage {
 
   makeArticleReaded(articleId:number,notification_id?:any,registrationId?:any){
     return this.dataService.readMessage(articleId, notification_id, registrationId).then(data=>{
-             this.article.readed=true;  
-             this.events.publish('message:read');            
+             this.article.readed=true;
+             this.events.publish('message:read');
         },error=>{
               this.notify.onError({message:'Petit problème de connexion.'});
       });
- 
+
   }
 
   onModelChange(event){
     if (!firebase.auth().currentUser)
        return this.signup();
     if (this.article && this.article.notification)
-    this.firearticle.child(this.article.notification.id).child(firebase.auth().currentUser.uid).set(this.rate)  
-  } 
-  
+    this.firearticle.child(this.article.notification.id).child(firebase.auth().currentUser.uid).set(this.rate)
+  }
+
   observeAuth() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -84,9 +84,9 @@ export class ArticleDetailsPage {
         this.firearticle.child(this.article.notification.id).child(firebase.auth().currentUser.uid).on('value',snaphost=>{
           this.rate=snaphost.val()
         });
-      } 
+      }
     })
-  } 
+  }
 
 
   signup() {
@@ -104,5 +104,5 @@ export class ArticleDetailsPage {
       });
     });
     this.appCtrl.getRootNav().push('LoginSliderPage', { redirectTo: true });
-  }   
+  }
 }

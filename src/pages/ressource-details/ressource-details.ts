@@ -6,7 +6,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Transfer, TransferObject } from '@ionic-native/transfer';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 import firebase from 'firebase';
-//import { File } from '@ionic-native/file';
+import { DomSanitizer,SafeResourceUrl} from '@angular/platform-browser'
 /**
  * Generated class for the RessourceDetailsPage page.
  *
@@ -28,22 +28,9 @@ export class RessourceDetailsPage {
   loaded
   estateProperty: any = {}
   showMenu
-  /* = {
-    id:1,
-    nom: 'Calendrier des concours publics 2018-209',
-    description: `Liste de tous les concours publics du cameroun avec ls dates. Calendrier produit et publié chaque année par le MINSUP et le
-    centre national des examens et concours`,
-    price: '200',
-    imageUrl: 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/filemsgs%2Fcalendar.PNG?alt=media&token=210c653e-9d27-40a0-933b-0c16dfe72f0d',
-    url: 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/filemsgs%2Fcalendar.PNG?alt=media&token=210c653e-9d27-40a0-933b-0c16dfe72f0d',
-    style: 'PDF, 15ko',
-    size: '10 pages',
-    detail1:'51 Concours',
-    detail2: '16 Ecoles publics',
-    detail3: '4 Ecoles privée',
-    detail4: 'Toutes série, tous niveaux'
-  }; */
+  pageurl:SafeResourceUrl;
   zone: NgZone;
+  page:number = 1;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -55,12 +42,14 @@ export class RessourceDetailsPage {
     private transfer: Transfer,
     public firebaseNative: Firebase,
     public loadingCtrl: LoadingController,
-    // private file: File
+    private domSanitizer:DomSanitizer
   ) {
     this.zone = new NgZone({});
     this.showMenu = this.navParams.get('showMenu');
-    this.firebaseNative.setScreemName('document_view');
+    //this.firebaseNative.setScreemName('document_view');
   }
+
+
   ionViewWillLeave() {
     if (this.ch)
       this.ch.unsubscribe();
@@ -70,7 +59,7 @@ export class RessourceDetailsPage {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.id = this.navParams.get('ressource_id');
-        this.dataService.getRessource(this.id).then(data => {
+        this.dataService.getOneRessource(this.id).then(data => {
           this.estateProperty = data ? data : {};
           this.loaded = true;
         }, error => {
@@ -85,7 +74,7 @@ export class RessourceDetailsPage {
       this.zone.run(() => {
         if (user) {
           this.id = this.navParams.get('ressource_id');
-          this.dataService.getRessource(this.id).then(data => {
+          this.dataService.getOneRessource(this.id).then(data => {
             this.estateProperty = data ? data : {};
             this.loaded = true;
           }, error => {
@@ -105,12 +94,12 @@ export class RessourceDetailsPage {
       this.estateProperty = this.navParams.get('ressource');
       this.id = this.estateProperty.id;
       this.loaded = true;
-      this.dataService.getRessource(this.id).then(data => {
+      this.dataService.getOneRessource(this.id).then(data => {
         this.estateProperty = data ? data : {};
         this.loaded = true;
       }, error => {
         this.notify.onError({ message: 'Petit problème de connexion.' });
-      })      
+      })
     } else
       this.observeAuth();
 
@@ -164,16 +153,9 @@ export class RessourceDetailsPage {
     });
   }
   help() {
-    // let modal = this.modalCtrl.create('SlideCarouselPage');
-    //modal.present();
     this.notify.onSuccess(
       {
-        message: `Vous êtes appelé à payer une faible somme d'argent pour accéder au document.  
-        Pour effectuer ce paiement, vous avez besoin d'un CODE DE PAIMENT de 06 chiffres. 
-        Obtenez ce  code par SMS en composant le #150*4*4*CODE_SECRET_Orange_Money#
-         sur un téléphone aboné orange. Accedez ensuite à la page de paiement en appuyant 
-         sur le bouton de couleur orange; Remplissez les champs  sur la page
-        avec le numéro de téléphone et le code de paiement. Utilisez le bouton "CONFIRMER" de la page pour valider.`,
+        message: `Obtenez le CODE DE PAIMENT de 06 chiffrespar SMS en composant le #150*4*4*CODE_SECRET_Orange_Money#.`,
         duration: 120000,
         dismissOnPageChange: true,
         showCloseButton: true,

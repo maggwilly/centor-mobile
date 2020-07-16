@@ -7,14 +7,15 @@ import { CarouselComponent } from '../../components/carousel/carousel';
 import { SharedProvidersModule } from '../../app/shared.module';
 @NgModule({
   declarations: [
-    HomePage, CarouselComponent
+    HomePage,
+    CarouselComponent
   ],
   imports: [
     IonicPageModule.forChild(HomePage),
     SharedComponentsModule,
-    SharedDirectivesModule, 
+    SharedDirectivesModule,
     SharedProvidersModule
-    
+
   ],
 })
 export class HomePageModule {}

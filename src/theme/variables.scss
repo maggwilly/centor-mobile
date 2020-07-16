@@ -25,15 +25,15 @@ $searchbar-md-background-color: transparent;
 //$searchbar-md-input-line-height: 	2.5rem;
 
 $grid-breakpoints :
-  ( xs: 0, 
+  ( xs: 0,
     sm: 300px,
     md: 548px,
     lg: 850px,
-     xl: 1140px 
+     xl: 1140px
      );
 $grid-max-widths: (
   xs: 180px,
-  sm: 350px, 
+  sm: 350px,
   md: 555px,
   lg: 860px,
   xl: 1200px
@@ -52,8 +52,7 @@ $colors: (
   primary-clear: rgb(6,92,121),
   secondary:  #32db64,
   danger:     #f53d3d,
-  light:       #C0C0C0
-  ,
+  light:       #C0C0C0,
   dark:       #222,
   google: #d34836,
   facebook:#3b5998,

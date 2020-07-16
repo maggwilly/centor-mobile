@@ -9,9 +9,9 @@
   </ion-navbar>
 </ion-header>
 <ion-content hide-fab hide-header [header]="head">
-    <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (ionInput)="search()" placeholder="Rechercher un concours">
+    <ion-searchbar #searchbar color="primary" (keyup)="searchTerm$.next($event.target.value)"  placeholder="Rechercher un concours">
       </ion-searchbar>
-      <ion-segment [(ngModel)]="segment" (ionChange)="search()">
+      <ion-segment [(ngModel)]="segment" (ionChange)="search($event._value)">
         <ion-segment-button value="all">
           Tout
         </ion-segment-button>

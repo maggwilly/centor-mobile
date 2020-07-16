@@ -3,7 +3,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
-import firebase from 'firebase';
 
 /**
  * Generated class for the EcolesPage page.
@@ -34,17 +33,17 @@ export class EcolesPage {
 
   ionViewDidLoad() {
     this.storage.get('_ecoles').then((data)=>{
-      this._concours=data?data:[];        
-            this.loadData();          
-    },error=>{}) 
+      this._concours=data?data:[];
+            this.loadData();
+    },error=>{})
   }
 
   loadData(){
     return  this.dataService.getEcoles(0).then((data)=>{
-               this._concours=data?data:[];    
-                this.search(); 
-              this.storage.set('_ecoles', this._concours).then(()=>{ },error=>{})  ;  
-        },error=>{ 
+               this._concours=data?data:[];
+                this.search();
+              this.storage.set('_ecoles', this._concours).then(()=>{ },error=>{})  ;
+        },error=>{
           this.notify.onError({message:'Petit problème de connexion.'});
         });
   }
@@ -89,15 +88,15 @@ export class EcolesPage {
       this.filter(this._concours, this.queryText);
       });
     }
-  
+
     showSelections(concours: any) {
       this.navCtrl.push('SelectionsPage', {targetTitle: concours.nom, ecole: concours, target: 'ecole'});
     }
-  
+
     filter(array:any[],text){
-    
+
     let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') :'';
-    let queryWords = queryText.split(' ').filter(w => !!w.trim().length); 
+    let queryWords = queryText.split(' ').filter(w => !!w.trim().length);
       array.forEach(item => {
         item.hide = true;
     let matchesQueryText = false;

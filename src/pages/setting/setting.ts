@@ -6,6 +6,7 @@ import { DataService } from '../../providers/data-service';
 import { IonicPage } from 'ionic-angular';
 import firebase from 'firebase';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
+import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 @IonicPage()
 @Component({
   selector: 'page-setting',
@@ -16,7 +17,6 @@ export class SettingPage {
   loading;
   user: any = {};
   paidConcours: any;
-  prefRef: any;
   defaultAvatar = 'assets/images/default-avatar.jpg';
   offset = 100;
   constructor(
@@ -30,6 +30,7 @@ export class SettingPage {
     public navParams: NavParams,
     public dataService: DataService,
     public firebaseNative: Firebase,
+    public abonnementProvider:AbonnementProvider,
     public alertCtrl: AlertController,
     public viewCtrl: ViewController,
     public notify: AppNotify) {
@@ -41,14 +42,16 @@ export class SettingPage {
   }
 
   initPage() {
-    this.user.info = { 
+    this.user.info = {
       displayName: this.authInfo.displayName,
        email: this.authInfo.email,
       photoURL: this.authInfo.photoURL ? this.authInfo.photoURL: 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
-      
+
     };
     this.getUserProfile().then(() => {
       this.loadAbonnement();
+    }, err=>{
+      this.notify.onError({ message: 'Problème de connexion.' });
     });
 
   }
@@ -58,7 +61,7 @@ export class SettingPage {
   loadAbonnement() {
     this.storage.get('_abonnements').then((dtata) => {
       this.paidConcours = dtata ? dtata : [];
-      this.dataService.getAbonnementsObservable(firebase.auth().currentUser.uid).subscribe(data => {
+      this.abonnementProvider.getAbonnementsObservable().subscribe(data => {
         this.paidConcours = data ? data : [];
         this.storage.set('_abonnements', data);
       }, error => {
@@ -70,7 +73,7 @@ export class SettingPage {
   getUserProfile() {
     return this.storage.get(firebase.auth().currentUser.uid).then((info)=>{
       this.user.info = info ? info : firebase.auth().currentUser;
-     
+
       return this.dataService.getInfo(firebase.auth().currentUser.uid).then((info) => {
         if (info) {
           this.user.info = info;
@@ -100,7 +103,6 @@ export class SettingPage {
     if (abonnement == null)
       return true;
       let now = Date.now();
-   // let now = firebase.database.ServerValue.TIMESTAMP;
     let endDate = new Date(abonnement.endDate).getTime();
     return now > endDate;
   }
@@ -113,8 +115,6 @@ export class SettingPage {
         this.events.publish('profil:updated', data);
         this.storage.set(firebase.auth().currentUser.uid, data);
       }
-      //
-
     });
     modal.present();
   }

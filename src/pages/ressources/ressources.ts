@@ -24,7 +24,7 @@ export class RessourcesPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public firebaseNative: Firebase,
-    public dataService: DataService, 
+    public dataService: DataService,
     public notify: AppNotify,
      public storage: Storage
     ) {
@@ -35,7 +35,7 @@ export class RessourcesPage {
   ionViewDidLoad() {
     this.storage.get('_ressources_' + this.concours.id).then((data)=>{
       this.ressources = data ;
-      this.dataService.getRessources(this.concours.id).then(data => {
+      this.dataService.getSessionRessources(this.concours.id).then(data => {
         this.ressources = data ? data : [];
         this.storage.set('_ressources_' + this.concours.id, data);
       }, error => {

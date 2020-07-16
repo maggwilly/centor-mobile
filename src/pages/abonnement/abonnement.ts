@@ -10,7 +10,7 @@ import firebase from 'firebase';
   templateUrl: 'abonnement.html'
 })
 export class AbonnementPage {
-  abonnementExpired: any;  
+  abonnementExpired: any;
  abonnement:any;
   ch: any;
   constructor(
@@ -29,10 +29,10 @@ export class AbonnementPage {
     if (this.ch)
       this.ch.unsubscribe();
   }
-    
+
    dismiss(data?:any) {
       this.viewCtrl.dismiss(data);
-  } 
+  }
 
 
  isExpired(abonnement:any){
@@ -53,7 +53,7 @@ export class AbonnementPage {
 
   checkAbonnement() {
     this.abonnementExpired = this.isExpired(this.abonnement)
-   this. ch= this.dataService.getAbonnementOneObservable(this.abonnement.id).subscribe(data => {
+   this. ch= this.dataService.getAbonnementDetails(this.abonnement.id).subscribe(data => {
       this.abonnement = data.json();
       if (this.abonnementExpired && !this.isExpired(this.abonnement)){
         this.ch.unsubscribe();

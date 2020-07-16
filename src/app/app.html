@@ -13,8 +13,8 @@
       <img class="user-avatar round" *ngIf="user&& user.info"
           [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset"  image-cache>
         <p class="name" *ngIf="user">
-          <span>{{(user.info.displayName||user.info.email)| limitTo:16}} </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~&nbsp;&nbsp;<span *ngIf="!isExpired(abonnement)"><b>{{abonnement.id}}</b></span>
-        </p> 
+          <span>{{(user.info.displayName||user.info.email)| limitTo:16}} </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="!isExpired(abonnement)"><b>{{abonnement.id}}</b></span>
+        </p>
       </div>
       <ion-list no-lines>
         <ion-item-group *ngIf="paidConcours&&paidConcours.length">
@@ -31,7 +31,7 @@
         </button>
         <button menuClose="left" ion-item detail-none (click)="openMessages()">
           <ion-icon name="paper" item-left></ion-icon>
-          <span>Notifications</span>
+          <span>Annonces</span>
 <ion-badge class="notifications-badge" notification [notificationId]="notificationId" [registrationId]="registrationId" item-right
   color="danger"></ion-badge>
         </button>

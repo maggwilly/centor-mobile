@@ -53,19 +53,19 @@ export class GroupchatPage {
   toUser:any;
   showMenu;
   zone: NgZone;
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public groupservice: GroupsProvider,
     public actionSheet: ActionSheetController,
     public notify: AppNotify,
-    public events: Events, 
+    public events: Events,
     public appCtrl: App,
     private clipboard: Clipboard,
     public imgstore: ImghandlerProvider,
-    private transfer: Transfer, 
+    private transfer: Transfer,
     public modalCtrl: ModalController,
     public firebaseNative: Firebase,
-    public dataService: DataService, 
+    public dataService: DataService,
     private file: File,
     public storage: Storage,
     public _DomSanitizer: DomSanitizer,
@@ -135,7 +135,7 @@ export class GroupchatPage {
       this.allgroupmsgs = [];
       this.allgroupmsgs = this.groupservice.groupmsgs;
       //console.log(JSON.stringify(this.groupservice.groupmsgs));
-      
+
       this.storage.set('_messages_' + this.groupName, this.allgroupmsgs);
       setTimeout(() => {
         this.scrollto();
@@ -144,7 +144,7 @@ export class GroupchatPage {
     if (!this.groupName)
       return
     this.groupdisplayname = this.groupservice.groupdisplayname ? this.groupservice.groupdisplayname : this.groupdisplayname;
-    this.dataService.getAbonnement(firebase.auth().currentUser.uid, this.groupName).then(data => {
+    this.dataService.checkAbonnementValidity(firebase.auth().currentUser.uid, this.groupName).then(data => {
       this.abonnement = data;
       this.abonnementLoaded = true;
     }, error => {
@@ -163,7 +163,7 @@ export class GroupchatPage {
      ev.complete();
     // this.scrollingToTop = false;
     },200);
-   
+
   }
 
   goBackToGroup(){
@@ -180,8 +180,8 @@ export class GroupchatPage {
     setTimeout(() => {
       this.groupservice.getgroupmsgs(this.groupName);
       }, 200);
-    } 
-  }  
+    }
+  }
 
   isExpired(abonnement: any) {
     if (abonnement == null)
@@ -228,12 +228,12 @@ export class GroupchatPage {
 
   openGroupeSetting() {
     this.navCtrl.push('GroupinfoPage', { groupName: this.groupName, meingroup: this.meingroup  });
-    
+
   }
 
   addgroupmsg() {
-  
-    let newMessage :any = { 
+
+    let newMessage :any = {
        text: this.urlify(this.newmessage),
        type: this.mesagetype,
        fileurl:this.fileurl,
@@ -258,7 +258,7 @@ export class GroupchatPage {
         else if(this.toUser)
           this.groupservice.addnewmessage(newMessage, false, this.toUser.uid)
              else
-               this.groupservice.addgroupmsg(newMessage, false)        
+               this.groupservice.addgroupmsg(newMessage, false)
       })
       return
     }
@@ -274,7 +274,7 @@ export class GroupchatPage {
     this.showEmojiPicker = false;
     this.content.resize();
     this.scrollto(true);
-  
+
   }
 
 onImageLoad(){
@@ -298,7 +298,7 @@ onImageLoad(){
     if (!this.content)
       return;
         if (this.content._scroll)
-     this.content.scrollToBottom(200);    
+     this.content.scrollToBottom(200);
     }
 
   placeholder():string{
@@ -308,7 +308,7 @@ onImageLoad(){
          return "Saisir un message privé";
         return "Ecrire pour tout le monde"
   }
-  
+
 
   urlify(text:string) {
    var urlRegex = /(?:(?:(?:ftp|http)[s]*:\/\/|www\.)[^\.]+\.[^ \n]+)/g;
@@ -353,8 +353,8 @@ footerHeight(){
               this.groupservice.getgroupmsgs(this.groupName);
             }, 200);
           }
-        },   
-                      
+        },
+
         {
           text: 'Transferer ce message',
           icon: 'md-share-alt',
@@ -378,7 +378,7 @@ footerHeight(){
             this.groupservice.deletemsg(msg).then(() => {
             });
           }
-        },   
+        },
         {
           text: 'Copier ce message',
           icon: 'md-copy',
@@ -386,7 +386,7 @@ footerHeight(){
             this.clipboard.copy(msg.message.text).then(()=>{
               this.notify.onSuccess({ message: 'Texte copié' })
             });
-           
+
           }
         },
         {
@@ -420,9 +420,9 @@ footerHeight(){
               this.fileurl = 'data:image/png;base64, '+ImageData;
               this.fileData =  ImageData;
               this.mesagetype = 'image'
-              this.messageInput.setFocus(); 
+              this.messageInput.setFocus();
               this.scrollto();
-             
+
             })
           }
         },
@@ -437,9 +437,9 @@ footerHeight(){
       ]
     })
     sheet.present();
-  }  
+  }
 
   onProfilePicError(this){
 
-  } 
+  }
 }

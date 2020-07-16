@@ -75,6 +75,7 @@
     "ionicons": "3.0.0",
     "morgan": "^1.9.0",
     "ng-lazyload-image": "^3.4.2",
+    "ng2-pdf-viewer": "^3.0.8",
     "remove": "^0.1.5",
     "rxjs": "^5.4.0",
     "sw-toolbox": "3.6.0",
@@ -82,7 +83,9 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "2.1.4",
+    "@ionic/cli-plugin-ionic-angular": "1.4.1",
     "@ionic/lab": "1.0.18",
+    "ionic": "3.6.0",
     "typescript": "2.3.4"
   },
   "description": "An Ionic project",

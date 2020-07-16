@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
-import {  NavParams, Platform, LoadingController } from 'ionic-angular';
+import {   Platform, LoadingController } from 'ionic-angular';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { Transfer, TransferObject } from '@ionic-native/transfer';
-import { File } from '@ionic-native/file';
 /**
  * Generated class for the ResultatListComponent component.
  *
@@ -25,13 +24,12 @@ export class ResultatListComponent {
   style: string ='';
   storageDirectory: string = '';
   constructor(
-    public dataService: DataService, 
-    public notify: AppNotify ,  
+    public dataService: DataService,
+    public notify: AppNotify ,
     private socialSharing: SocialSharing,
     public platform: Platform,
     private transfer: Transfer,
-    public loadingCtrl: LoadingController,
-    private file: File   
+    public loadingCtrl: LoadingController
     ) {
 
   }
@@ -54,7 +52,7 @@ export class ResultatListComponent {
       return 'md-download';
     return 'md-open';
   }
-  
+
   share(resultat: any) {
     let textMessage = resultat.description;
     this.socialSharing.share(textMessage, null, null, this.dataService._baseUrl + 'resultat/' + resultat.id + '/get/mobile')

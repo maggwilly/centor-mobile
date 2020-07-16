@@ -7,71 +7,64 @@
     <ion-buttons end>
       <button ion-button icon-only (click)="openArticles()">
         <ion-icon name="paper"></ion-icon>
-        <ion-badge class="notifications-badge" notification [notificationId]="notificationId" [registrationId]="registrationId"
-          color="danger"></ion-badge>
+        <ion-badge class="notifications-badge" notification [notificationId]="notificationId"
+                   [registrationId]="registrationId"
+                   color="danger"></ion-badge>
       </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content hide-header [header]="head" class="bg-white">
   <carousel></carousel>
-  <ion-list no-lines>
-    <button ion-item no-lines text-wrap class="inform abonne" *ngIf="isExpired(abonnement)" (click)="startabonnement()">
-      <ion-icon name="ios-notifications" item-left [@flip]="flipState" *ngIf="abonnementLoaded||!authInfo"></ion-icon>
-      <ion-spinner item-left color="white" name="ios" *ngIf="!abonnementLoaded&&authInfo"></ion-spinner>
-      <h2>Abonnez-vous maintenant</h2>
-      <p>Recevez des alertes sur les concours et les bourses d'étude pendant 1 an.</p>
-    </button>
-    <a ion-item no-lines text-wrap class="inform" *ngIf="!isExpired(abonnement)&&abonnementLoaded" href="https://api.whatsapp.com/send?phone=237655874410&text=Salut%20Mr%2FMme%20!%0D%0AJe%20suis%20le%20candidat%20N%C2%B0%20{{abonnement.id}}%0D%0AJe%20voudrais%20plus%20d%27information%20%C3%A0%20propos%20de">
-      <ion-icon name="logo-whatsapp" item-left [@flip]="flipState"></ion-icon>
-      <h2>Discutez avec un conseiller</h2>
-      <p>Cliquez pour discuter avec un conseiller.</p>
-    </a>
-  </ion-list>
-  <ion-grid justify-content-around justify-content-end  *ngIf="stats">
-    <ion-row justify-content-around justify-content-end>
-      <ion-col col-4>
-        <div class="circle" ion-button clear (click)="openPage('EcolesPage')">
-          <div text-center>
-            <span class="circle-title">{{stats.concoursCount}}</span>
-            <p>Ecoles</p>
-          </div>
-        </div>
-      </ion-col>
-      <ion-col col-4>
-        <div class="circle" ion-button clear (click)="openPage('ConcoursPage')">
-          <div text-center>
-            <span class="circle-title">{{stats.sessionsCount}}</span>
-            <p>Concours</p>
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-list *ngIf="stats">
-    <ion-item text-wrap detail-push  (click)="showSelections('interessants')">
-      <ion-avatar item-start>
-        <ion-text-avatar><span *ngIf="authInfo">{{stats.forusersCount}}</span><span *ngIf="!authInfo">?</span></ion-text-avatar>
-      </ion-avatar>
-      Pouvant m'interresser
-      <p>Selon mon profil</p>
-    </ion-item>
-    <ion-item text-wrap detail-push (click)="showSelections('recents')">
-      <ion-avatar item-start>
-        <ion-text-avatar>{{stats.recentsCount}}</ion-text-avatar>
-      </ion-avatar>
-      Concours déjà lancés
-      <p>En cours en ce moment</p>
-    </ion-item>
-    <ion-item text-wrap detail-push (click)="showSelections('en_vus')">
-      <ion-avatar item-start>
-        <ion-text-avatar>{{stats.envueCount}}</ion-text-avatar>
-      </ion-avatar>
-      Concours populaires
-      <p>Les plus connus</p>
-    </ion-item>
-  </ion-list>
-  <ion-list style="margin-bottom:-10px">
+  <div>
+    <ion-list no-lines>
+      <button ion-item no-lines text-wrap class="inform abonne" *ngIf="isExpired(abonnement)"
+              (click)="startabonnement()">
+        <ion-icon name="ios-notifications" item-left [@flip]="flipState" *ngIf="abonnementLoaded||!authInfo"></ion-icon>
+        <ion-spinner item-left color="white" name="ios" *ngIf="!abonnementLoaded&&authInfo"></ion-spinner>
+        <h2>Abonnez-vous maintenant</h2>
+        <p>Recevez des alertes sur les concours et les bourses d'étude pendant 1 an.</p>
+      </button>
+      <a ion-item no-lines text-wrap class="inform" *ngIf="!isExpired(abonnement)&&abonnementLoaded"
+         href="https://api.whatsapp.com/send?phone=237655874410&text=Salut%20Mr%2FMme%20!%0D%0AJe%20suis%20le%20candidat%20N%C2%B0%20{{abonnement.id}}%0D%0AJe%20voudrais%20plus%20d%27information%20%C3%A0%20propos%20de">
+        <ion-icon name="logo-whatsapp" item-left [@flip]="flipState"></ion-icon>
+        <h2>Discutez avec un conseiller</h2>
+        <p>Cliquez pour discuter avec un conseiller.</p>
+      </a>
+    </ion-list>
+    <ion-grid justify-content-around justify-content-end *ngIf="stats" class="row content">
+      <ion-row justify-content-around justify-content-end>
+        <ion-searchbar #searchbar color="primary" [(ngModel)]="queryText" (ionFocus)="search($event)"
+                       placeholder="Rechercher n'importe quoi">
+        </ion-searchbar>
+      </ion-row>
+    </ion-grid>
+    <ion-list *ngIf="stats">
+      <ion-item text-wrap detail-push (click)="showSelections('interessants')">
+        <ion-avatar item-start>
+          <ion-text-avatar><span *ngIf="authInfo">{{stats.forusersCount}}</span><span *ngIf="!authInfo">?</span>
+          </ion-text-avatar>
+        </ion-avatar>
+        Pouvant m'interresser
+        <p>Selon mon profil</p>
+      </ion-item>
+      <ion-item text-wrap detail-push (click)="showSelections('recents')">
+        <ion-avatar item-start>
+          <ion-text-avatar>{{stats.recentsCount}}</ion-text-avatar>
+        </ion-avatar>
+        Concours déjà lancés
+        <p>En cours en ce moment</p>
+      </ion-item>
+      <ion-item text-wrap detail-push (click)="showSelections('en_vus')">
+        <ion-avatar item-start>
+          <ion-text-avatar>{{stats.envueCount}}</ion-text-avatar>
+        </ion-avatar>
+        Concours populaires
+        <p>Les plus connus</p>
+      </ion-item>
+    </ion-list>
+  </div>
+  <ion-list style="position: sticky; margin-bottom: 0; min-width: 100%">
     <a ion-item no-lines text-wrap class="inform" detail-none (click)="openPage('ConcoursPage')">
       <ion-icon name="list" item-left></ion-icon>
       <h2>Liste de tous les concours</h2>

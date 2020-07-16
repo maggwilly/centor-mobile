@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.centor.mobile.app" installLocation="preferExternal" version="2.8.14" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Centor</name>
+<widget id="com.centor.mobile.app" installLocation="preferExternal" version="2.9.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Centor Concours</name>
     <description>Prepa concours.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Prépa concours</author>
     <content src="index.html" />
@@ -21,7 +21,9 @@
     <preference name="SplashScreenDelay" value="24000" />
     <preference name="AndroidLaunchMode" value="singleTask" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <platform name="browser">
+      <preference name="KeyboardDisplayRequiresUserAction" value="false" />
         <preference name="SplashMaintainAspectRatio" value="true" />
         <preference name="SplashScreen" value="assets/images/splash.png" />
         <preference name="SplashScreenBackgroundColor" value="#065C79" />

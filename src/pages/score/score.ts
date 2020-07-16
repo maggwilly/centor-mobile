@@ -1,14 +1,28 @@
-import { Component, ViewChild, NgZone, } from '@angular/core';
-import { Events, NavController, Content, PopoverController, NavParams, MenuController, ModalController, ViewController, LoadingController, AlertController, ActionSheetController, Platform } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
-import { Utils } from '../../app/utils';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
+import {Component, ViewChild, NgZone,} from '@angular/core';
+import {
+  Events,
+  NavController,
+  Content,
+  PopoverController,
+  NavParams,
+  MenuController,
+  ModalController,
+  ViewController,
+  LoadingController,
+  AlertController,
+  ActionSheetController,
+  Platform
+} from 'ionic-angular';
+import {Storage} from '@ionic/storage';
+import {Utils} from '../../app/utils';
+import {InAppBrowser} from '@ionic-native/in-app-browser';
 import firebase from 'firebase';
-import { DataService } from '../../providers/data-service';
-import { AppNotify } from '../../providers/app-notify';
-import { IonicPage } from 'ionic-angular';
-import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
-import { GroupsProvider } from '../../providers/groups/groups';
+import {DataService} from '../../providers/data-service';
+import {AppNotify} from '../../providers/app-notify';
+import {IonicPage} from 'ionic-angular';
+import {FcmProvider as Firebase} from '../../providers/fcm/fcm';
+import {GroupsProvider} from '../../providers/groups/groups';
+
 @IonicPage()
 @Component({
   selector: 'page-score',
@@ -34,17 +48,17 @@ export class ScorePage {
   isMathProcessed = false;
   start: number;
   authInfo: any;
- // partieToUpdate;
   analyse: any;
   option: any;
   zone: NgZone;
-  loaded: boolean= false;
+  loaded: boolean = false;
   connected: boolean = false;
   openMenu = false;
-  concours:any;
-  notificationId:any;
+  concours: any;
+  notificationId: any;
   registrationId
   firequestion = firebase.database().ref('/question');
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -60,11 +74,11 @@ export class ScorePage {
     public platform: Platform,
     public actionSheetCtrl: ActionSheetController,
     private iab: InAppBrowser,
-     public groupservice: GroupsProvider,
+    public groupservice: GroupsProvider,
     public notify: AppNotify,
     public storage: Storage) {
-   
-    this.slideOptions = { parallax: true };
+
+    this.slideOptions = {parallax: true};
     this.zone = new NgZone({});
     this.isShow = false;
     this.events.subscribe('questions:loaded', (data) => {
@@ -84,31 +98,31 @@ export class ScorePage {
 
   initPage() {
     this.notificationId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;
-   // this.partieToUpdate = this.navParams.get('partie');
-   this.partie = this.navParams.get('partie');
-   // this.partie = Object.assign({}, this.partieToUpdate);
-    this.concours=this.partie.matiere.concours;
+    this.partie = this.navParams.get('partie');
+    this.concours = this.partie.matiere.concours;
     this.groupservice.getintogroup(this.concours.id);
-    return this.storage.get('_partie_'+this.partie.id+'_' + this.partie.matiere.id).then((data) => {
+    return this.storage.get('_partie_' + this.partie.id + '_' + this.partie.matiere.id).then((data) => {
       this.partie = data ? data : this.partie;
       this.isTheBegining = this.partie.lastIndex ? false : true;
-     if (!this.partie.questions || (this.partie.questions && !this.partie.questions.length)) {
+      if (!this.partie.questions || (this.partie.questions && !this.partie.questions.length)) {
         return this.dataService.getQuestions(this.partie.qcm).then((data) => {
           this.partie.questions = data;
-          this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie);  
+          this.storage.set('_partie_' + this.partie.id + '_' + this.partie.matiere.id, this.partie);
           this.evalMathlowly().then(() => {
             this.observeAuth();
-          }, error => { });
+          }, error => {
+          });
         }, error => {
-          this.notify.onError({ message: 'Petit problème de connexion.' });
+          this.notify.onError({message: 'Petit problème de connexion.'});
         })
-    } else {
+      } else {
         this.evalMathlowly().then(() => {
           this.observeAuth();
-        }, error => { });
+        }, error => {
+        });
       }
     });
-   
+
   }
 
 
@@ -120,14 +134,14 @@ export class ScorePage {
     }).then(success => {
       this.isMathProcessed = true;
     }, error => {
-    
+
     });
   }
 
 
   getSlides(): any {
     if (this.isAmswering)
-      return this.slides;  
+      return this.slides;
     return this.slides2;
   }
 
@@ -140,9 +154,9 @@ export class ScorePage {
   }
 
 
-  observeAuth(loading: boolean=true) {
+  observeAuth(loading: boolean = true) {
     Utils.setScore(this.partie);
-  firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.authInfo = user;
         this.getAnalyse(loading);
@@ -165,9 +179,11 @@ export class ScorePage {
   preview() {
     this.getSlides().slidePrev();
   }
+
   /*Parcours */
   didGoToNext() {
-    this.option = null;;
+    this.option = null;
+    ;
     if (this.currentQuestion) {
       if (this.isAmswering)
         this.currentQuestion.restOfTime = this.time;
@@ -195,7 +211,8 @@ export class ScorePage {
         this.counter();
       this.scrollto();
     }
-    this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie).catch(error => { });
+    this.storage.set('_partie_' + this.partie.id + '_' + this.partie.matiere.id, this.partie).catch(error => {
+    });
   }
 
 
@@ -219,7 +236,7 @@ export class ScorePage {
 
   /*Compteur de temps*/
   counter() {
-    // this.maxTime=this.currentQuestion.time; 
+    // this.maxTime=this.currentQuestion.time;
     this.time = this.currentQuestion.restOfTime == undefined ? this.currentQuestion.time * 60 * 1000 : this.currentQuestion.restOfTime;
     this.currentQuestion.restarting = false;
     setTimeout(() => {
@@ -238,7 +255,7 @@ export class ScorePage {
 
   /*Quelles toute les réponses */
   reset() {
-    this.start = (this.partie.lastIndex &&( this.partie.lastIndex < this.partie.questions.length - 1 ))? this.partie.lastIndex : 0;
+    this.start = (this.partie.lastIndex && (this.partie.lastIndex < this.partie.questions.length - 1)) ? this.partie.lastIndex : 0;
     setTimeout(() => {
       this.getSlides().slideTo(this.start);
       this.isTheEnd = false;
@@ -259,11 +276,10 @@ export class ScorePage {
   }
 
 
-
   /*Parcours pour voir le corrigé*/
   startVisit() {
     this.start = 0;
-    this.time = this.partie.analyse?this.partie.analyse.time:0;
+    this.time = this.partie.analyse ? this.partie.analyse.time : 0;
     if (!this.partie.questions || !this.partie.questions.length)
       this.initPage().then(() => {
         setTimeout(() => {
@@ -291,14 +307,14 @@ export class ScorePage {
     if (!partie || !(partie.type == 'OL' || partie.type == 'CB'))
       return false;
     //let now = firebase.database.ServerValue.TIMESTAMP;;
-        let now = Date.now();
-        let endDate = new Date(partie.endDate).getTime();
+    let now = Date.now();
+    let endDate = new Date(partie.endDate).getTime();
     return now < endDate;
   }
 
 
   showInfo() {
-    this.navCtrl.push('StartPage', { partie: this.partie  });
+    this.navCtrl.push('StartPage', {partie: this.partie});
   }
 
   /*Parcour pour voir le corrigé*/
@@ -313,7 +329,6 @@ export class ScorePage {
   }
 
 
-
   /*Vrai si la reponse choisie est la bonne */
   isCorrect(question: any, amswer?: any): boolean {
     return Utils.isCorrect(question, amswer);
@@ -326,12 +341,10 @@ export class ScorePage {
   }
 
 
-
   questionNumber() {
     let activeIndex = this.start + 1;
     return (this.partie && this.partie.questions) ? activeIndex + '/' + this.partie.questions.length : '...';
   }
-
 
 
   /** Calcul du nombre de points*/
@@ -351,14 +364,15 @@ export class ScorePage {
               .then(data => {
                 this.analyse = data.partie;
                 if (this.partie)
-                this.partie.analyse = data.partie;
+                  this.partie.analyse = data.partie;
                 this.isShow = true;
                 this.events.publish('score:partie:updated', data.parents);
-                this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie).catch(error => { });
-                this.loaded=true;
+                this.storage.set('_partie_' + this.partie.id + '_' + this.partie.matiere.id, this.partie).catch(error => {
+                });
+                this.loaded = true;
               }, error => {
-               this.loaded = true;
-                this.storage.set('_partie_'+this.partie.id+'_' + this.partie.matiere.id, this.partie);
+                this.loaded = true;
+                this.storage.set('_partie_' + this.partie.id + '_' + this.partie.matiere.id, this.partie);
                 let alert = this.alertCtrl.create({
                   message: "Les données n'ont pas put être enrégistrée.Votre connexion à internet est peut-être perturbée.",
                   buttons: [
@@ -377,7 +391,7 @@ export class ScorePage {
                 });
                 alert.present()
               });
-         
+
           })
       }
       unsubscribe();
@@ -388,22 +402,22 @@ export class ScorePage {
     return Utils.format(s, hrSep, minSep);
   }
 
-  getAnalyse(show: boolean ) {
-    this.storage.get('_analyse_Partie_' + this.concours.id + '_' + this.partie.matiere.id + '_'+this.partie.id).then(data => {
+  getAnalyse(show: boolean) {
+    this.storage.get('_analyse_Partie_' + this.concours.id + '_' + this.partie.matiere.id + '_' + this.partie.id).then(data => {
       this.analyse = data;
       this.partie.analyse = data;
       this.loaded = show;
-    return this.dataService.getAnalyseObservable(this.authInfo.uid, this.concours.id, this.partie.matiere.id, this.partie.id).subscribe((analyse) => {
-      this.analyse = analyse;
-      if (this.partie)
-      this.partie.analyse = analyse;
-      this.storage.set('_analyse_Partie_' + this.concours.id + '_' + this.partie.matiere.id + '_' , analyse);
-      this.isMathProcessed = true;
-      this.loaded = true;
-    }, error => {
-      this.loaded = show;
-      this.notify.onError({ message: 'Petit problème de connexion.' });
-      })  
+      return this.dataService.getAnalyseObservable(this.authInfo.uid, this.concours.id, this.partie.matiere.id, this.partie.id).subscribe((analyse) => {
+        this.analyse = analyse;
+        if (this.partie)
+          this.partie.analyse = analyse;
+        this.storage.set('_analyse_Partie_' + this.concours.id + '_' + this.partie.matiere.id + '_', analyse);
+        this.isMathProcessed = true;
+        this.loaded = true;
+      }, error => {
+        this.loaded = show;
+        this.notify.onError({message: 'Petit problème de connexion.'});
+      })
     })
   }
 
@@ -429,14 +443,13 @@ export class ScorePage {
 
   lireCours() {
     if (this.partie.article) {
-      this.navCtrl.push('CoursViewPage', { partie: this.partie,concours:this.concours});
+      this.navCtrl.push('CoursViewPage', {partie: this.partie, concours: this.concours});
       return;
-    }
-    else if (this.partie.cours) {
+    } else if (this.partie.cours) {
       this.iab.create(this.partie.cours);
       return;
     }
-    this.navCtrl.push('NoclassPage', { partie: this.partie });
+    this.navCtrl.push('NoclassPage', {partie: this.partie});
   }
 
   explication() {
@@ -458,8 +471,8 @@ export class ScorePage {
   }
 
   openModal(pageName, arg: any) {
-  return  this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
-     
+    return this.modalCtrl.create(pageName, arg, {cssClass: 'inset-modal'})
+
   }
 
 
@@ -480,22 +493,22 @@ export class ScorePage {
         toAdmin: false
       }
       this.groupservice.addgroupmsg(newMessage).then(() => {
-        this.notify.onSuccess({ message: "Cette question a été partagée dans le groupe de discussion." })
+        this.notify.onSuccess({message: "Cette question a été partagée dans le groupe de discussion."})
       })
-    /*  let modal = this.openModal('ShareQuestionPage', { groupName: this.partie.matiere.concours.id,question:this.currentQuestion, ref:textMessage})
-      modal.onDidDismiss((data)=>{
-        if(!data)
-        return
-        switch (data) {
-          case 1:
-            this.notify.onSuccess({ message: "Cette question a été partagée." })
-            break;   
-          default:
-            this.notify.onSuccess({ message: "Question envoyée à un enseignant" })
-            break;
-        }    
-      })
-      modal.present();*/
+      /*  let modal = this.openModal('ShareQuestionPage', { groupName: this.partie.matiere.concours.id,question:this.currentQuestion, ref:textMessage})
+        modal.onDidDismiss((data)=>{
+          if(!data)
+          return
+          switch (data) {
+            case 1:
+              this.notify.onSuccess({ message: "Cette question a été partagée." })
+              break;
+            default:
+              this.notify.onSuccess({ message: "Question envoyée à un enseignant" })
+              break;
+          }
+        })
+        modal.present();*/
     }
   }
 
@@ -505,15 +518,15 @@ export class ScorePage {
       buttons: [
         {
           text: 'Oui trop difficile',
-          icon: 'ios-bug-outline' ,
+          icon: 'ios-bug-outline',
           handler: () => {
             let id = this.currentQuestion.id;
             this.marquerDificile(id);
           }
-        },        
+        },
         {
           text: 'Rechercher sur google',
-          icon: 'logo-google' ,
+          icon: 'logo-google',
           handler: () => {
             let topic = this.currentQuestion.text;
             let id = this.currentQuestion.id;
@@ -523,11 +536,11 @@ export class ScorePage {
         },
         {
           text: 'Partager avec les autres',
-          icon:'ios-chatboxes-outline',
+          icon: 'ios-chatboxes-outline',
           handler: () => {
             let id = this.currentQuestion.id;
-             this.marquerDificile(id);
-             this. share() 
+            this.marquerDificile(id);
+            this.share()
           }
         }
       ]
@@ -535,11 +548,11 @@ export class ScorePage {
     actionSheet.present();
   }
 
-marquerDificile(id){
-  this.firequestion.child(this.partie.id).child(id).child(firebase.auth().currentUser.uid).set(true).then(()=>{
-    this.notify.onSuccess({ message: "Cette question a été marquée et envoyée à un enseignant." })
-  });
-}
+  marquerDificile(id) {
+    this.firequestion.child(this.partie.id).child(id).child(firebase.auth().currentUser.uid).set(true).then(() => {
+      this.notify.onSuccess({message: "Cette question a été marquée et envoyée à un enseignant."})
+    });
+  }
 
   togglePopupMenu() {
     return this.openMenu = !this.openMenu;
@@ -549,22 +562,23 @@ marquerDificile(id){
     this.togglePopupMenu();
     this.navCtrl.push('SettingPage')
   }
+
   openChat() {
-    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id, groupdisplayname: this.concours.nomConcours});
+    this.navCtrl.push('GroupchatPage', {groupName: this.concours.id, groupdisplayname: this.concours.nomConcours});
   }
 
-  goToChat(){
+  goToChat() {
     this.togglePopupMenu();
-    this.navCtrl.push('GroupchatPage', { groupName: this.concours.id });
+    this.navCtrl.push('GroupchatPage', {groupName: this.concours.id});
   }
 
   goToHome() {
- 
+
     this.togglePopupMenu();
     this.navCtrl.push('HomePage')
   }
 
-  goToNotifications(){
+  goToNotifications() {
     this.togglePopupMenu();
     this.navCtrl.push('NotificationsPage')
   }
@@ -572,12 +586,12 @@ marquerDificile(id){
 
   goToRessources() {
     this.togglePopupMenu();
-    this.navCtrl.push('RessourcesPage', { concours: this.concours })
+    this.navCtrl.push('RessourcesPage', {concours: this.concours})
   }
 
   goToMenu() {
     this.togglePopupMenu();
     this.menu.open("menu-material");
-    
-  }  
+
+  }
 }

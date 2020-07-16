@@ -1,10 +1,12 @@
 import { Component, NgZone, trigger, state, style, transition, animate, keyframes } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {IonicPage, ModalController, NavController, NavParams} from 'ionic-angular';
 import firebase from 'firebase';
 import { Storage } from '@ionic/storage';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
+import {AbonnementProvider} from "../../providers/abonnement/abonnement";
+import { homeAnnimation } from "../../annimations/annimations";
 /**
  * Generated class for the HomePage page.
  *
@@ -16,53 +18,10 @@ import { DataService } from '../../providers/data-service';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-
-    animations: [
-
-      trigger('flip', [
-        state('flipped', style({
-          transform: 'rotate(180deg)',
-        })),
-        transition('* => flipped', animate('400ms ease'))
-      ]),
-
-      trigger('flyInOut', [
-        state('in', style({
-          transform: 'translate3d(0, 0, 0)'
-        })),
-        state('out', style({
-          transform: 'translate3d(-35%, 0, 0)'
-        })),
-        transition('in => out', animate('200ms ease-in')),
-        transition('out => in', animate('200ms ease-out'))
-      ]),
-
-      trigger('fade', [
-        state('visible', style({
-          opacity: 1
-        })),
-        state('invisible', style({
-          opacity: 0.1
-        })),
-        transition('visible <=> invisible', animate('200ms linear'))
-      ]),
-
-      trigger('bounce', [
-        state('bouncing', style({
-          transform: 'translate3d(0,0,0)'
-        })),
-        transition('* => bouncing', [
-          animate('900ms ease-in', keyframes([
-            style({ transform: 'translate3d(0,0,0)', offset: 0 }),
-            style({ transform: 'translate3d(0,-30px,0)', offset: 0.5 }),
-            style({ transform: 'translate3d(0,0,0)', offset: 1 })
-          ]))
-        ])
-      ])
-
-    ]  
+  animations: homeAnnimation
 })
 export class HomePage {
+  queryText="";
   authInfo: any;
   notificationId: string
   registrationId
@@ -75,30 +34,32 @@ export class HomePage {
   stats:any
   tooltipEvent: 'click' | 'press' = 'click';
   showArrow: boolean = true;
-  duration: number = 3000;  
+  duration: number = 3000;
+
   constructor(
     public navCtrl: NavController,
+    public modalCtrl: ModalController,
     public navParams: NavParams,
     public notify: AppNotify,
     public storage: Storage,
     public firebaseNative: Firebase,
+    public abonnementProvider:AbonnementProvider,
     public dataService: DataService, ) {
     this.zone = new NgZone({});
     this.firebaseNative.setScreemName('home_page');
   }
 
   ionViewDidLoad() {
-
     this.storage.get('registrationId').then((data) => {
       this.registrationId = data;
     })
 
     this.storage.get('home_stats_').then((data)=>{
-      this.stats=data?data:undefined; 
-          this.loadData();          
+      this.stats=data?data:undefined;
+          this.loadData();
     },error=>{
-
-    })  
+      console.log(error)
+    })
     this.observeAuth();
   }
   toggleBounce() {
@@ -132,15 +93,14 @@ export class HomePage {
     }, 2000);
     setInterval(() => {
       this.toggleBounce();
-    }, 1000);   
+    }, 1000);
 
     setInterval(() => {
       this.toggleFly();
-    }, 2000);  
+    }, 2000);
   }
 
   openArticles() {
-    // close the menu when clicking a link from the menu
     this.navCtrl.push('NotificationsPage');
   }
 
@@ -154,7 +114,7 @@ export class HomePage {
           break;
           case 'recents':
           targetTitle="Concours déjà lancés"
-        break;     
+        break;
         default:
         targetTitle= 'Concours populaires'
           break;
@@ -164,13 +124,12 @@ export class HomePage {
 
 
   loadData() {
-    let uid=firebase.auth().currentUser?firebase.auth().currentUser.uid:'null'
+    let uid=firebase.auth().currentUser?firebase.auth().currentUser.uid:undefined
     return this.dataService.getCountSessions(uid).then((data) => {
       this.stats = data ? data : undefined;
-      console.log(this.stats);
-      
       this.storage.set('home_stats_',this.stats).then(() => { }, error => { });
     }, error => {
+      console.log(error)
        this.notify.onError({message:'Petit problème de connexion.'});
     });
   }
@@ -178,7 +137,7 @@ export class HomePage {
 
   startabonnement() {
     if (firebase.auth().currentUser)
-      this.openPage('InformationPage', { abonnement: this.abonnement});
+      this.openPage('InformationPage' );
     else
        this.signup()
     }
@@ -201,13 +160,14 @@ export class HomePage {
   }
 
   getAbonnement() {
-    this.dataService.getAbonnement(firebase.auth().currentUser.uid, 0).then(data => {
+    this.dataService.checkAbonnementValidity(firebase.auth().currentUser.uid, 0).then(data => {
       this.abonnement = data;
-      this.abonnementLoaded = true;   
+      this.abonnementLoaded = true;
     }, error => {
+      console.log(error)
       this.notify.onError({ message: 'Petit problème de connexion.' });
     });
-  }  
+  }
 
   isExpired(abonnement: any) {
     if (abonnement == null)
@@ -215,5 +175,10 @@ export class HomePage {
     let now = Date.now();
     let endDate = new Date(abonnement.endDate).getTime();
     return now > endDate;
-  }  
+  }
+
+  search($event) {
+    this.modalCtrl.create('SearchPage', {queryText:this.queryText} )
+      .present();
+  }
 }

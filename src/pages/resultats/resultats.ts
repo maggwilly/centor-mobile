@@ -6,12 +6,7 @@ import { AppNotify } from '../../providers/app-notify';
 import firebase from 'firebase';
 import { IonicPage } from 'ionic-angular';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
-/**
- * Generated class for the ResultatsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {Subject} from "rxjs/Subject";
 
 @IonicPage()
 @Component({
@@ -23,6 +18,7 @@ export class ResultatsPage {
  queryText = null;
   authInfo: any;
   @ViewChild("searchbar") searchbar: Searchbar;
+  searchTerm$ = new Subject<string>();
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -34,9 +30,18 @@ export class ResultatsPage {
     public platform: Platform,
 
   ) {
-    this.firebaseNative.setScreemName('document_list');
+  //  this.firebaseNative.setScreemName('document_list');
   }
 
+  ngAfterViewInit() {
+    this.dataService.search(this.searchTerm$, 'Resultat')
+      .subscribe(results => {
+        if(!results||results.length==0)
+          return;
+        this._resultats = results;
+      });
+    this.searchTerm$.next('Resultat');
+  }
 
 
   ionViewDidLoad() {
@@ -44,8 +49,6 @@ export class ResultatsPage {
         this._resultats = data ? data : [];
       if (!this.platform.is('core'))
           this.loadData();
-        else
-          this.doSearch();
       }, error => { })
   }
 
@@ -67,7 +70,6 @@ export class ResultatsPage {
   loadData() {
     return this.dataService.getResultats(0).then((data) => {
       this._resultats = data ? data : [];
-        this.search();
         this.storage.set('_resultats', this._resultats).then(() => { }, error => { });
     }, error => {
       this.notify.onError({ message: 'problème de connexion.' });
@@ -87,66 +89,16 @@ export class ResultatsPage {
     })
   }
 
-  doSearch() {
-    return this.dataService.getResultats(this._resultats.length, true).then(data => {
-      // this.updateList(data);
-       this._resultats = data;
-      this.storage.set('_resultats', this._resultats).then(() => { }, error => { });
-    }, error => {
-      this.notify.onError({ message: 'Petit problème de connexion.' });
-    })
-  }
+
 
   updateList(array: any[]) {
     if (!(this._resultats && this._resultats.length)) {
       this._resultats = array;
         return this.storage.set('_resultats', this._resultats);
     }
-    let queryText = this.queryText ? this.queryText.toLowerCase().replace(/,|\.|-/g, ' ') : '';
-    let queryWords = queryText.split(' ').filter(w => !!w.trim().length);
-    array.forEach(item => {
-      item.hide = true;
-      this.filter(item, queryWords);
-      this._resultats.push(item);
-    });
       return this.storage.set('_resultats', this._resultats);
   }
 
-  search() {
 
-    this.doSearch().then(() => {
-      if (!(this._resultats && this._resultats.length))
-        return;
-
-      this._resultats.forEach(item => {
-        item.hide = true;
-        this.filter(item, this.queryText);
-
-      });
-    });
-  }
-
-
-  filter(item, text) {
-    let queryText = (text) ? text.toLowerCase().replace(/,|\.|-/g, ' ') : '';
-    let queryWords = queryText.split(' ').filter(w => !!w.trim().length);
-    let matchesQueryText = false;
-    if (queryWords.length) {
-      console.log('filter');
-      // of any query word is in the session name than it passes the query test
-      queryWords.forEach(queryWord => {
-        if (item.url && item.url.toLowerCase().indexOf(queryWord) > -1 || item.description && item.description.toLowerCase().indexOf(queryWord) > -1 ) {
-          matchesQueryText = true;
-        }
-      });
-    } else {
-      // if there are no query words then this session passes the query test
-      matchesQueryText = true;
-    }
-    item.hide = !(matchesQueryText);
-  }
-
-
- 
 }
 

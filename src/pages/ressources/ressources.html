@@ -4,21 +4,21 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header  #head>
+<ion-header #head>
   <ion-navbar>
     <ion-title *ngIf="concours">{{concours.nomConcours}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content  hide-header [header]="head">
-<ion-list [virtualScroll]="ressources" inset>
-    <ion-item *virtualItem="let item"  class="item-ribbon" (click)="openRessource(item)">
+<ion-content hide-header [header]="head">
+  <ion-list [virtualScroll]="ressources" inset>
+    <ion-item *virtualItem="let item" class="item-ribbon" (click)="openRessource(item)">
               <span class="ribbon {{ item.label }}" *ngIf="item.label">
                 <span>{{ item.label }}</span>
               </span>
       <ion-icon item-left name="ios-copy"></ion-icon>
-       <h2>{{ item.nom }}</h2>
-        <p>{{item.description }}</p>
-        <p>{{item.detail1 }} <span *ngIf="item.detail2">,{{item.detail2 }}</span></p>
+      <h2>{{ item.nom }}</h2>
+      <p>{{item.description }}</p>
+      <p>{{item.detail1 }} <span *ngIf="item.detail2">,{{item.detail2 }}</span></p>
     </ion-item>
   </ion-list>
   <ion-grid *ngIf="!ressources" style="height: 100%;justify-content: center;">
@@ -31,9 +31,10 @@
       <div class="empty">
         <p>
           <svg fill="#C0C0C0" height="64" viewBox="0 0 24 24" width="64" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 3H4.99c-1.11 0-1.98.89-1.98 2L3 19c0 1.1.88 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.11-.9-2-2-2zm0 12h-4c0 1.66-1.35 3-3 3s-3-1.34-3-3H4.99V5H19v10z"
+            <path
+              d="M19 3H4.99c-1.11 0-1.98.89-1.98 2L3 19c0 1.1.88 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.11-.9-2-2-2zm0 12h-4c0 1.66-1.35 3-3 3s-3-1.34-3-3H4.99V5H19v10z"
             />
-            <path d="M0 0h24v24H0V0z" fill="none" />
+            <path d="M0 0h24v24H0V0z" fill="none"/>
           </svg>
         </p>
         <p>Aucune ressources disponible.</p>

@@ -7,6 +7,7 @@ import { AppNotify } from '../../providers/app-notify';
 import { IonicPage } from 'ionic-angular';
 import { GroupsProvider } from '../../providers/groups/groups';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
+import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 @IonicPage()
 @Component({
   selector: 'page-matieres',
@@ -80,9 +81,10 @@ export class MatieresPage {
      public dataService:DataService,
      public viewCtrl: ViewController,
      public modalCtrl: ModalController,
+     public abonnementProvider:AbonnementProvider,
      public firebaseNative: Firebase,
      public events: Events,
-     public appCtrl: App, 
+     public appCtrl: App,
      public groupservice: GroupsProvider,
      public loadingCtrl: LoadingController,
      public notify:AppNotify,
@@ -101,26 +103,26 @@ ionViewDidEnter() {
     this.registrationId = data;
   })
  this.observeAuth();
-  }  
+  }
 
 
 initPage(){
    this.abonnement=this.navParams.get('abonnement');
-    if(!this.abonnement) 
+    if(!this.abonnement)
    this.storage.get('_preferences')
      .then((data)=>{
-       this.abonnement=data; 
-        this.concours=this.abonnement.session; 
+       this.abonnement=data;
+        this.concours=this.abonnement.session;
          this.getShowConcours().then(()=>{
         this.observeAuth();
-      });   
+      });
           this.loadMatieres()
-    },error=>{ });     
+    },error=>{ });
 else{
-this.concours=this.abonnement.session; 
+this.concours=this.abonnement.session;
   this.getShowConcours().then(()=>{
     this.observeAuth();
-  }); 
+  });
   this.loadMatieres()
    }
 }
@@ -149,17 +151,17 @@ this.concours=this.abonnement.session;
 observeAuth(show:boolean=true){
   this.notificationId = firebase.auth().currentUser ? firebase.auth().currentUser.uid:undefined;
   firebase.auth().onAuthStateChanged( user => {
-      if (user) 
-      { 
+      if (user)
+      {
         this.authInfo=user
         this.notificationId = user.uid;
         this.getAnalyse(show);
-        this.getAbonnement(); 
+        this.getAbonnement();
        }else{
            this.authInfo=undefined;
           }
     });
-  
+
 }
 
  isExpired(abonnement:any){
@@ -169,7 +171,7 @@ observeAuth(show:boolean=true){
   let endDate=new Date(abonnement.endDate).getTime();
    return now>endDate;
    }
-   
+
 showOptions(){
    this.navCtrl.push('ConcoursOptionsPage',{concours:this.concours ,abonnement:this.abonnement,});
 }
@@ -178,21 +180,21 @@ showOptions(){
   return   this.dataService.getShowSession(this.concours.id).then(data=>{
        if(data)
            this.concours=data;
-            this.loadMatieres();  
+            this.loadMatieres();
      },error=>{
         this.notify.onError({message:'Problème de connexion.'});
      });
-  
+
   }
   getAbonnement() {
     if (!this.concours)
       return
-      this.dataService.getAbonnement(this.authInfo.uid, this.concours.id).then(data => {
+      this.abonnementProvider.checkAbonnementValidity( this.concours.id).then(data => {
         this.abonnement = data;
         this.abonnementLoaded = true;
         if (this.abonnement)
           this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
-        
+
       }, error => {
         this.notify.onError({ message: 'Petit problème de connexion.' });
       });
@@ -205,13 +207,13 @@ showOptions(){
 
 dismiss(data?:any) {
       this.viewCtrl.dismiss(data);
-  } 
+  }
 
 
 findRemplace(list:any[],matiere, data:any){
 list.forEach(element => {
      if(matiere && element.matiere==matiere.id)
-        element=data;  
+        element=data;
    });
 }
 
@@ -219,10 +221,10 @@ list.forEach(element => {
 listenToEvents(){
   this.events.subscribe('score:matiere:updated',(data)=>{
        this.zone.run(() => {
-        this.analyse=data.concours;  
+        this.analyse=data.concours;
         this.isShow=true;
-       this.storage.set('_matieres_'+this.concours.id, this.concours.matieres).catch(()=>{ });           
-        });  
+       this.storage.set('_matieres_'+this.concours.id, this.concours.matieres).catch(()=>{ });
+        });
   });
 
   this.events.subscribe('payement:success', (data) => {
@@ -256,10 +258,10 @@ listenToEvents(){
 
 loadMatieres(){
      return this.storage.get('_matieres_'+this.concours.id).then((data)=>{
-          this.concours.matieres=data?data:[]; 
+          this.concours.matieres=data?data:[];
     if(this.concours.matieres&&this.concours.matieres.length)
-            this.matiereLoaded = true;    
-       return this.loadOnline(); 
+            this.matiereLoaded = true;
+       return this.loadOnline();
     },error=>{
       return this.loadOnline();
     });
@@ -271,12 +273,12 @@ loadOnline(){
             this.matiereLoaded=true;
             this.storage.set('_matieres_'+this.concours.id, this.concours.matieres).then(()=>{
             }).catch(()=>{
-             });            
+             });
       },error=>{
          this.notify.onError({message:'Petit problème de connexion.'});
-      }) 
+      })
 }
 
 
- 
+
 }

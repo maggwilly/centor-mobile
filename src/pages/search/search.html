@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Rechercher</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content >
+  <ion-searchbar (keyup)="searchTerm$.next($event.target.value)"  #searchbar color="primary" [(ngModel)]="queryText"
+                 placeholder="Rechercher n'importe quoi">
+  </ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let result of results$" [hidden]="!result.title" (click)="openItem(result)">
+      <h2>{{result.title}}</h2>
+      <p>{{result.description}}</p>
+      <ion-badge [color]="color(result.resultType)">{{result.resultType}}</ion-badge>
+      <a  ion-button icon-only clear item-right  [href]="result.url" *ngIf="result.url">
+      <ion-icon name="name(resultat.url)"></ion-icon>
+      </a>
+    </ion-item>
+  </ion-list>
+  <ion-grid *ngIf="!results$||!results$.length" style="height: 100%;justify-content: center;">
+    <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
+      <div class="empty">
+          <svg fill="#C0C0C0" height="64" viewBox="0 0 24 24" width="64" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 3H4.99c-1.11 0-1.98.89-1.98 2L3 19c0 1.1.88 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.11-.9-2-2-2zm0 12h-4c0 1.66-1.35 3-3 3s-3-1.34-3-3H4.99V5H19v10z"
+            />
+            <path d="M0 0h24v24H0V0z" fill="none"/>
+          </svg>
+        <p>Aucun resultat correspondant.</p>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -79,10 +79,10 @@ import { FcmProvider } from '../../providers/fcm/fcm';
       transition('third => fourth', animate('100ms linear')),
       transition('fourth => fifth', animate('100ms linear')),
       transition('fifth => first', animate('100ms linear'))
-    ])    
+    ])
 
-  ] 
- 
+  ]
+
 })
 export class ProgrammeComponent {
    categorie:any='prepa';
@@ -94,12 +94,12 @@ export class ProgrammeComponent {
    @Input()
     authInfo:any;
    @Input()
-   analyse:any; 
+   analyse:any;
    @Input()
    matiereLoaded:any;
   @Input()
   abonnementLoaded:any;
-  abonnementExpired: any;  
+  abonnementExpired: any;
   zone:NgZone;
   buttonToHide: HTMLElement;
   flipState: String = 'notFlipped';
@@ -130,7 +130,7 @@ inscrire() {
      this.checkAbonnement();
      });
    modal.present();
- }  
+ }
 
  isExpired(abonnement:any){
    if(!abonnement)
@@ -139,14 +139,14 @@ inscrire() {
   let endDate=new Date(abonnement.endDate).getTime();
    return now>endDate;
    }
-   
+
   checkAbonnement() {
     this.abonnementExpired = this.isExpired(this.abonnement)
-    const ch=this.dataService.getAbonnementObservable(this.authInfo.uid, this.concours.id).subscribe(data => {
+    const ch=this.dataService.getAbonnementObservable( this.concours.id).subscribe(data => {
       this.abonnement = data.json();
       this.abonnementLoaded = true;
       if (this.abonnementExpired && !this.isExpired(this.abonnement) && !this.alert){
-        this.fcm.listenTopic('centor-group-' + this.concours.id);  
+        this.fcm.listenTopic('centor-group-' + this.concours.id);
          this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
          this.alert=true;
         this.events.publish('payement:success', this.abonnement);
@@ -167,7 +167,7 @@ getClass(obj:any):string{
     return 'warning';
   else if(obj.objectif>50)
      return 'success';
-  return 'none';    
+  return 'none';
 }
   toggleFlip() {
     this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
@@ -211,15 +211,15 @@ show(matiere:any){
          this.inscrire();
       return ;
    }else if(!this.authInfo) {
-        this.signup();        
+        this.signup();
    }else
-     this.appCtrl.getRootNav().push('MatiereDetailsPage',{matiere:matiere});  
+     this.appCtrl.getRootNav().push('MatiereDetailsPage',{matiere:matiere});
  }
   openRessources(){
     if (!this.authInfo) {
       this.signup();
     } else
-      this.appCtrl.getRootNav().push('RessourcesPage', { concours: this.concours });  
+      this.appCtrl.getRootNav().push('RessourcesPage', { concours: this.concours });
   }
 
  openModal(pageName,arg?:any) {

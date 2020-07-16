@@ -6,6 +6,7 @@ import { SharedDirectivesModule } from '../app/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QuestionViewComponent } from './question-view/question-view';
 import { PopupMenuComponent } from './popup-menu/popup-menu';
+import {CommonModule} from "@angular/common";
 @NgModule({
 	declarations: [,
     ShortListComponent,
@@ -14,7 +15,7 @@ import { PopupMenuComponent } from './popup-menu/popup-menu';
     QuestionViewComponent,
     PopupMenuComponent
     ],
-    imports: [SharedDirectivesModule, BrowserAnimationsModule],
+    imports: [SharedDirectivesModule, BrowserAnimationsModule, CommonModule],
 	exports: [,
     ShortListComponent,
     ResultatListComponent,
