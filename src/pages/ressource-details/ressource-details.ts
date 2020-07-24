@@ -6,7 +6,6 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Transfer, TransferObject } from '@ionic-native/transfer';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 import firebase from 'firebase';
-import { DomSanitizer,SafeResourceUrl} from '@angular/platform-browser'
 /**
  * Generated class for the RessourceDetailsPage page.
  *
@@ -28,7 +27,6 @@ export class RessourceDetailsPage {
   loaded
   estateProperty: any = {}
   showMenu
-  pageurl:SafeResourceUrl;
   zone: NgZone;
   page:number = 1;
   constructor(
@@ -41,8 +39,7 @@ export class RessourceDetailsPage {
     public platform: Platform,
     private transfer: Transfer,
     public firebaseNative: Firebase,
-    public loadingCtrl: LoadingController,
-    private domSanitizer:DomSanitizer
+    public loadingCtrl: LoadingController
   ) {
     this.zone = new NgZone({});
     this.showMenu = this.navParams.get('showMenu');

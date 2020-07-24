@@ -1,4 +1,4 @@
-import { Component, NgZone, trigger, state, style, transition, animate, keyframes } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import {IonicPage, ModalController, NavController, NavParams} from 'ionic-angular';
 import firebase from 'firebase';
 import { Storage } from '@ionic/storage';

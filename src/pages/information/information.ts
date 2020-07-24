@@ -17,7 +17,16 @@ export class InformationPage {
   abonnement: any;
   abonnementLoaded: any = false;
   ch
-
+   paymentdata: any ={
+     serviceid: '576c98f1-06b0-4e5d-88a1-b9311cd3a001',
+     orderid: 'CMD12090',
+     amount: 5000.0,
+     lang: 'FR',
+     currency: 'XAF',
+     acceptpartialpayment: true,
+     payerphone: '+237694210203',
+     payereremail: 'williams.penka@gmail.com'
+   }
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -27,6 +36,10 @@ export class InformationPage {
     private socialSharing: SocialSharing,
     public abonnementProvider:AbonnementProvider,
     public dataService: DataService,) {
+  }
+
+  onPaymentCancel($event){
+    console.log($event)
   }
 
   ionViewDidLoad() {

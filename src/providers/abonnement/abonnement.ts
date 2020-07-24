@@ -1,4 +1,4 @@
-import {  Http ,  Headers } from '@angular/http';
+import {  Http  } from '@angular/http';
 import { Injectable } from '@angular/core';
 import {IntervalObservable} from "rxjs/observable/IntervalObservable";
 import {apiConfig} from "../../app/app.apiconfigs";
