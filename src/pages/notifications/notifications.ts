@@ -47,8 +47,7 @@ export class NotificationsPage {
       this.notificationId = id;
       this.observeAuth()
     })
-
-
+    
   }
 
   observeAuth() {
@@ -96,12 +95,19 @@ export class NotificationsPage {
   showArticle(article) {
     if(article.type==='private' ||article.tag==='public' )
       return this.navCtrl.push('ArticleDetailsPage', {article: article});
-    this.abonnementProvider.checkAbonnementStatus(0).then((expired=>{
-      if(!expired)
+    this.abonnementProvider.checkAbonnementValidity(0).then((abonnement=>{
+      if(!this.isExpired(abonnement))
          this.navCtrl.push('ArticleDetailsPage', {article: article});
       else
-        this.navCtrl.push('InformationPage');
+        this.navCtrl.push('InformationPage',{abonnement:abonnement});
     }))
+  }
+  isExpired(abonnement: any) {
+    if (abonnement == null)
+      return true;
+    let now = Date.now();
+    let endDate = new Date(abonnement.endDate).getTime();
+    return now > endDate;
   }
 
   doInfinite(infiniteScroll?: any) {

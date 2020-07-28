@@ -1,0 +1,24 @@
+<ion-content class="transparent-header" >
+  <ion-header>
+    <ion-navbar>
+      <ion-buttons start>
+        <button ion-button icon-only (click)="dismiss()" showWhen="android,windows,core">
+          <ion-icon name="md-close" ></ion-icon>
+        </button>
+        <button ion-button icon-left icon-only (click)="dismiss()" showWhen="ios">
+          <span  ><ion-icon name="ios-arrow-back" ></ion-icon>Back</span>
+        </button>
+      </ion-buttons>
+    </ion-navbar>
+  </ion-header>
+ <payment-frame *ngIf="paymentdata" [apikey]="paymentdata.apikey"
+                [serviceid]="paymentdata.serviceid"
+                [orderid]="paymentdata.orderid"
+                [amount]="paymentdata.amount"
+                [currency]="paymentdata.currency"
+                [acceptpartialpayment]="paymentdata.acceptpartialpayment"
+                [payereremail]="paymentdata.payereremail"
+                 (onFrameError)="onFrameError($event)"
+                 (onPaymentComplete)="onPaymentComplete($event)">
+ </payment-frame>
+</ion-content>

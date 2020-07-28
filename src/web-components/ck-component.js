@@ -1,5 +1,4 @@
-
-const portal_api_base_url = "http://localhost:8092";
+const portal_api_base_url = "http://209.50.52.55:8092";
 (function() {
   const template = document.createElement('template');
   template.innerHTML = `
@@ -7,17 +6,18 @@ const portal_api_base_url = "http://localhost:8092";
      iframe{
        border: none;
        z-index: 999;
-       width:350px;
-       height:630px
+       width:400px;
+       height:100%
      }
-   @media only screen and (max-width: 600px) {
+
+   @media only screen and (max-width: 900px) {
       iframe{
         width:100%;
-        height:100%
+        height:100%;
        }
     }
     </style>
-    <iframe></iframe>
+    <iframe scrolling="no"></iframe>
   `;
 
   class PaymentFrame extends HTMLElement {
@@ -34,6 +34,18 @@ const portal_api_base_url = "http://localhost:8092";
 
     connectedCallback() {
      this.handlePayementEvents();
+      if (!this.hasAttribute('country')) {
+        this.setAttribute('country', 'CM');
+      }
+      if (!this.hasAttribute('lang')) {
+        this.setAttribute('lang', navigator.language);
+      }
+      if (!this.hasAttribute('currency')) {
+        this.setAttribute('currency', 'XAF');
+      }
+      if (!this.hasAttribute('acceptmultipayment')) {
+        this.setAttribute('acceptmultipayment', false);
+      }
     }
 
     getCkoutData() {
@@ -41,11 +53,14 @@ const portal_api_base_url = "http://localhost:8092";
         serviceid: this.serviceid,
         orderid: this.orderid,
         amount: this.amount,
-        lang: this.lang,
-        currency: this.currency,
+        lang: this.lang || 'EN',
+        currency: this.currency || 'XAF',
+        country: this.country || 'XAF',
         acceptpartialpayment: this.acceptmultipayment,
         payerphone: this.payerphone,
-        payereremail: this.payeremail
+        payereremail: this.payeremail,
+        primaryColor: this.primarycolor,
+        viewMode: this.viewmode || 'full',
       };
     }
     attributeChangedCallback(name, oldValue, newValue) {
@@ -84,6 +99,7 @@ const portal_api_base_url = "http://localhost:8092";
       return this.hasAttribute('apikey')&&
         this.hasAttribute('serviceid')&&
         this.hasAttribute('orderid')&&
+        this.hasAttribute('country')&&
         this.hasAttribute('currency')&&
         this.hasAttribute('amount');
     }
@@ -93,22 +109,23 @@ const portal_api_base_url = "http://localhost:8092";
     }
 
     handlePayementEvents() {
+      let self=this;
       (function () {
         function handlerEvent($message) {
           switch ($message.data.event) {
             case 'OnPaymentStart': {
-              this.onPaymentStart.detail.data=$message.data.body;
-              this.dispatchEvent(this.onPaymentStart);
+              self.onPaymentStart.detail.data=$message.data.body;
+              this.dispatchEvent(self.onPaymentStart);
               break;
             }
             case 'OnPaymentComplete': {
-              this.onPaymentComplete.detail.data=$message.data.body;
-              this.dispatchEvent(this.onPaymentComplete);
+              self.onPaymentComplete.detail.data=$message.data.body;
+              this.dispatchEvent(self.onPaymentComplete);
               break;
             }
             case 'OnPaymentCancel': {
-              this.onPaymentCancel.detail.data=$message.data.body;
-              this.dispatchEvent(this.onPaymentCancel);
+              self.onPaymentCancel.detail.data=$message.data.body;
+              self.dispatchEvent(self.onPaymentCancel);
               break;
             }
           }
@@ -117,7 +134,7 @@ const portal_api_base_url = "http://localhost:8092";
       })();
     }
     static get observedAttributes() {
-      return ['apikey','serviceid','orderid','amount','currency','lang','acceptmultipayment','payerphone','payeremail'];
+      return ['apikey','serviceid','orderid','amount','currency','lang','acceptmultipayment','payerphone','payeremail','country'];
     }
 
     set isloading(isloading) {
@@ -138,6 +155,9 @@ const portal_api_base_url = "http://localhost:8092";
     get currency() {
       return this.getAttribute('currency');
     }
+    get country() {
+      return this.getAttribute('country');
+    }
     get lang() {
       return this.getAttribute('lang');
     }
@@ -149,6 +169,12 @@ const portal_api_base_url = "http://localhost:8092";
     }
     get payeremail() {
       return this.getAttribute('payeremail');
+    }
+    get viewmode() {
+      return this.getAttribute('viewmode');
+    }
+    get primarycolor() {
+      return this.getAttribute('primarycolor');
     }
 
 
@@ -167,11 +193,14 @@ const portal_api_base_url = "http://localhost:8092";
     set currency(currency) {
       this.setAttribute('currency', currency);
     }
+    set country(country) {
+      this.setAttribute('country', country);
+    }
     set lang(lang) {
       this.setAttribute('lang', lang);
     }
-    set acceptmultipayment(accept_multipayment) {
-      this.setAttribute('acceptmultipayment', accept_multipayment);
+    set acceptmultipayment(acceptmultipayment) {
+      this.setAttribute('acceptmultipayment', acceptmultipayment);
     }
     set payerphone(payer_phone) {
       this.setAttribute('payerphone', payer_phone);
@@ -179,7 +208,12 @@ const portal_api_base_url = "http://localhost:8092";
     set payeremail(payeremail) {
       this.setAttribute('payeremail', payeremail);
     }
-
+    set viewmode(viewmode) {
+      this.setAttribute('viewmode', viewmode);
+    }
+    set primarycolor(primarycolor) {
+      this.setAttribute('primarycolor', primarycolor);
+    }
     disconnectedCallback() {
     }
   }

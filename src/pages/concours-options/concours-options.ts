@@ -73,7 +73,7 @@ export class ConcoursOptionsPage {
       });
     } else
       this.getShowConcours(id).then(() => {
-        this.observeAuth();
+         this.observeAuth();
       })
   }
 
@@ -100,6 +100,15 @@ export class ConcoursOptionsPage {
     this.bounceState = (this.bounceState == 'noBounce') ? 'bouncing' : 'noBounce';
   }
 
+  observeAuth() {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.getAbonnement();
+      this.toggleBounce();
+      if (user) {
+        unsubscribe();
+       }
+    });
+  }
 
   openModal(pageName, arg?: any) {
     this.modalCtrl.create(pageName, arg, {cssClass: 'inset-modal'})
@@ -114,26 +123,8 @@ export class ConcoursOptionsPage {
   }
 
   startabonnement() {
-    if (firebase.auth().currentUser)
       this.openPage('InformationPage');
-    else
-      this.signup()
-  }
 
-  signup() {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      this.zone.run(() => {
-        if (user) {
-          this.authInfo = user;
-          this.notify.onSuccess({message: "Vous êtes connecté à votre compte."});
-          unsubscribe();
-        } else {
-          this.authInfo = undefined;
-          unsubscribe();
-        }
-      });
-    });
-    this.appCtrl.getRootNav().push('LoginSliderPage', {redirectTo: true});
   }
 
 
@@ -178,21 +169,6 @@ export class ConcoursOptionsPage {
       this.notify.onError({message: 'Petit problème de connexion.'});
     });
 
-  }
-
-
-  observeAuth() {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.authInfo = user;
-        this.getAbonnement();
-        this.toggleBounce();
-      } else {
-        this.authInfo = undefined;
-        unsubscribe();
-      }
-
-    });
   }
 
 

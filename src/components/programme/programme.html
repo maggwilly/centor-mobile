@@ -6,13 +6,10 @@
     <ion-icon name="list" color="white"></ion-icon>
     <span *ngIf="!abonnement">Commencer la préparation</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
   </button>
-  <button ion-button color="blue"   icon-left *ngIf="!authInfo" [@flash]="flashState" (click)="signup()">
-    <ion-icon name="person" color="white"></ion-icon> Créer un compte
-  </button>
 </div>
 
   <ion-list  class="borded-list-item" inset>
-    <ion-item text-wrap (click)="show(matiere)" *ngFor="let matiere of concours.matieres" 
+    <ion-item text-wrap (click)="show(matiere)" *ngFor="let matiere of concours.matieres"
       [ngClass]="getClass(matiere.analyse)" class="img-round" >
       <ion-icon [hidden]="!abonnementLoaded&&authInfo" name="lock-outline" item-right *ngIf="isExpired(abonnement)"></ion-icon>
       <ion-icon [hidden]="!abonnementLoaded&&authInfo"name="ios-arrow-forward" item-right *ngIf="!isExpired(abonnement)"></ion-icon>
@@ -33,6 +30,6 @@
    Documents <ion-badge color="blue" *ngIf="concours.newressource">Nouveau</ion-badge>
       <p>
         Sujets, Corrigés, Travaux dirigés,condensés de cours, etc.
-      </p>    
+      </p>
 </button>
   </div>

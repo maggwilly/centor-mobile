@@ -53,7 +53,6 @@ export class HomePage {
     this.storage.get('registrationId').then((data) => {
       this.registrationId = data;
     })
-
     this.storage.get('home_stats_').then((data)=>{
       this.stats=data?data:undefined;
           this.loadData();
@@ -74,30 +73,6 @@ export class HomePage {
   }
   openPage(page,arg?:any) {
     this.navCtrl.push(page, arg)
-  }
-
-  observeAuth() {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.notificationId = user.uid;
-        this.authInfo = user;
-        this.getAbonnement();
-        this.loadData()
-      } else {
-        this.authInfo = undefined;
-        unsubscribe();
-      }
-    });
-    setInterval(() => {
-      this.toggleFlip();
-    }, 2000);
-    setInterval(() => {
-      this.toggleBounce();
-    }, 1000);
-
-    setInterval(() => {
-      this.toggleFly();
-    }, 2000);
   }
 
   openArticles() {
@@ -121,7 +96,14 @@ export class HomePage {
       }
     this.navCtrl.push('SelectionsPage', {targetTitle: targetTitle, target: target });
   }
-
+  observeAuth() {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.getAbonnement();
+      if (user) {
+        unsubscribe();
+      }
+    });
+  }
 
   loadData() {
     let uid=firebase.auth().currentUser?firebase.auth().currentUser.uid:undefined
@@ -136,10 +118,7 @@ export class HomePage {
 
 
   startabonnement() {
-    if (firebase.auth().currentUser)
-      this.openPage('InformationPage' );
-    else
-       this.signup()
+      this.openPage('InformationPage',{abonnement:this.abonnement} );
     }
 
   signup() {
@@ -151,16 +130,16 @@ export class HomePage {
           this.notify.onSuccess({ message: "Vous êtes connecté à votre compte." });
           unsubscribe();
         } else {
+          this.navCtrl.push('LoginSliderPage', { redirectTo: true });
           this.authInfo = undefined;
-          unsubscribe();
         }
       });
     });
-    this.navCtrl.push('LoginSliderPage', { redirectTo: true });
+
   }
 
   getAbonnement() {
-    this.dataService.checkAbonnementValidity(firebase.auth().currentUser.uid, 0).then(data => {
+    this.abonnementProvider.checkAbonnementValidity( 0).then(data => {
       this.abonnement = data;
       this.abonnementLoaded = true;
     }, error => {

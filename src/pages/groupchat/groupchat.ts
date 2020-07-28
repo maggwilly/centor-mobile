@@ -12,6 +12,7 @@ import { File } from '@ionic-native/file';
 import { Storage } from '@ionic/storage';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FcmProvider as Firebase} from '../../providers/fcm/fcm';
+import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 /**
  * Generated class for the GroupchatPage page.
  *
@@ -68,6 +69,7 @@ export class GroupchatPage {
     public dataService: DataService,
     private file: File,
     public storage: Storage,
+    public abonnementProvider:AbonnementProvider,
     public _DomSanitizer: DomSanitizer,
     private socialSharing: SocialSharing,
     public loadingCtrl: LoadingController) {
@@ -144,7 +146,7 @@ export class GroupchatPage {
     if (!this.groupName)
       return
     this.groupdisplayname = this.groupservice.groupdisplayname ? this.groupservice.groupdisplayname : this.groupdisplayname;
-    this.dataService.checkAbonnementValidity(firebase.auth().currentUser.uid, this.groupName).then(data => {
+    this.abonnementProvider.checkAbonnementValidity( this.groupName).then(data => {
       this.abonnement = data;
       this.abonnementLoaded = true;
     }, error => {
