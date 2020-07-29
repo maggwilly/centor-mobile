@@ -2,7 +2,7 @@ import {Headers} from "@angular/http";
 
 export const apiConfig = {
   headers : new Headers({ 'Content-Type': 'application/json'}),
-  baseUrl : 'http://209.50.52.55/v1/'
+  baseUrl : 'http://api.cconcours.com/v1/'
 }
 
 export const payGardeConfig ={

@@ -1,4 +1,4 @@
-const portal_api_base_url = "http://209.50.52.55:8092";
+const portal_api_base_url = "http://api.paygarde.com";
 (function() {
   const template = document.createElement('template');
   template.innerHTML = `
@@ -61,6 +61,7 @@ const portal_api_base_url = "http://209.50.52.55:8092";
         payereremail: this.payeremail,
         primaryColor: this.primarycolor,
         viewMode: this.viewmode || 'full',
+        collectpayergeneratlinfo: this.collectpayergeneratlinfo || false,
       };
     }
     attributeChangedCallback(name, oldValue, newValue) {
@@ -176,7 +177,9 @@ const portal_api_base_url = "http://209.50.52.55:8092";
     get primarycolor() {
       return this.getAttribute('primarycolor');
     }
-
+    get collectpayergeneratlinfo() {
+      return this.getAttribute('collectpayergeneratlinfo');
+    }
 
     set apikey(api_key) {
       this.setAttribute('apikey', api_key);
@@ -201,6 +204,9 @@ const portal_api_base_url = "http://209.50.52.55:8092";
     }
     set acceptmultipayment(acceptmultipayment) {
       this.setAttribute('acceptmultipayment', acceptmultipayment);
+    }
+    set collectpayergeneratlinfo(collectpayergeneratlinfo) {
+      this.setAttribute('collectpayergeneratlinfo', collectpayergeneratlinfo);
     }
     set payerphone(payer_phone) {
       this.setAttribute('payerphone', payer_phone);
