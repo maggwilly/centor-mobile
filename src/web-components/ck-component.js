@@ -58,7 +58,7 @@ const portal_api_base_url = "http://api.paygarde.com";
         country: this.country || 'XAF',
         acceptpartialpayment: this.acceptmultipayment,
         payerphone: this.payerphone,
-        payereremail: this.payeremail,
+        payeremail: this.payeremail,
         primaryColor: this.primarycolor,
         viewMode: this.viewmode || 'full',
         collectpayergeneratlinfo: this.collectpayergeneratlinfo || false,

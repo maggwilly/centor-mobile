@@ -14,7 +14,7 @@ export class UserProvider {
   _baseUrl = 'https://concours.centor.org/v1/'
   private headers = new Headers({ 'Content-Type': 'application/json' });
   constructor(public http: Http) {
-   
+
   }
 
   /*
@@ -22,7 +22,7 @@ export class UserProvider {
   Called from - signup.ts
   Inputs - The new user object containing the email, password and displayName.
   Outputs - Promise.
-  
+
    */
 
   adduser(newuser) {
@@ -37,7 +37,7 @@ export class UserProvider {
             displayName: newuser.displayName,
             photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
           }).then(() => {
-      
+
             resolve({ success: true });
             }).catch((err) => {
               reject(err);
@@ -57,7 +57,7 @@ export class UserProvider {
   Called from - passwordreset.ts
   Inputs - email of the user.
   Output - Promise.
-  
+
    */
 
   passwordreset(email) {
@@ -72,20 +72,22 @@ export class UserProvider {
   }
 
   /*
-  
+
   For updating the users collection and the firebase users list with
   the imageurl of the profile picture stored in firebase storage.
   Called from - profilepic.ts
   Inputs - Url of the image stored in firebase.
   OUtputs - Promise.
-  
+
   */
 
   updateimage(imageurl) {
       var promise = new Promise((resolve, reject) => {
+        if(!firebase.auth().currentUser)
+          reject(false);
            firebase.auth().currentUser.updateProfile({
               displayName:  firebase.auth().currentUser.displayName,
-              photoURL: imageurl      
+              photoURL: imageurl
           }).then(() => {
               firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({
               displayName:  firebase.auth().currentUser.displayName,
@@ -99,13 +101,13 @@ export class UserProvider {
                   .toPromise()
                   .then(response =>{
                           resolve({ success: true });
-                  })                    
+                  })
                   }).catch((err) => {
                       reject(err);
                   })
           }).catch((err) => {
                 reject(err);
-             })  
+             })
       })
       return promise;
   }
@@ -122,7 +124,9 @@ export class UserProvider {
   }
 
   updatedisplayname(newname) {
-    var promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
+      if(!firebase.auth().currentUser)
+         reject(false);
        firebase.auth().currentUser.updateProfile({
       displayName: newname,
       photoURL:  firebase.auth().currentUser.photoURL

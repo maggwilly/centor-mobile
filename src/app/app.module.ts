@@ -1,7 +1,7 @@
 import { NgModule, ErrorHandler} from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { MODULES, MAINPROVIDERS } from './app.imports';
+import {MODULES, MAINPROVIDERS, SHAREDPROVIDERS} from './app.imports';
 import { SharedDirectivesModule } from './shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { firebaseConfig} from './app.firebaseconfig';
@@ -40,7 +40,7 @@ import { AbonnementProvider } from '../providers/abonnement/abonnement';
   entryComponents: [
     MyApp,
   ],
-  providers: [MAINPROVIDERS, { provide: ErrorHandler, useClass: IonicErrorHandler },
+  providers: [MAINPROVIDERS,SHAREDPROVIDERS,{ provide: ErrorHandler, useClass: IonicErrorHandler },
     FcmProvider,
     AbonnementProvider]
 })

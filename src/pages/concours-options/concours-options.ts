@@ -8,7 +8,7 @@ import {DataService} from '../../providers/data-service';
 import {AppNotify} from '../../providers/app-notify';
 import {SocialSharing} from '@ionic-native/social-sharing';
 import {IonicPage} from 'ionic-angular';
-import {FcmProvider as Firebase} from '../../providers/fcm/fcm';
+import {FcmProvider, FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {concoursDetailsAnimation} from "../../annimations/annimations";
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 
@@ -31,7 +31,8 @@ export class ConcoursOptionsPage {
   flyInOutState: String = 'in';
   fadeState: String = 'visible';
   bounceState: String = 'noBounce';
-  showMenu
+  showMenu:any;
+  alert=false;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -40,6 +41,7 @@ export class ConcoursOptionsPage {
     public firebaseNative: Firebase,
     public events: Events,
     public loadingCtrl: LoadingController,
+    private fcm: FcmProvider,
     public abonnementProvider:AbonnementProvider,
     public notify: AppNotify,
     public appCtrl: App,
@@ -48,7 +50,7 @@ export class ConcoursOptionsPage {
     this.showMenu = this.navParams.get('showMenu');
     this.initPage();
     this.zone = new NgZone({});
-    //  this.firebaseNative.setScreemName('concours_view');
+      this.firebaseNative.setScreemName('concours_view');
   }
 
   ionViewDidEnter() {
@@ -125,6 +127,19 @@ export class ConcoursOptionsPage {
   startabonnement() {
       this.openPage('InformationPage');
 
+  }
+
+  inscrire() {
+    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
+     modal.onDidDismiss((data, role)=>{
+      if(data&&data.status=='PAID'){
+        this.fcm.listenTopic('centor-group-' + this.concours.id);
+        this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
+        this.alert=true;
+        this.events.publish('payement:success', this.abonnement);
+      }
+    })
+    modal.present();
   }
 
 

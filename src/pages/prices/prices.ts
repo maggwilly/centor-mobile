@@ -37,18 +37,31 @@ export class PricesPage {
         if (user) {
           this.bundle = bundle;
           this.innerSlider.slideNext();
-          this.abonnementProvider.startCommande(this.product, bundle).then(data => {
-            this.commande = data;
-            this.firebaseNative.logEvent(`cmd_started_event`, {bundle: bundle, amount: data.amount});
-          }, error => {
-            console.log(error)
-            this.notify.onError({message: 'Problème de connexion.'});
-          })
+          this.createCommande(bundle);
           unsubscribe();
           return;
         }
-        this.appCtrl.getRootNav().push('LoginSliderPage', {redirectTo: true});
+        let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+        modal.onDidDismiss((data, role) => {
+          if (data) {
+            this.bundle = bundle;
+            this.innerSlider.slideNext();
+            this.createCommande(bundle);
+            unsubscribe();
+          }
+        })
+        modal.present();
       });
+    })
+  }
+
+  private createCommande(bundle) {
+    this.abonnementProvider.startCommande(this.product, bundle).then(data => {
+      this.commande = data;
+      console.log(this.commande )
+      this.firebaseNative.logEvent(`cmd_started_event`, {bundle: bundle, amount: data.amount});
+    }, error => {
+      this.notify.onError({message: 'Problème de connexion.'});
     })
   }
 
@@ -74,8 +87,10 @@ export class PricesPage {
       apikey: payGardeConfig.apiKey,
       orderid: this.commande.order_id,
       amount: this.commande.amount,
-      payereremail: firebase.auth().currentUser.email
+      payeremail: firebase.auth().currentUser.email || this.commande.info.email,
+      payerphone:  this.commande.info.phone
     }
+    console.log(paymentdata);
     let modal = this.modalCtrl.create('PaymentPage', {paymentdata: paymentdata});
     modal.onDidDismiss((data, role) => {
       this.dismiss(data);

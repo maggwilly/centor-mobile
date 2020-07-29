@@ -210,8 +210,8 @@ getQuestions(qcm:number){
 
 
 
- editInfo(uid:any,info:any){
-  return  this.http.post(apiConfig.baseUrl +'formated/info/'+uid+'/edit/json',JSON.stringify(info ), { headers:this. headers })
+ editInfo(info:any){
+  return  this.http.post(apiConfig.baseUrl +'formated/info/'+this.getUserUID()+'/edit/json',JSON.stringify(info ), { headers:this. headers })
            .toPromise()
             .then(response =>response.json());
 }

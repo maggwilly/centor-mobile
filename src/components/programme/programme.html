@@ -1,13 +1,5 @@
 <ion-card-header *ngIf="(concours&&concours.matieres&&concours.matieres.length&&concours.price)">Programme de préparation</ion-card-header>
 <div text-wrap *ngIf="(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
-
-  <div class="switch-button" *ngIf="!authInfo||isExpired(abonnement)" ion-fixed>
-  <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" [@flash]="flashState"  (click)="inscrire()">
-    <ion-icon name="list" color="white"></ion-icon>
-    <span *ngIf="!abonnement">Commencer la préparation</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
-  </button>
-</div>
-
   <ion-list  class="borded-list-item" inset>
     <ion-item text-wrap (click)="show(matiere)" *ngFor="let matiere of concours.matieres"
       [ngClass]="getClass(matiere.analyse)" class="img-round" >

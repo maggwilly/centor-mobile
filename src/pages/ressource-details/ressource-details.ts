@@ -6,7 +6,6 @@ import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 import firebase from 'firebase';
 import {payGardeConfig} from "../../app/app.apiconfigs";
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
-declare var cordova: any;
 
 @IonicPage()
 @Component({
@@ -61,25 +60,36 @@ export class RessourceDetailsPage {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
-          this.abonnementProvider.startCommande(this.estateProperty.id, 'ressource').then(data => {
-            this.commande = data;
-            console.log(this.commande);
-            if(!data.amount)
-              return ;
-            this.firebaseNative.logEvent(`cmd_started_event`,{bundle:'ressource', amount:this.estateProperty.price});
-            return this.confirm();
-          }, error => {
-            this.notify.onError({message: 'Problème de connexion.'});
-          })
+          this.createCommande();
           unsubscribe();
           return;
         }
-        this.appCtrl.getRootNav().push('LoginSliderPage', { redirectTo: true });
+        let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+        modal.onDidDismiss((data, role) => {
+          if (data) {
+            this.createCommande();
+            unsubscribe();
+          }
+        })
+        modal.present();
       });
     });
 
   }
 
+
+  private createCommande() {
+    this.abonnementProvider.startCommande(this.estateProperty.id, 'ressource').then(data => {
+      this.commande = data;
+      ;
+      if (!data.amount)
+        return;
+      this.firebaseNative.logEvent(`cmd_started_event`, {bundle: 'ressource', amount: this.estateProperty.price});
+      return this.confirm();
+    }, error => {
+      this.notify.onError({message: 'Problème de connexion.'});
+    })
+  }
 
   confirm() {
     let paymentdata: any ={
@@ -87,7 +97,8 @@ export class RessourceDetailsPage {
       apikey:payGardeConfig.apiKey,
       orderid: this.commande.order_id,
       amount: this.commande.amount,
-      payereremail: firebase.auth().currentUser?firebase.auth().currentUser.email:null
+      payeremail: firebase.auth().currentUser.email?firebase.auth().currentUser.email : this.commande.info.email,
+      payerphone:  this.commande.info.phone
     }
     let modal=  this.modalCtrl.create('PaymentPage',{paymentdata:paymentdata} );
     modal.onDidDismiss((data, role)=>{

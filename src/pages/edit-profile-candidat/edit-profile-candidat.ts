@@ -1,5 +1,5 @@
 import { Component, NgZone  } from '@angular/core';
-import { NavController, App,   NavParams ,ViewController,ActionSheetController,LoadingController,AlertController} from 'ionic-angular';
+import {Events, NavController, App,   NavParams ,ViewController,ActionSheetController,LoadingController,AlertController} from 'ionic-angular';
 //import { Camera, CameraOptions } from '@ionic-native/camera';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
@@ -30,22 +30,21 @@ export class EditProfileCandidatPage {
   offset = 100;
   submited:boolean=false;
  constructor(
-  public storage: Storage , 
-  public navCtrl: NavController, 
-  public appCtrl: App, 
-  public viewCtrl: ViewController, 
+  public storage: Storage ,
+  public navCtrl: NavController,
+  public appCtrl: App,
+  public viewCtrl: ViewController,
   public loadingCtrl: LoadingController,
-  private iab: InAppBrowser ,
+  public events: Events,
   public actionSheetCtrl: ActionSheetController,
   public navParams: NavParams,
   public dataService:DataService,
   public alertCtrl: AlertController,
    public firebaseNative: Firebase,
    public userProvider: UserProvider,
-  //private camera: Camera,
    public zone: NgZone,
    public _DomSanitizer: DomSanitizer,
-   public imgservice: ImghandlerProvider,  
+   public imgservice: ImghandlerProvider,
   public notify:AppNotify
 ) {
 
@@ -55,46 +54,29 @@ export class EditProfileCandidatPage {
   ionViewDidLoad() {
     let candidat=this.navParams.get('profil');
     this.candidat = Object.assign({ dateMax:'2010-12-31' }, candidat);
-    this.photoURL = candidat.photoURL ? candidat.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d' 
+    this.photoURL = candidat.photoURL ? candidat.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
   }
 
    dismiss(data?:any) {
-      this.viewCtrl.dismiss();    
-  } 
+      this.viewCtrl.dismiss();
+  }
 
 
   editInfo(){
     this.submited = true;
     if(this.uploapping)
-      return this.updateproceed();
-    return this.dataService.editInfo(firebase.auth().currentUser.uid, this.candidat).then((info)=>{
+      this.events.publish('picture:change',this.imageData);
+      this.events.publish('displayName:change',this.candidat.displayName);
+    return this.dataService.editInfo(this.candidat).then((info)=>{
         this.candidat=info;
-        this.userProvider.updatedisplayname(this.candidat.displayName).then(()=>{
-        this.submited = false;
-        this.firebaseNative.logEvent('profil_update', { profil: true });
-        this.notify.onSuccess({ message: 'Votre profil a été mis à jour !' })
-        this.viewCtrl.dismiss(info);
-      })
+      this.submited = false;
+       this.firebaseNative.logEvent('profil_update', { profil: true });
+       this.notify.onSuccess({ message: 'Votre profil a été mis à jour !' })
+       this.viewCtrl.dismiss(info);
     },error=>{
       this.submited=false;
-      this.notify.onError({ message:'Petit problème de connexion !'});      
+      this.notify.onError({ message:'Petit problème de connexion !'});
    })
-  }
-
-  updateproceed() {
-    this.imgservice.storeImage(this.imageData, '/profileimages').then(url => {
-      this.candidat.photoURL = url;
-      this.userProvider.updateimage(url).then((res: any) => {
-        this.dataService.editInfo(firebase.auth().currentUser.uid,this.candidat).then(info=>{
-          this.candidat = info;
-          this.submited = false;
-          this.uploapping = false;
-        }, error => {
-          this.submited = false;
-          this.notify.onError({ message: 'Petit problème de connexion !' });
-        })
-      })
-    })
   }
 
 
@@ -113,11 +95,11 @@ export class EditProfileCandidatPage {
 
 
    logout() {
-    firebase.auth().signOut().then(() => {      
+    firebase.auth().signOut().then(() => {
           this.storage.clear().catch(error=>{});
           this.viewCtrl.dismiss(true);
           this.notify.onSuccess({ message:'Vous êtes déconnectés !'});
-      this.appCtrl.getRootNav().setRoot('HomePage'); 
+      this.appCtrl.getRootNav().setRoot('HomePage');
       }, (error) => {
         this.loading.dismiss().then( () => {
           var errorMessage: string = error.message;
@@ -134,12 +116,9 @@ export class EditProfileCandidatPage {
         });
       });
      this.loading = this.loadingCtrl.create({dismissOnPageChange:true});
-      this.loading.present();    
+      this.loading.present();
   }
 
-  openHelp(){
- this.iab.create(window.localStorage.getItem('_baseUrl')+'mobile/2/help');
-}
 
 
   presentActionSheet() {
@@ -151,7 +130,7 @@ export class EditProfileCandidatPage {
          icon:'power',
          handler: () => {
            console.log('Destructive clicked');
-         
+
            this.logout();
          }
        },
@@ -165,5 +144,5 @@ export class EditProfileCandidatPage {
      ]
    });
    actionSheet.present();
- }    
+ }
 }

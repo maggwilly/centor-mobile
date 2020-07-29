@@ -1,9 +1,14 @@
 <ion-content class="transparent-header" [ngStyle]="{'background-image': 'url(' + backgroundImage +')'}">
   <ion-header>
-    <ion-navbar >
-     <!-- <button menuToggle ion-button icon-only>
-        <ion-icon name="menu"></ion-icon>
-      </button>-->
+    <ion-navbar>
+      <ion-buttons start>
+        <button ion-button icon-only (click)="dismiss()" showWhen="android,windows,core">
+          <ion-icon name="md-close" ></ion-icon>
+        </button>
+        <button ion-button icon-left icon-only (click)="dismiss()" showWhen="ios">
+          <span  ><ion-icon name="ios-arrow-back" ></ion-icon>Back</span>
+        </button>
+      </ion-buttons>
     </ion-navbar>
   </ion-header>
       <ion-grid #login class="login" [hidden]="singupStape">

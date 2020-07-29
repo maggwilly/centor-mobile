@@ -17,8 +17,10 @@
                 [amount]="paymentdata.amount"
                 [currency]="paymentdata.currency"
                 [acceptpartialpayment]="paymentdata.acceptpartialpayment"
-                [payereremail]="paymentdata.payereremail"
-                 (onFrameError)="onFrameError($event)"
-                 (onPaymentComplete)="onPaymentComplete($event)">
+                [payeremail]="paymentdata.payeremail"
+                [payerphone]="paymentdata.payerphone"
+                (onFrameError)="onFrameError($event)"
+                [primarycolor]="primarycolor"
+                (onPaymentComplete)="onPaymentComplete($event)">
  </payment-frame>
 </ion-content>

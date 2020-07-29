@@ -167,7 +167,26 @@
  }
 }
 
-
+.switch-button {
+  position: sticky;
+  display: block;
+  bottom: 0;
+  margin-bottom: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 100;
+  opacity: 1;
+  .active {
+    background: #3366CC!important;
+    color: #fff;
+  }
+  .button {
+    height: 56px;
+    padding: 0;
+    margin: auto;
+    width: 99%;
+  }
+}
 
 @media screen and (max-width: 768px) {
   #right-pannel { display: none; }  /* show it on small screens */

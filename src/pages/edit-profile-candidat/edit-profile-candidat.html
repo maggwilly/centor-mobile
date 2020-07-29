@@ -1,6 +1,6 @@
 <ion-header no-border>
     <ion-navbar primary>
-      <ion-title>Informations</ion-title> 
+      <ion-title>Informations</ion-title>
     <ion-buttons  right>
           <ion-spinner color="white" name="ios" *ngIf="submited"></ion-spinner>
           <button ion-button icon-only (click)="editInfo()" *ngIf="!submited">
@@ -29,13 +29,13 @@
         <p class="username">Photo de profil</p>
         <button item-right  ion-button clear icon-only  *ngIf="!uploapping">
           <ion-icon name="ios-create"></ion-icon>
-        </button>  
+        </button>
           <ion-spinner item-right name="dots" *ngIf="uploapping"></ion-spinner>
-      <!--  
+      <!--
         <button item-right color="danger" clear ion-button icon-only (click)="cancelPicture()" *ngIf="photoURL">
           <ion-icon name="md-close"></ion-icon>
         </button>
-        -->            
+        -->
       </ion-item>
     <ion-list no-border>
         <ion-list-header>
@@ -58,7 +58,7 @@
             <ion-input type="tel" [(ngModel)]="candidat.phone" name="phone"></ion-input>
           </ion-item>
           <ion-item>
-          <ion-icon name='school' item-start></ion-icon>  
+          <ion-icon name='school' item-start></ion-icon>
             <ion-label floating>Branche d'étude</ion-label>
            <ion-select [(ngModel)]="candidat.serie" name="serie" >
               <ion-option value="science">Sciences </ion-option>
@@ -97,45 +97,19 @@
                 <ion-option value="Maroua">Maroua</ion-option>
                 <ion-option value="Bertoua">Bertoua</ion-option>
                 <ion-option value="Autre ville">Autre ville</ion-option>
-              </ion-select>            
-          </ion-item>              
+              </ion-select>
+          </ion-item>
           <ion-item no-lines>
-          <ion-icon name='mail' item-start></ion-icon>           
+          <ion-icon name='mail' item-start></ion-icon>
             <ion-label floating>Adresse email</ion-label>
             <ion-input type="text" value="" [(ngModel)]="candidat.email" name="email" ></ion-input>
           </ion-item>
-       <br>      
-      </ion-list>    
-      <!-- <ion-list no-border>
-      <ion-list-header>
-        Préferences
-      </ion-list-header>
-      <ion-item>
-        <ion-icon name='settings' item-start></ion-icon>
-        <ion-label>Choisir la langue</ion-label>
-        <ion-select [(ngModel)]="candidat.langue">
-            <ion-option value="fr">Français</ion-option>
-            <ion-option value="en">English</ion-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-toggle [(ngModel)]="candidat.enableNotifications" ></ion-toggle>
-        <ion-label class="label">Notifications </ion-label>
-        <ion-icon name='notifications' item-start></ion-icon>
-      </ion-item>
- <ion-item>
-        <ion-icon name='card' item-start></ion-icon>
-        <ion-label >Thème et couleurs</ion-label>
-        <ion-select [(ngModel)]="candidat.theme" (ionSelect)="changeTheme(candidat.theme)">
-            <ion-option value="bleu-defaut">bleu</ion-option>
-            <ion-option value="vert-citron"> vert-defaut</ion-option>
-            <ion-option value="violet-sombre">violet</ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-list>-->
+       <br>
+      </ion-list>
+
 <div padding>
   <button ion-button block  (click)="editInfo()" icon-left [disabled]="submited">
-                <ion-icon name='md-person' ></ion-icon> 
+                <ion-icon name='md-person' ></ion-icon>
                  Enrégistrer les Informations
    </button>
 </div>

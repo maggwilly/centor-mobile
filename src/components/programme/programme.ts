@@ -106,7 +106,6 @@ export class ProgrammeComponent {
     public events: Events,
     public alertCtrl: AlertController,
     public appCtrl: App,
-    private fcm: FcmProvider,
     public navParams: NavParams,
     public dataService:DataService,
     public modalCtrl: ModalController) {
@@ -115,18 +114,6 @@ export class ProgrammeComponent {
 
   }
 
-  inscrire() {
-    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
-     modal.onDidDismiss((data, role)=>{
-      if(data&&data.status=='PAID'){
-      this.fcm.listenTopic('centor-group-' + this.concours.id);
-      this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
-      this.alert=true;
-      this.events.publish('payement:success', this.abonnement);
-      }
-    })
-    modal.present();
-  }
 
  isExpired(abonnement:any){
    if(!abonnement)
@@ -186,7 +173,7 @@ getClass(obj:any):string{
       }
     matiere.concours=this.concours;
    if(this.isExpired(this.abonnement)){
-         this.inscrire();
+         //this.inscrire();
       return ;
    }else
      this.appCtrl.getRootNav().push('MatiereDetailsPage',{matiere:matiere});

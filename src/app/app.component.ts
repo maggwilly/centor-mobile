@@ -13,12 +13,12 @@ import { Deeplinks } from '@ionic-native/deeplinks';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import 'rxjs/add/operator/take';
 import {AbonnementProvider} from "../providers/abonnement/abonnement";
+import {ImghandlerProvider} from "../providers/imghandler/imghandler";
+import {UserProvider} from "../providers/user/user";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
 const appVersion ='2.8.12';
-const _baseUrl = 'http://127.0.0.1:8000'
-
 
 export interface PageInterface {
   title: string;
@@ -72,6 +72,8 @@ export class MyApp {
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     public events: Events,
+     public userProvider: UserProvider,
+     public imgservice: ImghandlerProvider,
     private deeplinks: Deeplinks
   ) {
     this.zone = new NgZone({});
@@ -82,11 +84,26 @@ export class MyApp {
       })
       this.statusBar.backgroundColorByHexString("#065C79");
     //
-      this.getUrlBase(this);
+      this.listenProfilEvents();
+      this.startApp();
       this.splashScreen.hide();
     });
 
   }
+  listenProfilEvents(){
+    this.events.subscribe('picture:change',imageData =>{
+      this.imgservice.storeImage(imageData, '/profileimages').then(url => {
+        this.user.info.photoURL=url;
+        this.events.publish('picture:changed',url);
+        this.userProvider.updateimage(url).then((res: any) => { })
+      })
+    })
+   this.events.subscribe('displayName:change',displayname =>{
+     this.user.info.displayName=displayname;
+    this.userProvider.updatedisplayname(displayname);
+  })
+ }
+
 
   animationDone() {
     this.state = 'x';
@@ -109,13 +126,9 @@ export class MyApp {
   }
 
 
-  getUrlBase(obj: any) {
-//this.registerForNotification();
-//this.registerForNotificationWeb();
-      this.startApp();
-  }
-
   startApp() {
+    //this.registerForNotification();
+   //this.registerForNotificationWeb();
     if(this.rootSet)
         return;
 	   this.observeAuth();
@@ -191,8 +204,8 @@ checkInfo(info:any){
   openModal(pageName, arg?: any) {
     if (this.modalshow)
        return
-    this.modalshow=true;
-    this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
+      this.modalshow=true;
+      this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
       .present();
   }
 
@@ -232,10 +245,7 @@ checkInfo(info:any){
   }
 
   registerForNotification() {
-    this.storage.set('_baseUrl',_baseUrl).then(() => {
-      this.observeAuth();
-    });
-
+    this.observeAuth();
     if (this.platform.is('android')) {
       this.fcm.getToken().then(token => {
          this.registration(token);
@@ -276,7 +286,6 @@ checkInfo(info:any){
       }else {
         if (!data.body)
           return
-
         let alert = this.notify.onInfo({ message: '' + data.title.substring(0, 30) +' ... '+data.body.substring(0, 50)+''});
         alert.present();
       };
@@ -291,22 +300,13 @@ checkInfo(info:any){
       '/concours/:id': 'ConcoursOptionsPage',
       '/notification/:notification_id': 'ArticleDetailsPage'
     }).subscribe((match) => {
-      // match.$route - the route we matched, which is the matched entry from the arguments to route()
-      // match.$args - the args passed in the link
-      // match.$link - the full link data
-      console.log('Successfully matched route', match);
     }, (nomatch) => {
-      // nomatch.$link - the full link data
       console.error('Got a deeplink that didn\'t match', nomatch);
     });
   }
 
   registerForNotificationWeb() {
-    this.storage.set('_baseUrl', _baseUrl).then(() => {
-      this.observeAuth();
-    });
-
-
+    this.observeAuth();
    firebase.messaging().requestPermission()
       .then(() => {
         return firebase.messaging().getToken().then(token => {
@@ -349,7 +349,7 @@ checkInfo(info:any){
   loadAbonnement() {
     this.storage.get('_abonnements').then((dtata)=>{
       this.paidConcours = dtata ? dtata : [];
-    this.abonnementProvider.getAbonnementsObservable().subscribe(data => {
+    this.abonnementProvider.getAbonnementsObservable().subscribe((data:any[]) => {
       this.paidConcours = data ? data : [];
       this.storage.set('_abonnements', data);
     }, error => {

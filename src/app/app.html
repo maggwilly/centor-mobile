@@ -10,7 +10,7 @@
       </ion-header>
       <div id="profile-bg">
           <!--<img class="user-avatar round" *ngIf="user&& user.info"  [src]="user.info.photoURL" image-cache>-->
-      <img class="user-avatar round" *ngIf="user&& user.info"
+      <img class="user-avatar round" *ngIf="user&&user.info"
           [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset"  image-cache>
         <p class="name" *ngIf="user">
           <span>{{(user.info.displayName||user.info.email)| limitTo:16}} </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="!isExpired(abonnement)"><b>{{abonnement.id}}</b></span>

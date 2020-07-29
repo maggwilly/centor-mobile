@@ -6,7 +6,7 @@ import firebase from 'firebase';
 import {AppNotify} from '../../providers/app-notify';
 import {IonicPage} from 'ionic-angular';
 import {GroupsProvider} from '../../providers/groups/groups';
-import {FcmProvider as Firebase} from '../../providers/fcm/fcm';
+import {FcmProvider, FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 
 @IonicPage()
@@ -76,7 +76,7 @@ export class MatieresPage {
   flyInOutState: String = 'in';
   fadeState: String = 'visible';
   bounceState: String = 'noBounce';
-
+  alert=false;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -85,6 +85,7 @@ export class MatieresPage {
     public modalCtrl: ModalController,
     public abonnementProvider: AbonnementProvider,
     public firebaseNative: Firebase,
+    private fcm: FcmProvider,
     public events: Events,
     public appCtrl: App,
     public groupservice: GroupsProvider,
@@ -282,6 +283,17 @@ export class MatieresPage {
       this.notify.onError({message: 'Petit problème de connexion.'});
     })
   }
-
+  inscrire() {
+    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
+    modal.onDidDismiss((data, role)=>{
+      if(data&&data.status=='PAID'){
+        this.fcm.listenTopic('centor-group-' + this.concours.id);
+        this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
+        this.alert=true;
+        this.events.publish('payement:success', this.abonnement);
+      }
+    })
+    modal.present();
+  }
 
 }

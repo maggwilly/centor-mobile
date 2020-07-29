@@ -125,17 +125,27 @@ export class HomePage {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
-          this.authInfo = user;
-          this.getAbonnement();
-          this.notify.onSuccess({ message: "Vous êtes connecté à votre compte." });
+          this.goToNex(user, unsubscribe);
           unsubscribe();
-        } else {
-          this.navCtrl.push('LoginSliderPage', { redirectTo: true });
-          this.authInfo = undefined;
         }
+        let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+        modal.onDidDismiss((data, role) => {
+          if (data) {
+            this.goToNex(user, unsubscribe);
+            unsubscribe();
+          }
+        })
+        modal.present();
       });
     });
 
+  }
+
+  private goToNex(user: firebase.User, unsubscribe: () => void) {
+    this.authInfo = user;
+    this.getAbonnement();
+    this.notify.onSuccess({message: "Vous êtes connecté à votre compte."});
+    return;
   }
 
   getAbonnement() {

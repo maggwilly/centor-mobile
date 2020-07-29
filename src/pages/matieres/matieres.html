@@ -9,7 +9,7 @@
       <button ion-button icon-only (click)="observeAuth(false)">
         <ion-icon name="md-refresh"></ion-icon>
       </button>
-    </ion-buttons > 
+    </ion-buttons >
     <ion-buttons right >
       <button ion-button icon-only (click)="showOptions()">
         <ion-icon name="md-open"></ion-icon>
@@ -23,10 +23,10 @@
           <ion-card-header>Tableau de bord</ion-card-header>
           <ion-grid  style="height: 100%;justify-content: center;" *ngIf="!loaded">
               <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
-                <ion-spinner   name="dots" class="vertical-center" ></ion-spinner> 
+                <ion-spinner   name="dots" class="vertical-center" ></ion-spinner>
               </ion-row>
-             </ion-grid>   
-              <dashboord-item  [authInfo]="authInfo" [analyse]="analyse" [concours]="concours" *ngIf="concours &&analyse&& loaded" [isShow]="isShow"></dashboord-item>   
+             </ion-grid>
+              <dashboord-item  [authInfo]="authInfo" [analyse]="analyse" [concours]="concours" *ngIf="concours &&analyse&& loaded" [isShow]="isShow"></dashboord-item>
           <ion-card-content *ngIf="!analyse && loaded" >
             <p class="vertical-center" >
            Nous n'avons  aucune information à vous présenter pour le moment car vous n'avez pas encore subi une évaluation.
@@ -34,13 +34,19 @@
           </ion-card-content>
         </div>
         <div>
-         
+
           <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
-        </div>       
+        </div>
 <ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" [@bounce]="bounceState">
   <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
     <ion-icon name="ios-chatboxes-outline"></ion-icon>
     <ion-badge color="blue"id="cart-badge"  notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
   </button>
 </ion-fab>
+  <div class="switch-button" *ngIf="isExpired(abonnement)&&concours" >
+    <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="inscrire()">
+      <ion-icon name="list" color="white"></ion-icon>
+      <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
+    </button>
+  </div>
 </ion-content>

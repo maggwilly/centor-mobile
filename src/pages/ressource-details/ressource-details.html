@@ -64,7 +64,7 @@
     </section>
   </div>
 </ion-content>
-<ion-footer *ngIf="estateProperty">
+<ion-footer *ngIf="estateProperty&&loaded">
   <a ion-button *ngIf="commande&&commande.paid ||!estateProperty.price" large full no-margin color="primary" icon-left [href]="estateProperty.url">
     <ion-icon name="md-download"></ion-icon>
     Telecharger

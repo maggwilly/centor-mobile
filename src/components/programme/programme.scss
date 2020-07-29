@@ -2,38 +2,15 @@ programme {
 ion-item,.mg-round{
     ion-icon{
         color:  #7F7F7F;
-    }  
+    }
 img {
      border-radius: 6px;
         height: 40px;
         width: 40px;
-      } 
+      }
 }
 
     ion-icon{
         color:  #7F7F7F;
-    } 
-         .switch-button {
-            position: fixed;
-            display: block;
-            bottom: -30px;
-            left: 50%;
-            transform: translate3d(-50%, -50%, 0);
-            width: 100%;
-            border-radius: 4px;
-            text-align: center;
-            z-index: 100;
-            opacity: 1;
-            .active {
-                background: #3366CC!important;
-                color: #fff;
-            }
-            .button {
-                width: 86%;
-                border-radius: 4px;
-                height: 56px;
-                margin: 7px;
-                padding: 0;
-            }
-        }
+    }
 }

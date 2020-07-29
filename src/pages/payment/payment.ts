@@ -15,10 +15,12 @@ import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular
 })
 export class PaymentPage {
   paymentdata:any;
+  primarycolor:string='#065c79'
   constructor(public navCtrl: NavController,
               public viewCtrl: ViewController,
               public navParams: NavParams) {
     this.paymentdata= this.navParams.get('paymentdata');
+    console.log(this.paymentdata);
   }
 
   ionViewDidLoad() {}

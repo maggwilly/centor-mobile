@@ -19,9 +19,9 @@ export interface PageInterface {
 export class AboutPage {
   load:boolean=false;
   appPages: PageInterface[] = [
-    { title: 'A propos de centor', link: 'http://abaout.centor.org', icon: 'information-circle' },
-    { title: "Obtenir de l'aide", link: 'http://help.centor.org', icon: 'help-circle' },
-    { title: "Conditions d'utilisation", link: 'http://condition.centor.org', icon: 'ios-clipboard' },
+    { title: 'A propos de centor', link: '#', icon: 'information-circle' },
+    { title: "Obtenir de l'aide", link: '#', icon: 'help-circle' },
+    { title: "Conditions d'utilisation", link: '#', icon: 'ios-clipboard' },
   ];
   authInfo
   ambassador: any
@@ -126,7 +126,7 @@ export class AboutPage {
         {
           text: "Validé",
           handler: data => {
-              this.dataService.editInfo(firebase.auth().currentUser.uid, data).then(data=>{
+              this.dataService.editInfo( data).then(data=>{
               this.ambassador=data;
             },er=>{
                 this.notify.onError({message:"Echec ! Celà peut être dû à une mauvaise connexion inernet ou alors le code de 03 chiffre nùest pas le bon."})

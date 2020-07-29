@@ -1,6 +1,6 @@
-// import { FormBuilder, FormControl, Validator } from '@angular/forms';
-import { Component, ViewChild, ElementRef, Renderer, } from '@angular/core';
-import { AlertController, App, Platform,  LoadingController, Slides, IonicPage,NavParams  } from 'ionic-angular';
+
+import { Component, ViewChild, ElementRef, Renderer,} from '@angular/core';
+import { AlertController, App, Platform,  LoadingController, Slides, IonicPage,NavParams,ViewController  } from 'ionic-angular';
 import { EmailValidator } from '../../validators/email';
 import { FormBuilder, Validators } from '@angular/forms';
 import { RepasswordValidator } from '../../validators/repassword';
@@ -27,10 +27,11 @@ export class LoginSliderPage {
     public loadingCtrl: LoadingController,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
-    public navParams: NavParams, 
-     private facebook: Facebook,
-      public firebaseNative: Firebase,
-    public notify: AppNotify, 
+    public navParams: NavParams,
+    private facebook: Facebook,
+    public viewCtrl: ViewController,
+    public firebaseNative: Firebase,
+    public notify: AppNotify,
     public renderer: Renderer,
     public platform: Platform,
     public appCtrl: App
@@ -52,39 +53,39 @@ export class LoginSliderPage {
 });
 this.firebaseNative.setScreemName('login_page');
    }
-  // Slider methods
- // @ViewChild('slider') slider: Slides;
+
   @ViewChild('innerSlider') innerSlider: Slides;
 
   goToLogin() {
     this.singupStape = false;
     this.loginStape = true;
-   // this.slider.slideTo(0);
+
   }
 
   goToSignup() {
     this.singupStape = true;
     this.loginStape = false;
-    //this.slider.slideTo(1);
+
   }
 
   slideNext() {
     this.innerSlider.update();
-    this.innerSlider.slideTo(1)//.slideNext();
+    this.innerSlider.slideTo(1)
   }
 
   slidePrevious() {
     this.innerSlider.update();
-    this.innerSlider.slideTo(0)//slidePrev();
+    this.innerSlider.slideTo(0)
   }
 
   facebookLogin(){
     this.firebaseNative.logEvent('facebook_signup_start', { signup: false });
-    let provider = new firebase.auth.FacebookAuthProvider(); 
+    let provider = new firebase.auth.FacebookAuthProvider();
    firebase.auth().useDeviceLanguage();
     if (this.platform.is('core'))
       firebase.auth().signInWithRedirect(provider).then((result) => {
-        this.appCtrl.getRootNav().pop();
+        //this.appCtrl.getRootNav().pop();
+        this.dismiss(true);
         this.notify.onSuccess({ message: 'Vous êtes connecté à votre compte' });
       }).catch( (error) =>{
         let alert = this.alertCtrl.create({
@@ -97,13 +98,14 @@ this.firebaseNative.setScreemName('login_page');
           ]
         });
         alert.present();
-      });  
- else 
+      });
+ else
       this.facebook.login(['public_profile', 'email']).then((response) => {
         const facebookCredential = firebase.auth.FacebookAuthProvider.credential(response.authResponse.accessToken);
         firebase.auth().signInWithCredential(facebookCredential)
           .then((success) => {
-            this.appCtrl.getRootNav().pop();
+           // this.appCtrl.getRootNav().pop();
+            this.dismiss(success);
             this.notify.onSuccess({ message: 'Vous êtes connecté à votre compte' });
           })
           .catch((error) => {
@@ -123,9 +125,11 @@ this.firebaseNative.setScreemName('login_page');
       }, (error) => {
         this.notify.onError({ message: 'Petit problème de connexion.' });
       });
-
-
 }
+
+  dismiss(data?: any) {
+    this.viewCtrl.dismiss(data);
+  }
 
   getSignup(){
     this.firebaseNative.logEvent('signup_start', { signup: false });
@@ -136,8 +140,9 @@ this.firebaseNative.setScreemName('login_page');
           let loading = this.loadingCtrl.create({dismissOnPageChange:true});
          firebase.auth().createUserWithEmailAndPassword(this.signupForm.value.email, this.signupForm.value.password)
          .then((newUser) => {
-          //  loading.dismiss();
-            this.appCtrl.getRootNav().pop();
+           loading.dismiss()
+           this.dismiss(newUser);
+            //this.appCtrl.getRootNav().pop();
          }, (error) => {
              loading.dismiss();
                let alert = this.alertCtrl.create({
@@ -163,8 +168,9 @@ this.firebaseNative.setScreemName('login_page');
   let loading = this.loadingCtrl.create({dismissOnPageChange:true});
     firebase.auth().signInWithEmailAndPassword(this.loginForm.value.email, this.loginForm.value.password)
       .then( authData => {
-        //loading.dismiss();
-        this.appCtrl.getRootNav().pop();
+        loading.dismiss()
+        this.dismiss(authData);
+        //this.appCtrl.getRootNav().pop();
       }, error => {
         loading.dismiss()
           let alert = this.alertCtrl.create({
@@ -220,14 +226,14 @@ errorMessage(error:any):string{
 let json=JSON.stringify(error);
 let code=JSON.parse(json).code;
 switch (code) {
-case "auth/wrong-password":  
+case "auth/wrong-password":
   return "Le mot de passe ne correspond pas.";
-case "auth/user-not-found":  
-  return "Ce compte n'a  pas encore été créé.";  
-case "auth/email-already-in-use":  
+case "auth/user-not-found":
+  return "Ce compte n'a  pas encore été créé.";
+case "auth/email-already-in-use":
   return "Cette adresse e-mail est déjà utilisée pour un autre compte.";
- case "auth/network-request-failed":  
-  return "Votre connexion internet est peut-être pertubée.";      
+ case "auth/network-request-failed":
+  return "Votre connexion internet est peut-être pertubée.";
 default:
   return "Un problème est survenu et nous n'avons pas put traiter votre démande.";
 }
