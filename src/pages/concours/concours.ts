@@ -6,6 +6,7 @@ import {AppNotify} from '../../providers/app-notify';
 import firebase from 'firebase';
 import {IonicPage} from 'ionic-angular';
 import {Subject} from "rxjs/Subject";
+import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 
 @IonicPage()
 @Component({
@@ -30,6 +31,7 @@ export class ConcoursPage {
     public loadingCtrl: LoadingController,
     public dataService: DataService,
     public notify: AppNotify,
+    public abonnementProvider:AbonnementProvider,
     public events: Events,
     public platform: Platform,
   ) {
@@ -53,32 +55,24 @@ export class ConcoursPage {
   ionViewDidLoad() {
     this.storage.get('_concours').then((data) => {
       this._concours = data ? data : [];
-      if (!this.platform.is('core'))
         this.loadData();
     }, error => {
-      console.log(error)
+      this.loadData();
     })
   }
-
+  observeAuth() {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.getAbonnement();
+      if (user) {
+        unsubscribe();
+      }
+    });
+  }
   getAbonnement() {
-    this.dataService.checkAbonnementValidity(firebase.auth().currentUser.uid, 0).then(data => {
+    this.abonnementProvider.checkAbonnementValidity(0).then(data => {
       this.abonnement = data;
     }, error => {
       this.notify.onError({message: 'Petit problème de connexion.'});
-    });
-  }
-
-
-  observeAuth() {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.authInfo = user;
-        this.getAbonnement();
-        unsubscribe();
-      } else {
-        this.authInfo = undefined;
-        unsubscribe();
-      }
     });
   }
 
@@ -87,26 +81,7 @@ export class ConcoursPage {
   }
 
   startabonnement() {
-    if (firebase.auth().currentUser)
-      this.openPage('InformationPage');
-    else
-      this.signup()
-  }
-
-  signup() {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      this.zone.run(() => {
-        if (user) {
-          this.authInfo = user;
-          this.getAbonnement();
-          unsubscribe();
-        } else {
-          this.authInfo = undefined;
-          unsubscribe();
-        }
-      });
-    });
-    this.navCtrl.push('LoginSliderPage', {redirectTo: true});
+      this.openPage('InformationPage',{abonnement:this.abonnement});
   }
 
   loadData() {

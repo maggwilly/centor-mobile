@@ -1,18 +1,11 @@
 import { Component, NgZone } from '@angular/core';
-import { App, IonicPage, NavController, NavParams, Platform, LoadingController } from 'ionic-angular';
+import {App, IonicPage, NavController, NavParams, Platform, LoadingController, ModalController} from 'ionic-angular';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { Transfer, TransferObject } from '@ionic-native/transfer';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 import firebase from 'firebase';
-import { DomSanitizer,SafeResourceUrl} from '@angular/platform-browser'
-/**
- * Generated class for the RessourceDetailsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {payGardeConfig} from "../../app/app.apiconfigs";
+import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 declare var cordova: any;
 
 @IonicPage()
@@ -24,146 +17,83 @@ export class RessourceDetailsPage {
   storageDirectory: string = '';
   ch: any;
   bg: boolean = true;
-  id;
-  loaded
+  id: any;
+  loaded:any;
   estateProperty: any = {}
-  showMenu
-  pageurl:SafeResourceUrl;
+  showMenu:any;
   zone: NgZone;
+  commande: any;
   page:number = 1;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public dataService: DataService,
-    private iab: InAppBrowser,
     public appCtrl: App,
     public notify: AppNotify,
     public platform: Platform,
-    private transfer: Transfer,
+    public modalCtrl: ModalController,
     public firebaseNative: Firebase,
     public loadingCtrl: LoadingController,
-    private domSanitizer:DomSanitizer
+    public abonnementProvider:AbonnementProvider
   ) {
     this.zone = new NgZone({});
     this.showMenu = this.navParams.get('showMenu');
-    //this.firebaseNative.setScreemName('document_view');
-  }
 
+  }
 
   ionViewWillLeave() {
     if (this.ch)
       this.ch.unsubscribe();
   }
 
-  observeAuth() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.id = this.navParams.get('ressource_id');
-        this.dataService.getOneRessource(this.id).then(data => {
-          this.estateProperty = data ? data : {};
-          this.loaded = true;
-        }, error => {
-          this.notify.onError({ message: 'Petit problème de connexion.' });
-        })
-      } else
-        this.signup();
+  ionViewDidLoad() {
+    this.firebaseNative.setScreemName('document_view');
+    this.id = this.navParams.get('ressource_id');
+    this.dataService.getOneRessource(this.id).then(data => {
+      this.estateProperty = data ? data : {};
+      this.loaded = true;
+    }, error => {
+      this.notify.onError({ message: 'Petit problème de connexion.' });
     })
   }
-  signup() {
+
+  startCommande() {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
-          this.id = this.navParams.get('ressource_id');
-          this.dataService.getOneRessource(this.id).then(data => {
-            this.estateProperty = data ? data : {};
-            this.loaded = true;
+          this.abonnementProvider.startCommande(this.estateProperty.id, 'ressource').then(data => {
+            this.commande = data;
+            console.log(this.commande);
+            if(!data.amount)
+              return ;
+            this.firebaseNative.logEvent(`cmd_started_event`,{bundle:'ressource', amount:this.estateProperty.price});
+            return this.confirm();
           }, error => {
-            this.notify.onError({ message: 'Petit problème de connexion.' });
+            this.notify.onError({message: 'Problème de connexion.'});
           })
           unsubscribe();
-        } else {
-          unsubscribe();
+          return;
         }
+        this.appCtrl.getRootNav().push('LoginSliderPage', { redirectTo: true });
       });
     });
-    this.appCtrl.getRootNav().push('LoginSliderPage', { redirectTo: true });
-  }
-
-  ionViewDidLoad() {
-    if (this.navParams.get('ressource')) {
-      this.estateProperty = this.navParams.get('ressource');
-      this.id = this.estateProperty.id;
-      this.loaded = true;
-      this.dataService.getOneRessource(this.id).then(data => {
-        this.estateProperty = data ? data : {};
-        this.loaded = true;
-      }, error => {
-        this.notify.onError({ message: 'Petit problème de connexion.' });
-      })
-    } else
-      this.observeAuth();
 
   }
 
-  telecharger() {
-    this.iab.create(this.estateProperty.paymentUrl);
-    this.ch = this.dataService.getRessourceObservable(this.estateProperty.id, this.estateProperty.paymentUrl).subscribe(data => {
-      this.estateProperty = data.json();
-      if (!this.estateProperty.paymentUrl) {
-        this.notify.onSuccess({ message: "Cliquez pour télécharger votre fichier", position: 'top' });
-        this.ch.unsubscribe();
-      }
-    }, error => {
-      this.notify.onError({ message: 'Problème de connexion.' });
-      this.ch.unsubscribe();
+
+  confirm() {
+    let paymentdata: any ={
+      serviceid: payGardeConfig.serviceId,
+      apikey:payGardeConfig.apiKey,
+      orderid: this.commande.order_id,
+      amount: this.commande.amount,
+      payereremail: firebase.auth().currentUser?firebase.auth().currentUser.email:null
+    }
+    let modal=  this.modalCtrl.create('PaymentPage',{paymentdata:paymentdata} );
+    modal.onDidDismiss((data, role)=>{
+       this.commande.paid=(data&&data.status=='PAID');
     })
-  }
-
-  downloadFile() {
-    this.platform.ready().then(() => {
-      if (!this.platform.is('cordova')) {
-        return false;
-      }
-
-      if (this.platform.is('ios')) {
-        this.storageDirectory = cordova.file.documentsDirectory;
-      }
-      else if (this.platform.is('android') || this.platform.is('core')) {
-        this.storageDirectory = cordova.file.dataDirectory;
-      }
-      else {
-        // exit otherwise, but you could add further types here e.g. Windows
-        return false;
-      }
-      const fileTransfer: TransferObject = this.transfer.create();
-      const imageLocation = this.estateProperty.url;
-      let loader = this.loadingCtrl.create({
-        dismissOnPageChange: true,
-        content: 'Téléchargement...'
-      });
-
-      fileTransfer.download(imageLocation, this.storageDirectory + this.estateProperty.nom).then((entry) => {
-        loader.dismiss();
-        this.notify.onSuccess({ message: "Téléchargement terminé", position: 'top' });
-      }, (error) => {
-        loader.dismiss();
-        this.notify.onSuccess({ message: "Le fichier n'a pas put être téléchargé", position: 'top' });
-      });
-      loader.present();
-    });
-  }
-  help() {
-    this.notify.onSuccess(
-      {
-        message: `Obtenez le CODE DE PAIMENT de 06 chiffrespar SMS en composant le #150*4*4*CODE_SECRET_Orange_Money#.`,
-        duration: 120000,
-        dismissOnPageChange: true,
-        showCloseButton: true,
-        closeButtonText: 'ok',
-        position:'top',
-        cssClass: 'flash-message'
-      }
-    );
+    modal.present();
   }
 
 }

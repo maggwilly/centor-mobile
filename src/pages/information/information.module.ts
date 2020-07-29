@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule} from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { InformationPage } from './information';
 import { InAppBrowser } from '@ionic-native/in-app-browser';

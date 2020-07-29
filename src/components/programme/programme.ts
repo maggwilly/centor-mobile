@@ -2,13 +2,8 @@ import { Component, Input, NgZone, trigger, state, style, transition, animate, k
 import { NavController,App, NavParams ,ModalController, AlertController,Events } from 'ionic-angular';
 import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
-import firebase from 'firebase';
 import { FcmProvider } from '../../providers/fcm/fcm';
-/*
-  Generated class for the Programme component.
-  See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
-  for more info on Angular 2 Components.
-*/
+
 @Component({
   selector: 'programme',
   templateUrl: 'programme.html',
@@ -99,9 +94,7 @@ export class ProgrammeComponent {
    matiereLoaded:any;
   @Input()
   abonnementLoaded:any;
-  abonnementExpired: any;
   zone:NgZone;
-  buttonToHide: HTMLElement;
   flipState: String = 'notFlipped';
   flyInOutState: String = 'in';
   fadeState: String = 'visible';
@@ -122,15 +115,18 @@ export class ProgrammeComponent {
 
   }
 
-
-
-inscrire() {
-  let modal=  this.modalCtrl.create('FinalisePage',{abonnement:this.abonnement,concours:this.concours})  ;
-   modal.onDidDismiss((data)=>{
-     this.checkAbonnement();
-     });
-   modal.present();
- }
+  inscrire() {
+    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
+     modal.onDidDismiss((data, role)=>{
+      if(data&&data.status=='PAID'){
+      this.fcm.listenTopic('centor-group-' + this.concours.id);
+      this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
+      this.alert=true;
+      this.events.publish('payement:success', this.abonnement);
+      }
+    })
+    modal.present();
+  }
 
  isExpired(abonnement:any){
    if(!abonnement)
@@ -140,24 +136,6 @@ inscrire() {
    return now>endDate;
    }
 
-  checkAbonnement() {
-    this.abonnementExpired = this.isExpired(this.abonnement)
-    const ch=this.dataService.getAbonnementObservable( this.concours.id).subscribe(data => {
-      this.abonnement = data.json();
-      this.abonnementLoaded = true;
-      if (this.abonnementExpired && !this.isExpired(this.abonnement) && !this.alert){
-        this.fcm.listenTopic('centor-group-' + this.concours.id);
-         this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
-         this.alert=true;
-        this.events.publish('payement:success', this.abonnement);
-         ch.unsubscribe();
-      }
-      //   console.log(data.json());
-    }, error => {
-      this.notify.onError({ message: 'Problème de connexion.' });
-    });
-
-  }
 getClass(obj:any):string{
   if(!obj||obj.objectif==undefined)
    return 'none';
@@ -201,44 +179,24 @@ getClass(obj:any):string{
     }, 2000);
 
   }
-show(matiere:any){
-  if(!this.abonnementLoaded&&this.authInfo){
+ show(matiere:any){
+  if(!this.abonnementLoaded){
   this.notify.onError({message:'Patientez un instant pendant que les données chargent...'});
        return;
       }
     matiere.concours=this.concours;
-   if(this.authInfo&&this.isExpired(this.abonnement)){
+   if(this.isExpired(this.abonnement)){
          this.inscrire();
       return ;
-   }else if(!this.authInfo) {
-        this.signup();
    }else
      this.appCtrl.getRootNav().push('MatiereDetailsPage',{matiere:matiere});
  }
+
   openRessources(){
-    if (!this.authInfo) {
-      this.signup();
-    } else
       this.appCtrl.getRootNav().push('RessourcesPage', { concours: this.concours });
   }
 
  openModal(pageName,arg?:any) {
   this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' }).present();
 }
-
-  signup() {
-      const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-        this.zone.run(() => {
-          if (user) {
-            this.authInfo = user;
-            this.notify.onSuccess({ message: "Vous êtes connecté à votre compte." });
-            unsubscribe();
-          } else {
-            this.authInfo = undefined;
-            unsubscribe();
-          }
-        });
-      });
-    this.appCtrl.getRootNav().push('LoginSliderPage', { redirectTo: true });
-  }
 }

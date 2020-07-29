@@ -1,83 +1,81 @@
-<ion-header no-border  #head>
+<ion-header no-border #head>
   <ion-navbar>
-  <button menuToggle ion-button icon-only *ngIf="showMenu">
-    <ion-icon name="menu"></ion-icon>
-  </button>
+    <button menuToggle ion-button icon-only *ngIf="showMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title>
       {{estateProperty.nom}}
     </ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content fullscreen elestic-header class="bg-white" >
-    <ion-grid style="height:100%;justify-content: center;" *ngIf="!loaded">
-            <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
-              <ion-spinner name="ios" class="vertical-center"></ion-spinner>
-            </ion-row>
-    </ion-grid>
+<ion-content fullscreen elestic-header class="bg-white">
+  <ion-grid style="height:100%;justify-content: center;" *ngIf="!loaded">
+    <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
+      <ion-spinner name="ios" class="vertical-center"></ion-spinner>
+    </ion-row>
+  </ion-grid>
   <div *ngIf="loaded">
-<section class="housing-image" [ngStyle]="{ 'background-image': 'url(' + estateProperty.imageUrl + ')'}"  *ngIf="estateProperty">
-    <section class="housing-banner" >
-      <span class="housing-title">{{estateProperty.nom}}</span>
-      <span class="price" *ngIf="estateProperty.price">{{estateProperty.price}}<sup>Fcfa</sup></span>
-      <span class="price" *ngIf="!estateProperty.price">GRATUIT</span>
+    <section class="housing-image" [ngStyle]="{ 'background-image': 'url(' + estateProperty.imageUrl + ')'}"
+             *ngIf="estateProperty">
+      <section class="housing-banner">
+        <span class="housing-title">{{estateProperty.nom}}</span>
+        <span class="price" *ngIf="estateProperty.price">{{estateProperty.price}}<sup>Fcfa</sup></span>
+        <span class="price" *ngIf="!estateProperty.price">GRATUIT</span>
+      </section>
     </section>
-  </section>
-  <section class="main-content" *ngIf="estateProperty">
-    <ion-grid class="listing-details">
-      <ion-row>
-        <p margin-left margin-right no-margin-top style="text-align: justify">
-          {{estateProperty.description}}
-        </p>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-icon name="home"></ion-icon>{{estateProperty.style}}
-        </ion-col>
-        <ion-col>
-          <ion-icon name="pin"></ion-icon>{{estateProperty.size}}
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="estateProperty.detail1">
-        <ion-col>
-          {{estateProperty.detail1}}
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="estateProperty.detail2">
-        <ion-col>
-          {{estateProperty.detail2}}
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="estateProperty.detail3">
-        <ion-col>
-          {{estateProperty.detail3}}
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="estateProperty.detail4">
-        <ion-col>
-          {{estateProperty.detail4}}
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </section>
+    <section class="main-content" *ngIf="estateProperty">
+      <ion-grid class="listing-details">
+        <ion-row>
+          <p margin-left margin-right no-margin-top style="text-align: justify">
+            {{estateProperty.description}}
+          </p>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="home"></ion-icon>
+            {{estateProperty.style}}
+          </ion-col>
+          <ion-col>
+            <ion-icon name="pin"></ion-icon>
+            {{estateProperty.size}}
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="estateProperty.detail1">
+          <ion-col>
+            {{estateProperty.detail1}}
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="estateProperty.detail2">
+          <ion-col>
+            {{estateProperty.detail2}}
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="estateProperty.detail3">
+          <ion-col>
+            {{estateProperty.detail3}}
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="estateProperty.detail4">
+          <ion-col>
+            {{estateProperty.detail4}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </section>
   </div>
-<ion-fab top left #fab [hidden]="!(estateProperty.price&&estateProperty.paymentUrl)">
-  <button ion-fab mini color="orange" (click)="help()">
-    <ion-icon name="md-help"></ion-icon>
-  </button>
-</ion-fab>
 </ion-content>
-<ion-footer>
-  <a ion-button *ngIf="(!estateProperty.price||!estateProperty.paymentUrl)&&estateProperty.url"  large full no-margin color="primary" icon-left [href]="estateProperty.url">
+<ion-footer *ngIf="estateProperty">
+  <a ion-button *ngIf="commande&&commande.paid ||!estateProperty.price" large full no-margin color="primary" icon-left [href]="estateProperty.url">
     <ion-icon name="md-download"></ion-icon>
     Telecharger
   </a>
-  <button *ngIf="estateProperty.price&&estateProperty.paymentUrl" ion-button large full no-margin icon-left color="orange" (click)="telecharger()">
+  <button *ngIf="(commande&&!commande.paid||!commande)&&estateProperty.price " ion-button large full no-margin icon-left color="orange" (click)="startCommande() ">
     <ion-icon name="md-open"></ion-icon>
     Obtenir le document
   </button>
-          <ion-grid style="height: 56px;justify-content: center;" *ngIf="!estateProperty.url">
-            <ion-row justify-content-center align-items-center style="height: 56px;justify-content: center;">
-              <ion-spinner name="dots" class="vertical-center"></ion-spinner>
-            </ion-row>
-          </ion-grid>
+  <ion-grid style="height: 56px;justify-content: center;" *ngIf="!estateProperty.url">
+    <ion-row justify-content-center align-items-center style="height: 56px;justify-content: center;">
+      <ion-spinner name="dots" class="vertical-center"></ion-spinner>
+    </ion-row>
+  </ion-grid>
 </ion-footer>

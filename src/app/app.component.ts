@@ -12,6 +12,7 @@ import { FcmProvider } from '../providers/fcm/fcm';
 import { Deeplinks } from '@ionic-native/deeplinks';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import 'rxjs/add/operator/take';
+import {AbonnementProvider} from "../providers/abonnement/abonnement";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
@@ -59,6 +60,7 @@ export class MyApp {
   constructor(public platform: Platform,
     public menu: MenuController,
     public dataService: DataService,
+    public abonnementProvider:AbonnementProvider,
     public notify: AppNotify,
     private fcm: FcmProvider,
     public af: AngularFireDatabase,
@@ -91,7 +93,7 @@ export class MyApp {
   }
 
   getAbonnement() {
-    this.dataService.checkAbonnementValidity(firebase.auth().currentUser.uid, 0).then(data => {
+    this.abonnementProvider.checkAbonnementValidity( 0).then(data => {
       this.abonnement = data;
     }, error => {
       this.notify.onError({ message: 'Petit problème de connexion.' });
@@ -347,7 +349,7 @@ checkInfo(info:any){
   loadAbonnement() {
     this.storage.get('_abonnements').then((dtata)=>{
       this.paidConcours = dtata ? dtata : [];
-    this.dataService.getAbonnementsObservable().subscribe(data => {
+    this.abonnementProvider.getAbonnementsObservable().subscribe(data => {
       this.paidConcours = data ? data : [];
       this.storage.set('_abonnements', data);
     }, error => {

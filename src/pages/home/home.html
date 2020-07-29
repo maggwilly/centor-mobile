@@ -23,7 +23,7 @@
         <ion-icon name="ios-notifications" item-left [@flip]="flipState" *ngIf="abonnementLoaded||!authInfo"></ion-icon>
         <ion-spinner item-left color="white" name="ios" *ngIf="!abonnementLoaded&&authInfo"></ion-spinner>
         <h2>Abonnez-vous maintenant</h2>
-        <p>Recevez des alertes sur les concours et les bourses d'étude pendant 1 an.</p>
+        <p>Recevez des alertes sur les concours et les bourses d'étude.</p>
       </button>
       <a ion-item no-lines text-wrap class="inform" *ngIf="!isExpired(abonnement)&&abonnementLoaded"
          href="https://api.whatsapp.com/send?phone=237655874410&text=Salut%20Mr%2FMme%20!%0D%0AJe%20suis%20le%20candidat%20N%C2%B0%20{{abonnement.id}}%0D%0AJe%20voudrais%20plus%20d%27information%20%C3%A0%20propos%20de">

@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Selections</ion-title>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="dismiss()" showWhen="android,windows,core">
+        <ion-icon name="md-close" ></ion-icon>
+      </button>
+      <button ion-button icon-left icon-only (click)="dismiss()" showWhen="ios">
+        <span  ><ion-icon name="ios-arrow-back" ></ion-icon>Back</span>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content >
+  <ion-slides #innerSlider style="height:85%;width:100%">
+    <ion-slide >
+      <ion-list *ngIf="price" >
+  <ion-item text-wrap class="starter" (click)="slideNext('starter')">
+    <span>STARTER</span>
+    <h2>{{price.starterDelay}} jours </h2>
+    <p>{{price.starterDesc}}</p>
+    <ion-note item-right *ngIf="!price.starter">GRATUIT</ion-note>
+    <ion-note item-right *ngIf="price.starter">{{price.starter}} XAF</ion-note>
+  </ion-item>
+  <ion-item  text-wrap class="standard" (click)="slideNext('standard')">
+    <span>STANDARD</span>
+    <h2>{{price.standardDelay}} jours</h2>
+    <p>{{price.standardDesc}}</p>
+    <ion-note item-right *ngIf="!price.standard">GRATUIT</ion-note>
+    <ion-note item-right *ngIf="price.standard">{{price.standard}} XAF</ion-note>
+  </ion-item>
+  <ion-item  text-wrap class="premium" (click)="slideNext('premium')">
+    <span>PREMIUM</span>
+    <h2>{{price.premiumDelay}} jours</h2>
+    <p>{{price.premiumDesc}}</p>
+    <ion-note item-right *ngIf="!price.premium">GRATUIT</ion-note>
+    <ion-note item-right *ngIf="price.premium">{{price.premium}} XAF</ion-note>
+  </ion-item>
+  </ion-list>
+    </ion-slide>
+    <ion-slide >
+      <button ion-button  clear (click)="slidePrevious()" color="light" class="goback-button"><ion-icon name="arrow-back"></ion-icon> Forfaits</button>
+      <ion-grid [hidden]="commande" style="height: 100%;justify-content: center;">
+        <ion-row justify-content-center align-items-center>
+          <ion-spinner  name="ios"></ion-spinner>
+        </ion-row>
+      </ion-grid>
+      <div *ngIf="commande" style="height: auto;" padding >
+           <h2>Validation </h2>
+           <p>Cliquez pour finaliser votre selection. </p>
+          <ion-note item-right *ngIf="!commande.amount">GRATUIT</ion-note>
+          <ion-note item-right *ngIf="commande.amount"><strong>{{commande.amount}} XAF</strong></ion-note>
+          <br>
+          <br>
+          <button ion-button block color="primary" (click)="confirmCommende()">
+            <span *ngIf="commande.amount"> Effectuer le paiement</span>
+            <span *ngIf="!commande.amount"> Valider la selection</span>
+          </button>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

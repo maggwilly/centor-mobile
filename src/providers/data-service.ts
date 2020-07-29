@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {  Http ,  Headers } from '@angular/http';
+import {  Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/mergeMap';
@@ -196,60 +196,10 @@ getQuestions(qcm:number){
   }
 
 
-  getRessourceObservable(id: number, paymentUrl:any) {
-    return IntervalObservable
-      .create(1000)
-      .flatMap((i) => this.http.get(this._baseUrl + 'formated/ressource/' + id + '/show/json' + '?uid=' + this.getUserUID() + '&paymentUrl=' + paymentUrl, { headers: this.headers }));
-  }
-
-
-
-  getAbonnementsObservable() {
-    return this.http.get(apiConfig.baseUrl  + 'formated/abonnement/' + this.getUserUID() + '/json' + '?uid=' + this.getUserUID(), { headers: this.headers })
+  getRessourceObservable(id: number) {
+    return this.http.get(this._baseUrl + 'formated/ressource/' + id + '/show/json' + '?uid=' + this.getUserUID(), { headers: this.headers })
       .map(response => response.json());
   }
-
-  getAbonnementObservable(id: number) {
-    return IntervalObservable
-      .create(1000)
-      .flatMap((i) => this.http.get(this._baseUrl + 'formated/abonnement/' + this.getUserUID() + '/' + id + '/json', { headers: this.headers }));
-  }
-
-  getAbonnementDetails(id: number) {
-    return IntervalObservable
-      .create(1000)
-      .flatMap((i) => this.http.get(this._baseUrl + 'formated/abonnement/' + id + '/show/one/json', { headers: this.headers }));
-  }
-
-
-checkAbonnementValidity(uid:any, id:number){
-  return this.http.get(apiConfig.baseUrl  + 'formated/abonnement/' + uid + '/' + id + '/json?uid=' + this.getUserUID(),  { headers:this. headers })
-              .toPromise()
-               .then(response =>response.json());
-
-}
-
-
-
- startCommande(uid:any,sessionid:any,bundle:any){
-    return  this.http.get(apiConfig.baseUrl +'formated/commende/'+uid+'/'+sessionid+'/'+bundle+'/json', { headers:this. headers })
-             .toPromise()
-              .then(response =>response.json());
-}
-
-
- cancelCommande(id:any){
-   return  this.http.delete(apiConfig.baseUrl +'formated/commende/'+id+'/cancel/json', { headers:this. headers })
-            .toPromise()
-             .then(response =>response.json());
-}
-
-confirmFreeCommende(id:any, status:any){
-  return  this.http.post(apiConfig.baseUrl +'formated/commende/'+id+'/confirm/json',JSON.stringify(status ), { headers:this. headers })
-           .toPromise()
-            .then(response =>response.json());
-}
-
 
  /*Recherche la date de derniere mise a jour*/
  suivreSession(id:any,uid:any,status?:any){

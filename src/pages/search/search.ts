@@ -98,6 +98,6 @@ export class SearchPage {
   }
 
   openArticle(article: any) {
-    this.navCtrl.push('ArticleDetailsPage', {notification_id: article.id});
+    this.appCtrl.getRootNav().push('ArticleDetailsPage', {notification_id: article.id});
   }
 }

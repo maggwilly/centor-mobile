@@ -7,12 +7,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { firebaseConfig} from './app.firebaseconfig';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
-//import { AngularFireAuthModule } from 'angularfire2/auth';
-import { ImageCacheProvider } from '../providers/image-cache/image-cache';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { TooltipsModule } from 'ionic-tooltips';
 import { FcmProvider } from '../providers/fcm/fcm';
 import { AbonnementProvider } from '../providers/abonnement/abonnement';
+
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -28,7 +29,6 @@ import { AbonnementProvider } from '../providers/abonnement/abonnement';
       pageTransition: 'ios-transition'
     }),
     AngularFireModule.initializeApp(firebaseConfig),
-  //  AngularFireAuthModule,
     AngularFireDatabaseModule,
     MODULES,
     BrowserAnimationsModule,
@@ -41,8 +41,6 @@ import { AbonnementProvider } from '../providers/abonnement/abonnement';
     MyApp,
   ],
   providers: [MAINPROVIDERS, { provide: ErrorHandler, useClass: IonicErrorHandler },
-    ImageCacheProvider,
-    ImageCacheProvider,
     FcmProvider,
     AbonnementProvider]
 })
