@@ -2,7 +2,6 @@ import { Component, Input, NgZone, trigger, state, style, transition, animate, k
 import { NavController,App, NavParams ,ModalController, AlertController,Events } from 'ionic-angular';
 import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
-import { FcmProvider } from '../../providers/fcm/fcm';
 
 @Component({
   selector: 'programme',

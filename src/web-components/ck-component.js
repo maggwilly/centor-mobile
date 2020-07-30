@@ -53,9 +53,9 @@ const portal_api_base_url = "http://api.paygarde.com";
         serviceid: this.serviceid,
         orderid: this.orderid,
         amount: this.amount,
-        lang: this.lang || 'EN',
-        currency: this.currency || 'XAF',
-        country: this.country || 'XAF',
+        lang: (this.lang || 'EN').slice(0,2).toUpperCase(),
+        currency: (this.currency || 'XAF').toUpperCase(),
+        country: (this.country || 'CM').slice(0,2).toUpperCase(),
         acceptpartialpayment: this.acceptmultipayment,
         payerphone: this.payerphone,
         payeremail: this.payeremail,
@@ -64,6 +64,8 @@ const portal_api_base_url = "http://api.paygarde.com";
         collectpayergeneratlinfo: this.collectpayergeneratlinfo || false,
       };
     }
+
+
     attributeChangedCallback(name, oldValue, newValue) {
       let self=this;
       if (this.isDataValide()&&!this.hasAttribute('isloading')){

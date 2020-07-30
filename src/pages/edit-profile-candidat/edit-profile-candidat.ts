@@ -1,11 +1,9 @@
 import { Component, NgZone  } from '@angular/core';
 import {Events, NavController, App,   NavParams ,ViewController,ActionSheetController,LoadingController,AlertController} from 'ionic-angular';
-//import { Camera, CameraOptions } from '@ionic-native/camera';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import firebase from 'firebase';
 import { Storage } from '@ionic/storage';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { IonicPage } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 import { ImghandlerProvider } from '../../providers/imghandler/imghandler';

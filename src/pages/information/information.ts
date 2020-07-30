@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {IonicPage, NavController,ModalController, NavParams, ViewController} from 'ionic-angular';
 import {AppNotify} from '../../providers/app-notify';
 import {DataService} from '../../providers/data-service';
-import firebase from 'firebase';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 
 @IonicPage()
