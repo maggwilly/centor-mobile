@@ -38,7 +38,7 @@
 <div *ngIf="allgroupmsgs&&allgroupmsgs.length">
   <ion-item *ngIf="(!sendToAdmin&&!meingroup)&&!isExpired(abonnement)" class="send-message" text-wrap no-border>
     <ion-icon name="person" item-left></ion-icon>
-    <p>Vous ne pouvez plus échanger dans cette discussion car vous avez quitté le groupe.</p>
+    <p>Vous ne pouvez pas échanger dans cette discussion.</p>
   </ion-item>
   <ion-item *ngIf="(sendToAdmin||!meingroup)&&isExpired(abonnement)" class="send-message" text-wrap>
     <ion-icon name="ios-alert" color="danger" item-left></ion-icon>
@@ -132,19 +132,17 @@
                   <img src="assets/images/file-image.png">
                 </ion-avatar>
               </ion-col>
-              <ion-col col-8><h4>{{item.message.ressource.nom}}</h4></ion-col>          
+              <ion-col col-8><h4>{{item.message.ressource.nom}}</h4></ion-col>
             </ion-row>
             <div *ngIf="item.message.ressource" text-wrap no-lines>
               <p>{{item.message.ressource.description}}</p>
             </div>
             <div *ngIf="item.message.ressource" ion-item no-lines class="view">
-                            <strong *ngIf="item.message.ressource.price" item-left>{{item.message.ressource.price}}
-                              <sup>Fcfa</sup>
-                            </strong>
+                 <strong *ngIf="item.message.ressource.price" item-left>{{item.message.ressource.price}} <sup>Fcfa</sup></strong>
             <button small ion-button color="primary" outline (click)="openRessource(item.message.ressource)" item-right icon-left>
               <ion-icon name="md-download"></ion-icon>
               Télécharger
-            </button>            
+            </button>
           </div>
           </ion-list>
           <p *ngIf="item.message&&item.message.ref">
@@ -176,9 +174,8 @@
       <div *ngIf="item&&item.sentby===alignuid" >
         <img class="profile-pic right"  [src]="item.photoURL" image-cache/>
         <div class="chat-bubble right slide-right">
-         <a  *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl" >
-            <img   [src]="item.message.fileurl" (onLoad)="onImageLoad($event)"
-             *ngIf="!item.pending&&item.message&&item.message.type=='image'"  class="message-img" image-cache>
+         <a  *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl">
+            <img   [src]="item.message.fileurl" (onLoad)="onImageLoad($event)" *ngIf="!item.pending&&item.message&&item.message.type=='image'"  class="message-img" image-cache>
           </a>
           <img  [src]="secureUrl(item.message.fileurl)" *ngIf="item.pending&&item.message&&item.message.type=='image'" class="message-img">
           <question-view *ngIf="item.message&&item.message.type=='question'" [question]="item.message.question"></question-view>
@@ -247,7 +244,7 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer no-border [style.height]="footerHeight()">
+<ion-footer  [style.height]="footerHeight()">
   <ion-item class="file-preview" *ngIf="fileurl">
     <ion-thumbnail item-left *ngIf="mesagetype=='image'">
       <img [src]="_DomSanitizer.bypassSecurityTrustUrl(fileurl)">
@@ -274,12 +271,11 @@
         </button>
       </ion-col>
       <ion-col col-8>
-        <ion-textarea #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()"
-          autosize>
+        <ion-textarea cols="50" #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()" class="text-mesg" (resized)="onResized($event)" autosize>
         </ion-textarea>
       </ion-col>
       <ion-col col-2>
-        <button ion-button clear icon-only item-right (click)="addgroupmsg()" [hidden]="(!newmessage&&!fileurl)" [disabled]="!sendToAdmin&&!meingroup">
+        <button ion-button clear icon-only item-right (click)="addgroupmsg()" [hidden]="(!newmessage&&!fileurl)">
           <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
         </button>
         <button ion-button clear icon-only item-right (click)="presentSheetSendFile()" [hidden]="!(!newmessage&&!fileurl)">

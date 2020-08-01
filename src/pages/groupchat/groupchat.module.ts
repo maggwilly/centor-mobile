@@ -7,23 +7,25 @@ import { QuestionViewComponent } from '../../components/question-view/question-v
 import { SharedDirectivesModule } from '../../app/shared.module';
 import { SharedProvidersModule} from '../../app/shared.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import {AutosizeModule} from 'ngx-autosize';
 @NgModule({
   declarations: [
     GroupchatPage,
-    QuestionViewComponent, 
+    QuestionViewComponent,
   ],
   imports: [
     IonicPageModule.forChild(GroupchatPage),
     SharedDirectivesModule,
     SharedProvidersModule,
     EmojiPickerComponentModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    AutosizeModule
   ],
   exports: [
     GroupchatPage
   ],
   entryComponents: [QuestionViewComponent],
-  
+
   providers: [
     EmojiProvider
   ]

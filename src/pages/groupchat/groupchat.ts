@@ -13,19 +13,13 @@ import { Storage } from '@ionic/storage';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
-/**
- * Generated class for the GroupchatPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+
 @IonicPage()
 @Component({
   selector: 'page-groupchat',
   templateUrl: 'groupchat.html',
 })
 export class GroupchatPage {
- // @ViewChild('content') content: Content;
   @ViewChild(Content) content: Content;
   @ViewChild('chat_input') messageInput: TextInput;
   groupBg = 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/grouppic%2Fchat.jpg?alt=media&token=0cdae16c-2625-43fe-b370-bee39adc55f7'
@@ -53,6 +47,7 @@ export class GroupchatPage {
   showInfinite=false;
   toUser:any;
   showMenu;
+  textZise:any;
   zone: NgZone;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -225,9 +220,6 @@ export class GroupchatPage {
       });
   }
 
-
-
-
   openGroupeSetting() {
     this.navCtrl.push('GroupinfoPage', { groupName: this.groupName, meingroup: this.meingroup  });
 
@@ -333,9 +325,12 @@ footerHeight(){
     baseHeight=baseHeight+200;
   if (this.fileurl)
     baseHeight = baseHeight + 100;
+  baseHeight+=this.textZise;
   return baseHeight+'px';
 }
-
+  onResized($event){
+    this.textZise=$event;
+  }
   presentSheet(msg: any){
 
     let sheet = this.actionSheet.create({

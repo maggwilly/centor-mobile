@@ -66,9 +66,10 @@ const portal_api_base_url = "http://api.paygarde.com";
     }
 
 
-    attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback(name, oldValue, newValue){
       let self=this;
-      if (this.isDataValide()&&!this.hasAttribute('isloading')){
+      if (this.hasAttributs()&&!this.hasAttribute('isloading')){
+        setTimeout(()=>{
         this.setAttribute('isloading', true);
         const apikey= this.apikey;
         const ckout_data = this.getCkoutData();
@@ -95,10 +96,11 @@ const portal_api_base_url = "http://api.paygarde.com";
             self.dispatchEvent(self.onFrameError);
           })
         })();
+      },50);
       }
     }
 
-    isDataValide(){
+    hasAttributs(){
       return this.hasAttribute('apikey')&&
         this.hasAttribute('serviceid')&&
         this.hasAttribute('orderid')&&
@@ -115,6 +117,7 @@ const portal_api_base_url = "http://api.paygarde.com";
       let self=this;
       (function () {
         function handlerEvent($message) {
+          console.log($message)
           switch ($message.data.event) {
             case 'OnPaymentStart': {
               self.onPaymentStart.detail.data=$message.data.body;

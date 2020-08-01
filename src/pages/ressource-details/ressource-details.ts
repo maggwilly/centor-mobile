@@ -97,7 +97,8 @@ export class RessourceDetailsPage {
       apikey:payGardeConfig.apiKey,
       orderid: this.commande.order_id,
       amount: this.commande.amount,
-      payeremail: firebase.auth().currentUser.email?firebase.auth().currentUser.email : this.commande.info.email,
+      currency: 'XAF',
+      payeremail: firebase.auth().currentUser.email || this.commande.info.email,
       payerphone:  this.commande.info.phone
     }
     let modal=  this.modalCtrl.create('PaymentPage',{paymentdata:paymentdata} );

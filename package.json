@@ -76,6 +76,7 @@
     "morgan": "^1.9.0",
     "ng-lazyload-image": "^3.4.2",
     "ng2-pdf-viewer": "^3.0.8",
+    "ngx-autosize": "^1.8.0",
     "remove": "^0.1.5",
     "rxjs": "^5.4.0",
     "sw-toolbox": "3.6.0",

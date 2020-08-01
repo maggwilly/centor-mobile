@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController,ModalController, NavParams, ViewController} from 'ionic-angular';
+import {Events,IonicPage, NavController,ModalController, NavParams, ViewController} from 'ionic-angular';
 import {AppNotify} from '../../providers/app-notify';
 import {DataService} from '../../providers/data-service';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
@@ -19,6 +19,7 @@ export class InformationPage {
     public notify: AppNotify,
     public viewCtrl: ViewController,
     public modalCtrl: ModalController,
+    public events: Events,
     public abonnementProvider:AbonnementProvider,
     public dataService: DataService,) {
     this.abonnement= this.navParams.get('abonnement');
@@ -37,7 +38,10 @@ export class InformationPage {
     if (this.ch)
       this.ch.unsubscribe();
   }
-
+  listenToEvents() {
+    this.events.subscribe('payement', data=>{
+      this.handlePayementEvent(data);
+    })}
 
   dismiss(data?: any) {
     this.viewCtrl.dismiss(data);
@@ -53,16 +57,23 @@ export class InformationPage {
 
   processPayment() {
   let modal=  this.modalCtrl.create('PricesPage',{price: this.price, product:0} );
-    modal.onDidDismiss((data, role)=>{
-
-    })
+    modal.onDidDismiss((data, role)=>{})
     modal.present();
   }
 
+  getAbonnement() {
+    this.abonnementProvider.checkAbonnementValidity(0).then(data => {
+      this.abonnement = data;
+    }, error => {
+      this.notify.onError({message: 'Petit problème de connexion.'});
+    });
+  }
 
-  zerofill(arg: String): string {
-    if (!arg)
-      return '';
-    return '';
+  private handlePayementEvent(data) {
+    if (data && data.status == 'PAID') {
+      this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
+      this.getAbonnement();
+      this.events.publish('payement:success', this.abonnement);
+    }
   }
 }

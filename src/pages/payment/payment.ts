@@ -27,15 +27,18 @@ export class PaymentPage {
 
   onFrameError($event){
     console.log($event)
+    this.dismiss($event.detail.error)
   }
 
   onPaymentComplete($event){
-    console.log($event)
-    this.dismiss($event)
+    this.dismiss($event.detail.data)
   }
 
   dismiss(data?: any) {
     this.viewCtrl.dismiss(data);
   }
 
+  onPaymentCancel($event: any) {
+    this.dismiss($event.detail.data)
+  }
 }

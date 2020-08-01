@@ -34,7 +34,6 @@
           </ion-card-content>
         </div>
         <div>
-
           <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
         </div>
 <ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" [@bounce]="bounceState">
@@ -44,7 +43,7 @@
   </button>
 </ion-fab>
   <div class="switch-button" *ngIf="isExpired(abonnement)&&concours" >
-    <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="inscrire()">
+    <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)=" gotToPrepa()">
       <ion-icon name="list" color="white"></ion-icon>
       <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
     </button>

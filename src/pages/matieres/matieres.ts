@@ -1,4 +1,4 @@
-import {Component, NgZone, trigger, state, style, transition, animate, keyframes} from '@angular/core';
+import {Component, NgZone} from '@angular/core';
 import {Events, App, NavController, NavParams, ViewController, ModalController, LoadingController} from 'ionic-angular';
 import {DataService} from '../../providers/data-service';
 import {Storage} from '@ionic/storage';
@@ -8,56 +8,12 @@ import {IonicPage} from 'ionic-angular';
 import {GroupsProvider} from '../../providers/groups/groups';
 import {FcmProvider, FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
-
+import {matiereListAnimations} from "../../annimations/annimations";
 @IonicPage()
 @Component({
   selector: 'page-matieres',
   templateUrl: 'matieres.html',
-  animations: [
-
-    trigger('flip', [
-      state('flipped', style({
-        transform: 'rotate(180deg)',
-        backgroundColor: '#f50e80'
-      })),
-      transition('* => flipped', animate('400ms ease'))
-    ]),
-
-    trigger('flyInOut', [
-      state('in', style({
-        transform: 'translate3d(0, 0, 0)'
-      })),
-      state('out', style({
-        transform: 'translate3d(150%, 0, 0)'
-      })),
-      transition('in => out', animate('200ms ease-in')),
-      transition('out => in', animate('200ms ease-out'))
-    ]),
-
-    trigger('fade', [
-      state('visible', style({
-        opacity: 1
-      })),
-      state('invisible', style({
-        opacity: 0.1
-      })),
-      transition('visible <=> invisible', animate('200ms linear'))
-    ]),
-
-    trigger('bounce', [
-      state('bouncing', style({
-        transform: 'translate3d(0,0,0)'
-      })),
-      transition('* => bouncing', [
-        animate('900ms ease-in', keyframes([
-          style({transform: 'translate3d(0,0,0)', offset: 0}),
-          style({transform: 'translate3d(0,-30px,0)', offset: 0.5}),
-          style({transform: 'translate3d(0,0,0)', offset: 1})
-        ]))
-      ])
-    ])
-
-  ]
+  animations: matiereListAnimations
 })
 export class MatieresPage {
   concours: any;
@@ -116,11 +72,9 @@ export class MatieresPage {
           this.abonnement = data;
           this.concours = this.abonnement.session;
           this.getShowConcours().then(() => {
-            this.observeAuth();
-          });
+            this.observeAuth();});
           this.loadMatieres()
-        }, error => {
-        });
+        }, error => { });
     else {
       this.concours = this.abonnement.session;
       this.getShowConcours().then(() => {
@@ -130,18 +84,30 @@ export class MatieresPage {
     }
   }
 
+
+  observeAuth(show: boolean = true) {
+    this.notificationId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;
+   const unsubscribe=  firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.authInfo = user
+        this.notificationId = user.uid;
+        this.getAnalyse(show);
+        this.getAbonnement();
+        unsubscribe();
+       } else {
+        this.authInfo = undefined;
+      }
+    });
+  }
   toggleFlip() {
     this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
   }
 
   toggleFlyInOut() {
-
     this.flyInOutState = 'out';
-
     setInterval(() => {
       this.flyInOutState = 'in';
     }, 2000);
-
   }
 
   toggleFade() {
@@ -152,20 +118,6 @@ export class MatieresPage {
     this.bounceState = (this.bounceState == 'noBounce') ? 'bouncing' : 'noBounce';
   }
 
-  observeAuth(show: boolean = true) {
-    this.notificationId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.authInfo = user
-        this.notificationId = user.uid;
-        this.getAnalyse(show);
-        this.getAbonnement();
-      } else {
-        this.authInfo = undefined;
-      }
-    });
-
-  }
 
   isExpired(abonnement: any) {
     if (abonnement == null)
@@ -194,12 +146,11 @@ export class MatieresPage {
     if (!this.concours)
       return
     this.abonnementProvider.checkAbonnementValidity(this.concours.id).then(data => {
-      this.abonnement = data;
-      this.abonnementLoaded = true;
+       this.abonnement = data;
+       this.abonnementLoaded = true;
       if (this.abonnement)
         this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
-
-    }, error => {
+     }, error => {
       this.notify.onError({message: 'Petit problème de connexion.'});
     });
   }
@@ -223,6 +174,9 @@ export class MatieresPage {
 
 
   listenToEvents() {
+    this.events.subscribe('payement', data=>{
+      this.handlePayementEvent(data);
+    })
     this.events.subscribe('score:matiere:updated', (data) => {
       this.zone.run(() => {
         this.analyse = data.concours;
@@ -283,17 +237,22 @@ export class MatieresPage {
       this.notify.onError({message: 'Petit problème de connexion.'});
     })
   }
-  inscrire() {
-    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
-    modal.onDidDismiss((data, role)=>{
-      if(data&&data.status=='PAID'){
-        this.fcm.listenTopic('centor-group-' + this.concours.id);
-        this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
-        this.alert=true;
-        this.events.publish('payement:success', this.abonnement);
-      }
-    })
+
+  gotToPrepa(){
+     let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
+       modal.onDidDismiss((data) => {
+       console.log("hengagaga gaga")
+     });
     modal.present();
   }
 
+  private handlePayementEvent(data) {
+    if (data && data.status == 'PAID') {
+      this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
+      this.getAbonnement();
+      this.alert = true;
+      this.fcm.listenTopic('centor-group-' + this.concours.id);
+      this.events.publish('payement:success', this.abonnement);
+    }
+  }
 }

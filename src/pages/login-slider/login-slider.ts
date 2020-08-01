@@ -138,7 +138,7 @@ this.firebaseNative.setScreemName('login_page');
         return;
        } else {
           let loading = this.loadingCtrl.create({dismissOnPageChange:true});
-         firebase.auth().createUserWithEmailAndPassword(this.signupForm.value.email, this.signupForm.value.password)
+         firebase.auth().createUserWithEmailAndPassword(this.signupForm.value.email.trim(), this.signupForm.value.password.trim())
          .then((newUser) => {
            loading.dismiss()
            this.dismiss(newUser);
@@ -166,7 +166,7 @@ this.firebaseNative.setScreemName('login_page');
         this.presentLoading('Certains champs ne sont pas valides !');
     } else {
   let loading = this.loadingCtrl.create({dismissOnPageChange:true});
-    firebase.auth().signInWithEmailAndPassword(this.loginForm.value.email, this.loginForm.value.password)
+    firebase.auth().signInWithEmailAndPassword(this.loginForm.value.email.trim(), this.loginForm.value.password.trim())
       .then( authData => {
         loading.dismiss()
         this.dismiss(authData);
@@ -192,7 +192,7 @@ resetPassword(){
   if (!this.resetPasswordForm.valid){
     this.presentLoading('Certains champs ne sont pas valides !');
   } else {
-    firebase.auth().sendPasswordResetEmail(this.resetPasswordForm.value.email)
+    firebase.auth().sendPasswordResetEmail(this.resetPasswordForm.value.email.trim())
     .then((user) => {
       let alert = this.alertCtrl.create({
         message: "Veillez suivre le lien que nous vous avons envoyé par mail.",

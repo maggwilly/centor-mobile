@@ -58,7 +58,7 @@ img.ng-lazyloaded {
 .send-message{
   position: -webkit-sticky;
   position: fixed;
-  top: 56px;
+  top: 0;
   z-index: 1;
 }
 .button-close{
@@ -68,11 +68,26 @@ img.ng-lazyloaded {
   right: -2px;
 }
 
+  textarea.text-input{
+    border-radius: 9px;
+    outline: none !important;
+    padding: 7px 8px;
+    margin-bottom: 6px;
+    border-color: #719ECE;
+    box-sizing: border-box;
+    box-shadow: 0 0 4px #719ECE;
+  }
+
+  textarea.text-input:focus {
+    border-radius:9px;
+    outline: none !important;
+    box-shadow: 0 0 10px #719ECE;
+  }
 
 .message-wrap {
   ion-item,.view{
     background-color: transparent;
-  } 
+  }
 img.profile-pic {
   width: 40px;
   height: 40px;
@@ -100,7 +115,7 @@ img.profile-pic.right {
 }
 
 .message-detail {
-  margin-top:10px; 
+  margin-top:10px;
   white-space: nowrap;
   font-size: 14px;
 }
@@ -114,7 +129,7 @@ img.profile-pic.right {
 }
 
 .message-wrapper:last-child {
- // margin-bottom: 10px;
+ margin-bottom: 10px;
 }
 
 .chat-bubble {
@@ -125,8 +140,7 @@ img.profile-pic.right {
   margin: 5px;
   max-width: 83%;
   .message-img{
-    //height: 160px;
-     height: auto;
+    height: auto;
     width: 100% ;
     border-radius: 5px;
   }
@@ -206,9 +220,9 @@ img.profile-pic.right {
   top: -3px;
 }
 
-/*input, textarea, .item-input, .item-input-wrapper {
+input, textarea, .item-input, .item-input-wrapper {
   background-color: #f4f4f4 !important;
-}*/
+}
 
 .bold {
   font-weight: bold;

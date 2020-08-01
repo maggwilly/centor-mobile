@@ -22,7 +22,7 @@ export class MatiereDetailsPage {
   authInfo: any;
   zone: NgZone;
   loaded: boolean= false;
- 
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -46,10 +46,10 @@ export class MatiereDetailsPage {
     this.listenToEvents();
     this.initPage();
   }
-  
+
   ionViewDidEnter() {
     this.observeAuth();
-  }  
+  }
   /** Compare le score et le temps de reponse */
   initPage() {
     this.matiereToUpdate = this.navParams.get('matiere');
@@ -100,15 +100,15 @@ export class MatiereDetailsPage {
       }, error => {
         this.notify.onError({ message: 'Petit problème de connexion.' });
       });
-    });     
+    });
 
   }
 
  openRessource(ressource:any){
-  this.navCtrl.push('RessourceDetailsPage',{ressource:ressource});
+  this.navCtrl.push('RessourceDetailsPage',{ressource_id:ressource.id});
  }
 
-  
+
   getAnalyse(show: boolean) {
     return this.storage.get('_analyse_Matiere_' + this.concours.id+'_' + this.matiere.id).then(data => {
        this.analyse = data;
@@ -165,7 +165,7 @@ alert() {
         text: "Ok merci",
         role: 'cancel'
       }
-      
+
     ]
   });
 return  alert.present()

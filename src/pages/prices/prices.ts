@@ -1,5 +1,5 @@
 import {Component, NgZone, ViewChild} from '@angular/core';
-import {App, IonicPage, ModalController, NavController, NavParams, Slides, ViewController} from 'ionic-angular';
+import {Events,App, IonicPage, ModalController, NavController, NavParams, Slides, ViewController} from 'ionic-angular';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 import {FcmProvider as Firebase} from "../../providers/fcm/fcm";
 import {AppNotify} from "../../providers/app-notify";
@@ -23,6 +23,7 @@ export class PricesPage {
               public firebaseNative: Firebase,
               public notify: AppNotify,
               public viewCtrl: ViewController,
+              public events: Events,
               public modalCtrl: ModalController,
               public appCtrl: App,
               public abonnementProvider: AbonnementProvider) {
@@ -72,7 +73,7 @@ export class PricesPage {
         order_id: this.commande.order_id
       };
       this.abonnementProvider.confirmFreeCommende(status).then(data => {
-        this.dismiss(true);
+        this.dismiss({status: "PAID"});
       }, error => {
         this.notify.onError({message: 'Nous avons rencontré un problème !'});
       })
@@ -87,13 +88,13 @@ export class PricesPage {
       apikey: payGardeConfig.apiKey,
       orderid: this.commande.order_id,
       amount: this.commande.amount,
+      currency: 'XAF',
       payeremail: firebase.auth().currentUser.email || this.commande.info.email,
       payerphone:  this.commande.info.phone
     }
-    console.log(paymentdata);
     let modal = this.modalCtrl.create('PaymentPage', {paymentdata: paymentdata});
-    modal.onDidDismiss((data, role) => {
-      this.dismiss(data);
+    modal.onDidDismiss((data) => {
+         this.dismiss(data);
     })
     modal.present();
   }
@@ -104,6 +105,7 @@ export class PricesPage {
   }
 
   dismiss(data?: any) {
+    this.events.publish('payement',data);
     this.viewCtrl.dismiss(data);
   }
 }

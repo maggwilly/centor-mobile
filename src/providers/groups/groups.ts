@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import firebase from 'firebase';
 
-/*
-  Generated class for the GroupsProvider provider.
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 @Injectable()
 export class GroupsProvider {
   firegroup = firebase.database().ref('/groups');
@@ -15,16 +10,14 @@ export class GroupsProvider {
   firestore = firebase.storage();
   mygroups: Array<any> = [];
   currentgroup: Array<any> = [];
-  currentgroupname;
-  groupdisplayname 
-  groupmemberscount;
-  grouppic;
+  currentgroupname:any;
+  groupdisplayname :any
+  groupmemberscount:any;
+  grouppic:any;
   groupmsgs: Array<any> = [];
   limitTo:number=0;
-  
-  constructor(public events: Events) {
 
-  }
+  constructor(public events: Events) {}
 
   addgroup(newGroup) {
     var promise = new Promise((resolve, reject) => {
@@ -56,7 +49,7 @@ export class GroupsProvider {
       }
       this.events.publish('newgroup');
     })
-    
+
   }
 
   getmeingroup(groupname) {
@@ -73,8 +66,6 @@ export class GroupsProvider {
 
   updatemeingroup(groupname,arg:any) {
     return this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').update(arg)
-
-    
   }
 
   getintogroup(groupname) {
@@ -91,7 +82,6 @@ export class GroupsProvider {
       if (snapshot.val())
         return this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').update({ msgcount: 0, lastLogin: firebase.database.ServerValue.TIMESTAMP })
     })
-  
   }
 
   getownership(groupname) {
@@ -118,9 +108,8 @@ export class GroupsProvider {
       this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).once('value', (snapshot) => {
         this.grouppic = snapshot.val().groupimage;
         resolve(true);
+      })
     })
-    })
-    
   }
 
   getsessionownerimage() {
@@ -130,7 +119,6 @@ export class GroupsProvider {
         resolve(true);
       })
     })
-
   }
 
 
@@ -193,9 +181,9 @@ export class GroupsProvider {
                 reject(err);
               })
             })
-     
+
     })
-  }  
+  }
 
   deletegroup() {
     return new Promise((resolve, reject) => {
@@ -209,7 +197,7 @@ export class GroupsProvider {
         }).catch((err) => {
           reject(err);
         })
-        
+
       })
     })
   }
@@ -231,22 +219,22 @@ export class GroupsProvider {
   return message;
 }
 
-  //nouvelle version cloud function send 
+  //nouvelle version cloud function send
   addgroupmsg(newmessage, addinlist = true, currentgroupname = 0) {
     let message = this.addMsg(newmessage,addinlist);
     let copie = Object.assign({}, message);
     copie.pending = false;
   return new Promise((resolve, reject) => {
    this.firegroupsession.child(this.currentgroupname).child('msgboard').push(message).then(() => {
-     this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push(copie).then(() => { 
+     this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push(copie).then(() => {
                resolve(true);
      }, (err) => {
 
-     })            
+     })
    }, (err) => {
      reject(err);
    })
-    })  
+    })
   }
 
   toggleImportant(msg) {
@@ -279,7 +267,7 @@ export class GroupsProvider {
       .once('value', snapshot => {
         snapshot.forEach( (itemSnapshot)=> {
           itemSnapshot.ref.remove();
-         // console.log(itemSnapshot.key);   
+         // console.log(itemSnapshot.key);
           return true;
         })
       })
@@ -302,16 +290,16 @@ export class GroupsProvider {
         })
 
         })
-    
-    })  
+
+    })
   }
 
   postmsgstoadmin(newmessage, addinlist = true) {
     let message = this.addMsg(newmessage, addinlist);
     let copie = Object.assign({}, message);
     copie.pending = false;
-    return new Promise((resolve, reject) => 
-    { 
+    return new Promise((resolve, reject) =>
+    {
       this.firegroupsession.child(this.currentgroupname).child('owner').once('value', (snapshot) => {
         let groupowner = snapshot.val();
         if (groupowner)
@@ -322,15 +310,15 @@ export class GroupsProvider {
         })
       })
     })
-  }  
+  }
 
   loockforgroupmsgs(groupname) {
     this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').off()
-    this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').on('child_added', (snapshot) => {      
+    this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').on('child_added', (snapshot) => {
       this.events.publish('newgroupmsg');
     })
   }
-  
+
   getgroupmsgs(groupname) {
     this.limitTo += 10;
     return this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').orderByChild('timestamp').limitToLast(this.limitTo).on('value', (snapshot) => {
@@ -341,14 +329,14 @@ export class GroupsProvider {
       this.events.publish('groupmsg');
    })
   }
-  
+
   getmsgcount(groupname) {
     var promise = new Promise((resolve, reject) => {
       this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').child('msgcount').on('value', (snapshot) => {
         let msgcount = snapshot.val();
         resolve(msgcount);
       })
-  })  
+  })
  return promise;
 }
   guid() {

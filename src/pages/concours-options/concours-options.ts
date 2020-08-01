@@ -129,19 +129,25 @@ export class ConcoursOptionsPage {
 
   }
 
-  inscrire() {
+
+  gotToPrepa(){
     let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
-     modal.onDidDismiss((data, role)=>{
-      if(data&&data.status=='PAID'){
-        this.fcm.listenTopic('centor-group-' + this.concours.id);
-        this.notify.onSuccess({ message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top' });
-        this.alert=true;
-        this.events.publish('payement:success', this.abonnement);
-      }
-    })
+    modal.onDidDismiss((data) => {
+      console.log("hengagaga gaga")
+    });
     modal.present();
   }
 
+  private handlePayementEvent(data) {
+    console.log(data)
+    if (data && data.status == 'PAID') {
+      this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
+      this.getAbonnement();
+      this.alert = true;
+      this.fcm.listenTopic('centor-group-' + this.concours.id);
+      this.events.publish('payement:success', this.abonnement);
+    }
+  }
 
   openConcours() {
     this.navCtrl.setRoot(ConcoursPage);
@@ -213,6 +219,9 @@ export class ConcoursOptionsPage {
 
 
   listenToEvents() {
+    this.events.subscribe('payement', data=>{
+      this.handlePayementEvent(data);
+    })
     this.events.subscribe('score:matiere:updated', (data) => {
       this.zone.run(() => {
         if (!this.concours)

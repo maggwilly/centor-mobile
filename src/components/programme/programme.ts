@@ -1,4 +1,15 @@
-import { Component, Input, NgZone, trigger, state, style, transition, animate, keyframes } from '@angular/core';
+import {
+  Component,
+  Input,
+  NgZone,
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+  keyframes,
+  OnChanges
+} from '@angular/core';
 import { NavController,App, NavParams ,ModalController, AlertController,Events } from 'ionic-angular';
 import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
@@ -78,7 +89,7 @@ import { DataService } from '../../providers/data-service';
   ]
 
 })
-export class ProgrammeComponent {
+export class ProgrammeComponent implements OnChanges{
    categorie:any='prepa';
    alert=false;
    @Input()
@@ -110,9 +121,9 @@ export class ProgrammeComponent {
     public modalCtrl: ModalController) {
     this.zone = new NgZone({});
     this.toggleFlash();
-
   }
 
+  ngOnChanges() {}
 
  isExpired(abonnement:any){
    if(!abonnement)
@@ -138,9 +149,7 @@ getClass(obj:any):string{
   }
 
   toggleFlyInOut() {
-
     this.flyInOutState = 'out';
-
     setInterval(() => {
       this.flyInOutState = 'in';
     }, 2000);

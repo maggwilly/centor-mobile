@@ -17,7 +17,7 @@
           <br>
           <ion-row no-padding justify-content-center align-items-center >
             <ion-col text-left col-6 >
-              <button ion-button clear small color="primary" (click)="share()" icon-left>
+              <button ion-button clear small color="primary" (click)="share($event)" icon-left>
                 <ion-icon name='share-alt'></ion-icon>
                 Partager
               </button>
@@ -37,7 +37,7 @@
   </button>
 </ion-fab>
   <div class="switch-button" *ngIf="isExpired(abonnement)&&concours">
-    <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="inscrire()">
+    <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="gotToPrepa()">
       <ion-icon name="list" color="white"></ion-icon>
       <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
     </button>

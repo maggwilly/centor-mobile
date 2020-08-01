@@ -19,8 +19,9 @@
                 [acceptpartialpayment]="paymentdata.acceptpartialpayment"
                 [payeremail]="paymentdata.payeremail"
                 [payerphone]="paymentdata.payerphone"
-                (onFrameError)="onFrameError($event)"
                 [primarycolor]="primarycolor"
+                (onFrameError)="onFrameError($event)"
+                (onPaymentCancel)="onPaymentCancel($event)"
                 (onPaymentComplete)="onPaymentComplete($event)">
  </payment-frame>
 </ion-content>
