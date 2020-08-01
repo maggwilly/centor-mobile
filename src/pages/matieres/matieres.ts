@@ -142,12 +142,14 @@ export class MatieresPage {
 
   }
 
-  getAbonnement() {
+  getAbonnement($event?:any) {
     if (!this.concours)
       return
     this.abonnementProvider.checkAbonnementValidity(this.concours.id).then(data => {
        this.abonnement = data;
        this.abonnementLoaded = true;
+      if($event)
+        this.events.publish('payement:success', this.abonnement);
       if (this.abonnement)
         this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
      }, error => {
@@ -249,10 +251,9 @@ export class MatieresPage {
   private handlePayementEvent(data) {
     if (data && data.status == 'PAID') {
       this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
-      this.getAbonnement();
+      this.getAbonnement(true);
       this.alert = true;
       this.fcm.listenTopic('centor-group-' + this.concours.id);
-      this.events.publish('payement:success', this.abonnement);
     }
   }
 }

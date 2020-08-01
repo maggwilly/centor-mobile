@@ -61,9 +61,11 @@ export class InformationPage {
     modal.present();
   }
 
-  getAbonnement() {
+  getAbonnement($event?:any) {
     this.abonnementProvider.checkAbonnementValidity(0).then(data => {
       this.abonnement = data;
+      if($event)
+        this.events.publish('payement:success', this.abonnement);
     }, error => {
       this.notify.onError({message: 'Petit problème de connexion.'});
     });
@@ -72,8 +74,7 @@ export class InformationPage {
   private handlePayementEvent(data) {
     if (data && data.status == 'PAID') {
       this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
-      this.getAbonnement();
-      this.events.publish('payement:success', this.abonnement);
+      this.getAbonnement(true);
     }
   }
 }
