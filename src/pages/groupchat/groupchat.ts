@@ -316,7 +316,7 @@ onImageLoad(){
   }
 
   openRessource(ressource: any) {
-    this.navCtrl.push('RessourceDetailsPage', { ressource: ressource });
+    this.navCtrl.push('RessourceDetailsPage', { ressource_id: ressource.id });
   }
 
 footerHeight(){

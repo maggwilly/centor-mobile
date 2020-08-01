@@ -3,16 +3,16 @@
       <ion-navbar hideBackButton>
             <button menuToggle ion-button icon-only>
                     <ion-icon name="menu"></ion-icon>
-            </button>         
+            </button>
           <ion-buttons end>
               <button ion-button icon-only (click)="presentActionSheet()"><ion-icon name="power"></ion-icon></button>
-          </ion-buttons>     
+          </ion-buttons>
       </ion-navbar>
     </ion-header>
     <div id="profile-bg" ></div>
     <div id="content" >
       <div id="profile-info" ion-item text-wrap>
-        <img id="profile-image" *ngIf="user&&user.info"  [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset"   image-cache>  
+        <img id="profile-image" *ngIf="user&&user.info"  [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset"   image-cache>
         <h3 id="profile-name" *ngIf="user&& user.info&&user.info.displayName">{{user.info.displayName}}</h3>
         <p *ngIf="user&& user.info"><span >{{user.info.email}} </span></p>
        <!-- <p class="profile-description" >Modifiez et completez votre profil afin de nous aider à vous proposer les offres idéales .</p>
@@ -21,13 +21,12 @@
         <ion-grid>
           <ion-row>
             <ion-col col-12>
-      <div *ngIf="user.info">
-        <br>
+      <div *ngIf="user.info"  class="m-t-20">
         <ion-card-header text-left>Informations</ion-card-header>
-          <button ion-button small icon-left (click)="editProfileCandidat()" class="edit-button" >
+          <button ion-button small outline icon-left (click)="editProfileCandidat()" class="edit-button" >
             <ion-icon name='md-create'></ion-icon>
-           <span *ngIf="user.info.phone&&user.info.displayName"> Modifier mon profil</span>
-          <span *ngIf="!user.info.phone||!user.info.displayName"> Completer mon profil</span>
+           <span *ngIf="user.info.phone&&user.info.displayName"> Modifier </span>
+          <span *ngIf="!user.info.phone||!user.info.displayName"> Completer </span>
           </button>
         <ion-list no-lines>
           <ion-item *ngIf="user.info.email">
@@ -76,7 +75,7 @@
         </ion-list>
         <ion-item class="list-item" text-wrap *ngIf="paidConcours&&!paidConcours.length">
         <p text-center >Vous n'êtes inscrit à aucun programme de préparation.</p>
-       </ion-item> 
+       </ion-item>
         <ion-grid [hidden]="paidConcours" style=" height: 100%;justify-content: center;" ion-item>
           <ion-row justify-content-center align-items-center padding>
             <ion-spinner name="dots"></ion-spinner>

@@ -24,7 +24,7 @@
                         <br>
                     <ion-item>
                       <ion-label floating>Adresse e-mail</ion-label>
-                      <ion-input type="text" #email formControlName="email" [class.invalid]="!loginForm.controls.email.valid && loginForm.controls.email.dirty"></ion-input>
+                      <ion-input type="text" #email formControlName="email" [class.invalid]="!loginForm.controls.email.valid && loginForm.controls.email.dirty" (ionChange)="cleanForm(loginForm)"></ion-input>
                     </ion-item>
                     <span style="border-bottom: 0 !important; color: #BE2222 !important;font-size: 0.8em;" *ngIf="!loginForm.controls.email.valid  && loginForm.controls.email.dirty">
                     Entrer une adresse mail valide.
@@ -60,7 +60,7 @@
                         <br>
                     <ion-item>
                       <ion-label floating>Adresse e-mail</ion-label>
-                      <ion-input type="email" formControlName="email" [class.invalid]="!resetPasswordForm.controls.email.valid && resetPasswordForm.controls.email.dirty"></ion-input>
+                      <ion-input type="email" formControlName="email" [class.invalid]="!resetPasswordForm.controls.email.valid && resetPasswordForm.controls.email.dirty" (ionChange)="cleanForm(resetPasswordForm)"></ion-input>
                     </ion-item>
                     <br>
                     <button ion-button block (click)="resetPassword()" color="primary">Reinitialiser</button>
@@ -84,7 +84,7 @@
                   <br>
                   <ion-item>
                     <ion-label floating>Adresse e-mail</ion-label>
-                    <ion-input type="text" #email formControlName="email" [class.invalid]="!signupForm.controls.email.valid&&signupForm.controls.email.dirty"></ion-input>
+                    <ion-input type="text" #email formControlName="email" [class.invalid]="!signupForm.controls.email.valid&&signupForm.controls.email.dirty" (ionChange)="cleanForm(signupForm)"></ion-input>
                   </ion-item>
                   <span style="border-bottom: 0 !important; color: #BE2222 !important;font-size: 0.8em;" *ngIf="!signupForm.controls.email.valid&&signupForm.controls.email.dirty">
                     Entrer une adresse mail valide.

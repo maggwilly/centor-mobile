@@ -18,7 +18,7 @@ import {UserProvider} from "../providers/user/user";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
-const appVersion ='2.8.12';
+const appVersion ='3.0.2';
 
 export interface PageInterface {
   title: string;
@@ -46,6 +46,7 @@ export class MyApp {
   registrationId;
   modalshow=false;
   rootSet:boolean=false;
+  telegram: any='https://t.me/centorconcours';
   notificationId: string=firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;//= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
     { title: 'Accueil', component: 'HomePage', icon: 'home' },
@@ -127,7 +128,7 @@ export class MyApp {
 
 
   startApp() {
-    //this.registerForNotification();
+    this.registerForNotification();
    //this.registerForNotificationWeb();
     if(this.rootSet)
         return;

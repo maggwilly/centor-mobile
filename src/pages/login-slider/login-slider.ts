@@ -2,7 +2,7 @@
 import { Component, ViewChild, ElementRef, Renderer,} from '@angular/core';
 import { AlertController, App, Platform,  LoadingController, Slides, IonicPage,NavParams,ViewController  } from 'ionic-angular';
 import { EmailValidator } from '../../validators/email';
-import { FormBuilder, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { RepasswordValidator } from '../../validators/repassword';
 import { Facebook } from '@ionic-native/facebook'
 import firebase from 'firebase';
@@ -61,7 +61,9 @@ this.firebaseNative.setScreemName('login_page');
     this.loginStape = true;
 
   }
-
+  public cleanForm(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((key) => formGroup.get(key).setValue(formGroup.get(key).value.trim()));
+  }
   goToSignup() {
     this.singupStape = true;
     this.loginStape = false;
@@ -132,6 +134,7 @@ this.firebaseNative.setScreemName('login_page');
   }
 
   getSignup(){
+    this.cleanForm(this.signupForm);
     this.firebaseNative.logEvent('signup_start', { signup: false });
     if (!this.signupForm.valid){
       this.presentLoading('Certains champs ne sont pas valides !');
@@ -161,6 +164,7 @@ this.firebaseNative.setScreemName('login_page');
      }
 
   getLogin(){
+    this.cleanForm(this.loginForm);
     this.firebaseNative.logEvent('login_start', { login: false });
     if (!this.loginForm.valid){
         this.presentLoading('Certains champs ne sont pas valides !');

@@ -35,6 +35,7 @@ export class HomePage {
   tooltipEvent: 'click' | 'press' = 'click';
   showArrow: boolean = true;
   duration: number = 3000;
+  telegram: any='https://t.me/centorconcours';
 
   constructor(
     public navCtrl: NavController,

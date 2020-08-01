@@ -1,19 +1,20 @@
-<ion-split-pane  when="md">
+<ion-split-pane when="md">
   <ion-menu [content]="content" id="menu-material" type="reveal" side="left" persistent="true">
     <ion-content class="transparent-header bg-light">
       <ion-header no-border no-shadow>
         <ion-navbar text-right>
           <ion-title>
-            <img class="logo-menu" item-right src="assets/images/logo-light.png" />
+            <img class="logo-menu" item-right src="assets/images/logo-light.png"/>
           </ion-title>
         </ion-navbar>
       </ion-header>
       <div id="profile-bg">
-          <!--<img class="user-avatar round" *ngIf="user&& user.info"  [src]="user.info.photoURL" image-cache>-->
-      <img class="user-avatar round" *ngIf="user&&user.info"
-          [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset"  image-cache>
+        <!--<img class="user-avatar round" *ngIf="user&& user.info"  [src]="user.info.photoURL" image-cache>-->
+        <img class="user-avatar round" *ngIf="user&&user.info"
+             [defaultImage]="defaultAvatar" [lazyLoad]="user.info.photoURL" [offset]="offset" image-cache>
         <p class="name" *ngIf="user">
-          <span>{{(user.info.displayName||user.info.email)| limitTo:16}} </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="!isExpired(abonnement)"><b>{{abonnement.id}}</b></span>
+          <span>{{(user.info.displayName || user.info.email)| limitTo:16}} </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+          *ngIf="!isExpired(abonnement)"><b>{{abonnement.id}}</b></span>
         </p>
       </div>
       <ion-list no-lines>
@@ -32,17 +33,22 @@
         <button menuClose="left" ion-item detail-none (click)="openMessages()">
           <ion-icon name="paper" item-left></ion-icon>
           <span>Annonces</span>
-<ion-badge class="notifications-badge" notification [notificationId]="notificationId" [registrationId]="registrationId" item-right
-  color="danger"></ion-badge>
+          <ion-badge class="notifications-badge" notification [notificationId]="notificationId"
+                     [registrationId]="registrationId" item-right
+                     color="danger"></ion-badge>
         </button>
         <button menuClose="left" ion-item detail-none (click)="openSettingPage()">
-          <ion-icon name="person" item-left ></ion-icon>
+          <ion-icon name="person" item-left></ion-icon>
           <span *ngIf="user">Mon compte</span>
           <span *ngIf="!user">Connexion</span>
         </button>
+        <a  menuClose="left" ion-item detail-none [href]="telegram">
+          <ion-icon ios="ios-chatbubbles" md="md-chatbubbles"  color="primary" item-left></ion-icon>
+          <span>Rejoignez-nous </span>
+        </a>
       </ion-list>
     </ion-content>
   </ion-menu>
-    <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
-<ion-nav [root]="rootPage" #content swipeBackEnabled="false" main></ion-nav>
-  </ion-split-pane>
+  <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+  <ion-nav [root]="rootPage" #content swipeBackEnabled="false" main></ion-nav>
+</ion-split-pane>
