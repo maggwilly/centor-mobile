@@ -1,0 +1,23 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:1-22:12
+INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:1-22:12
+INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:1-22:12
+INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:1-22:12
+INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:1-22:12
+INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:1-22:12
+INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:1-22:12
+	package
+		ADDED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:21:11-47
+		INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml
+		INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:21:48-73
+		INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml
+		INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:20:11-69
+	android:versionCode
+		ADDED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml:21:74-97
+		INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml
+		INJECTED from /home/penka/php-workspace/centor-mobile/platforms/android/cordova-plugin-firebase/AndroidManifest.xml

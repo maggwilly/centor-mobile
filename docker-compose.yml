@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+  android-builder:
+    build: .
+    container_name: android-builder
+    ports:
+      - 8100:8100
+    volumes:
+      - .:/var/cordova/app
+    environment:
+      ANDROID_SDK_ROOT: /usr/local/android-sdk-linux
+    command: sh -c "if [ -d "/var/cordova/app/plugins" ]; then rm -Rf /var/cordova/app/plugins; fi   && if [ -d "/var/cordova/app/platforms/android" ]; then rm -Rf /var/cordova/app/platforms/android; fi    && cordova platform add android && while true ;do wait ;done"

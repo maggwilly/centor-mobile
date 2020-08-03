@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "163815809818",
+    "firebase_url": "https://trainings-fa73e.firebaseio.com",
+    "project_id": "trainings-fa73e",
+    "storage_bucket": "trainings-fa73e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163815809818:android:4a16cfd5a556a721",
+        "android_client_info": {
+          "package_name": "com.centor.mobile.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163815809818-m3dv8on1igspla9q48vt7pm3abail9h9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.centor.mobile.app",
+            "certificate_hash": "735584859ac4995edec0fee61ac1d8316512c15f"
+          }
+        },
+        {
+          "client_id": "163815809818-jsa8okq08a7p8rqp0turuj5vcdjbcj57.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7yIolqRwaxX3FXlaXryLCM6fcFngMJyQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163815809818-jsa8okq08a7p8rqp0turuj5vcdjbcj57.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
