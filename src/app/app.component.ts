@@ -18,7 +18,7 @@ import {UserProvider} from "../providers/user/user";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
-const appVersion ='3.0.2';
+const appVersion ='3.0.9';
 
 export interface PageInterface {
   title: string;
@@ -86,8 +86,16 @@ export class MyApp {
       this.statusBar.backgroundColorByHexString("#065C79");
     //
       this.listenProfilEvents();
-      this.startApp();
-      this.splashScreen.hide();
+      try{
+        this.registerForNotification();
+        //this.registerForNotificationWeb();
+      }catch (e) {
+        console.log(e);
+      }finally {
+        this.startApp();
+        this.splashScreen.hide();
+      }
+
     });
 
   }
@@ -128,8 +136,6 @@ export class MyApp {
 
 
   startApp() {
-    this.registerForNotification();
-   //this.registerForNotificationWeb();
     if(this.rootSet)
         return;
 	   this.observeAuth();
@@ -153,9 +159,12 @@ export class MyApp {
           this.showDetails(this.concours);
         else
           this.nav.setRoot('HomePage');
+      }, error=>{
+        this.nav.setRoot('HomePage');
       });
       else
         this.nav.setRoot('HomePage');
+
   }
 
 
@@ -314,11 +323,11 @@ checkInfo(info:any){
           console.log(token);
           this.registration(token);
         }, error => {
-         // console.log(error);
+          console.log(error);
 
         })
       }, error => {
-        //console.log(error);
+       console.log(error);
 
       })
 
