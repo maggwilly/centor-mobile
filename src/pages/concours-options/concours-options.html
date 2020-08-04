@@ -36,12 +36,11 @@
     <ion-badge color="blue" id="cart-badge"  notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
   </button>
 </ion-fab>
-  <div class="switch-button" *ngIf="isExpired(abonnement)&&(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
-    <button ion-button color="orange"   icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="gotToPrepa()">
-      <ion-icon name="list" color="white"></ion-icon>
-      <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
-    </button>
-  </div>
 </ion-content>
-
+<ion-footer *ngIf="isExpired(abonnement)&&(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
+  <button ion-button color="orange"  ion-button large full no-margin icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="gotToPrepa()">
+    <ion-icon name="list" color="white"></ion-icon>
+    <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
+  </button>
+</ion-footer>
 

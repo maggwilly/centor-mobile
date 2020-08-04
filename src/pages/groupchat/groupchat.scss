@@ -6,8 +6,8 @@ page-groupchat {
   $toUserBackgroundColor: #fcfcfc;
 
   ion-content .scroll-content {
-   //background-color: #f7eff5;
-   // background-image: url("../assets/img/background/chat.jpg" );
+    background-image: url("../../assets/img/background/chat.jpg" );
+    background-size: cover;
   }
 img.ng-lazyloaded {
   animation: fadein .5s;

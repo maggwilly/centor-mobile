@@ -34,7 +34,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content  hide-fab #container  [ngStyle]="{ 'background-image': 'url(' + groupBg + ')'}">
+<ion-content  hide-fab #container  >
 <div *ngIf="allgroupmsgs&&allgroupmsgs.length">
   <ion-item *ngIf="(!sendToAdmin&&!meingroup)&&!isExpired(abonnement)" class="send-message" text-wrap no-border>
     <ion-icon name="person" item-left></ion-icon>
@@ -267,11 +267,8 @@
         </ion-textarea>
       </ion-col>
       <ion-col col-1>
-        <button ion-button clear icon-only item-right (click)="addgroupmsg()" [hidden]="(!newmessage&&!fileurl)">
-          <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
-        </button>
-        <button ion-button clear icon-only item-right (click)="presentSheetSendFile()" [hidden]="!(!newmessage&&!fileurl)">
-          <ion-icon name="ios-send" ios="ios-attach" md="md-attach"></ion-icon>
+        <button ion-button clear icon-only item-right (click)="addgroupmsg()" [disabled]="!newmessage">
+          <ion-icon  name="md-send"></ion-icon>
         </button>
       </ion-col>
     </ion-row>

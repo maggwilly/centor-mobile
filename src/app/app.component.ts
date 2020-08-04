@@ -18,7 +18,7 @@ import {UserProvider} from "../providers/user/user";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
-const appVersion ='3.0.9';
+const appVersion ='3.1.0';
 
 export interface PageInterface {
   title: string;
@@ -50,9 +50,9 @@ export class MyApp {
   notificationId: string=firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;//= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
     { title: 'Accueil', component: 'HomePage', icon: 'home' },
-    { title: 'Concours', component: 'ConcoursPage', icon: 'school' },
-    { title: 'Resultats', component: 'ResultatsPage', icon: 'md-list' },
-    { title: 'A propos', component: 'AboutPage', icon: 'information-circle' }
+    { title: 'Tous les Concours', component: 'ConcoursPage', icon: 'school' },
+    { title: 'Resultats Disponibles', component: 'ResultatsPage', icon: 'md-list' },
+    { title: 'A Propos de nous', component: 'AboutPage', icon: 'information-circle' }
   ];
   skipMsg: string = "Skip";
   state: string = 'x';
@@ -223,28 +223,29 @@ checkInfo(info:any){
 
 
   openSettingPage() {
-
-    if (firebase.auth().currentUser)
-      this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
-    else {
-      this.nav.push('LoginSliderPage', { redirectTo: true });
-      const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-        this.zone.run(() => {
-          if (user) {
-            this.notificationId = user.uid;
-            this.nav.push('SettingPage', { authInfo: user });
-            this.notify.onSuccess({ message: "Vous êtes connecté à votre compte." });
+    this.menu.close();
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.zone.run(() => {
+        if (user) {
+          this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
+          unsubscribe();
+          return;
+        }
+        unsubscribe();
+        let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+         modal.onDidDismiss((data, role) => {
+          if (data) {
+            this.nav.setRoot('HomePage');;
             unsubscribe();
-          } else {
+          }else{
             this.user = undefined;
             this.paidConcours = [];
-            unsubscribe();
           }
+        })
+        modal.present();
+      });
+    })
 
-        });
-      })
-    }
-    this.menu.close();
   }
 
   openPage(page: PageInterface, navParams: any = null, root = false, ) {

@@ -42,6 +42,7 @@ export class PricesPage {
           unsubscribe();
           return;
         }
+        unsubscribe();
         let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
         modal.onDidDismiss((data, role) => {
           if (data) {
