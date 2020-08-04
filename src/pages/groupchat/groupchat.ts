@@ -300,7 +300,7 @@ onImageLoad(){
        return "Ecrire à un enseignant"
        else if(this.toUser)
          return "Saisir un message privé";
-        return "Ecrire pour tout le monde"
+        return "Ecrire un message a tous les camarades de prepa"
   }
 
 
@@ -320,11 +320,11 @@ onImageLoad(){
   }
 
 footerHeight(){
-  let baseHeight=55;
+  let baseHeight=18;
   if(this.showEmojiPicker)
-    baseHeight=baseHeight+200;
+    baseHeight=baseHeight+192;
   if (this.fileurl)
-    baseHeight = baseHeight + 100;
+    baseHeight = baseHeight + 89;
   baseHeight+=this.textZise;
   return baseHeight+'px';
 }

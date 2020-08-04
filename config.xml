@@ -11,18 +11,18 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-   properties file<platform name="android">
-    <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="19" />
-    <preference name="android-targetSdkVersion" value="28" />
-    <preference name="BackupWebStorage" value="none" />
-    <preference name="FadeSplashScreenDuration" value="6000" />
-    <preference name="loadUrlTimeoutValue" value="900000" />
-    <preference name="SplashShowOnlyFirstTime" value="false" />
-    <preference name="SplashScreenDelay" value="24000" />
-    <preference name="AndroidLaunchMode" value="singleTask" />
-    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
-    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+    <platform name="android">
+        <preference name="ScrollEnabled" value="false" />
+        <preference name="android-minSdkVersion" value="21" />
+        <preference name="android-targetSdkVersion" value="29" />
+        <preference name="BackupWebStorage" value="none" />
+        <preference name="FadeSplashScreenDuration" value="6000" />
+        <preference name="loadUrlTimeoutValue" value="900000" />
+        <preference name="SplashShowOnlyFirstTime" value="false" />
+        <preference name="SplashScreenDelay" value="24000" />
+        <preference name="AndroidLaunchMode" value="singleTask" />
+        <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+        <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     </platform>
     <platform name="browser">
         <preference name="KeyboardDisplayRequiresUserAction" value="false" />
@@ -44,7 +44,7 @@
         <param name="ios-package" value="CDVFileTransfer" />
         <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer" />
     </feature>
-    <platform name="android">
+
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
@@ -64,7 +64,7 @@
         <splash density="port-xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png" />
         <splash density="port-xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
-    </platform>
+
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
@@ -116,9 +116,5 @@
     <plugin name="cordova-plugin-filechooser" spec="^1.0.1" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.0.0" />
     <plugin name="cordova-plugin-file" spec="^4.3.3" />
-    <plugin name="cordova-plugin-facebook4" spec="^1.9.1">
-        <variable name="APP_ID" value="1836539330001256" />
-        <variable name="APP_NAME" value="CentOr" />
-    </plugin>
     <engine name="browser" spec="^5.0.3" />
 </widget>

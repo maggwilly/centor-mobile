@@ -1,41 +1,21 @@
-
-import { Platform } from 'ionic-angular'
 import { Injectable } from '@angular/core';
-import { Firebase } from '@ionic-native/firebase';
+import { FCM  as Firebase} from '@ionic-native/fcm'
 
 
-
-/*
-  Generated class for the FcmProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class FcmProvider {
 
-
   constructor(
-    private firebaseNative: Firebase,
-    private platform: Platform) {
-    console.log('Hello FcmProvider Provider');
+    private firebaseNative: Firebase) {
+
   }
 
   setScreemName(name) {
-    this.platform.ready().then(() => {
-    if (this.platform.is('android') || this.platform.is('ios')) {
-      this.firebaseNative.setScreenName(name);
-      this.firebaseNative.logEvent(name+'_opened', { page: name })
-    }
-    });
+
   }
 
   logEvent(name,data) {
-    this.platform.ready().then(() => {
-    if (this.platform.is('android') || this.platform.is('ios')) {
-      this.firebaseNative.logEvent(name, data)
-    }
-    });
+
   }
 
   getToken(){
@@ -44,20 +24,16 @@ export class FcmProvider {
 
   onTokenRefresh(){
     return this.firebaseNative.onTokenRefresh();
-  }  
+  }
 
   onNotification() {
-    console.log('Nofified');
-    return this.firebaseNative.onNotificationOpen();
-  }  
-  
-  setUserId(userId) {
-    return this.firebaseNative.setUserId(userId);
-  }  
+    return this.firebaseNative.onNotification();
+  }
+
+  setUserId(userId) {}
 
   listenTopic(topic) {
-    return this.firebaseNative.subscribe(topic);
-  }  
+    return this.firebaseNative.subscribeToTopic(topic);
+  }
 
- 
 }

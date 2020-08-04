@@ -262,19 +262,11 @@
           <ion-icon name="md-happy"></ion-icon>
         </button>
       </ion-col>
-      <ion-col col-1>
-        <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="sendToAdmin">
-          <ion-icon name="md-person"></ion-icon>
-        </button>
-        <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="!sendToAdmin">
-          <ion-icon name="ios-people-outline"></ion-icon>
-        </button>
-      </ion-col>
-      <ion-col col-8>
-        <ion-textarea cols="50" #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()" class="text-mesg" (resized)="onResized($event)" autosize>
+      <ion-col col-10>
+        <ion-textarea cols="50" #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()"  (resized)="onResized($event)" autosize>
         </ion-textarea>
       </ion-col>
-      <ion-col col-2>
+      <ion-col col-1>
         <button ion-button clear icon-only item-right (click)="addgroupmsg()" [hidden]="(!newmessage&&!fileurl)">
           <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
         </button>

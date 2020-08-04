@@ -130,7 +130,7 @@ export class ConcoursOptionsPage {
   }
 
 
-  gotToPrepa(){
+  gotToPrepa($event?:any){
     let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
     modal.onDidDismiss((data) => {
       console.log("hengagaga gaga")

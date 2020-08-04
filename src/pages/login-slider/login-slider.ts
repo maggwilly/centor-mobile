@@ -1,4 +1,3 @@
-
 import { Component, ViewChild, ElementRef, Renderer,} from '@angular/core';
 import { AlertController, App, Platform,  LoadingController, Slides, IonicPage,NavParams,ViewController  } from 'ionic-angular';
 import { EmailValidator } from '../../validators/email';

@@ -34,7 +34,7 @@
           </ion-card-content>
         </div>
         <div>
-          <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
+          <programme [concours]="concours" (open)="gotToPrepa($event)"  [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
         </div>
 <ion-fab bottom right #fab [hidden]="!abonnement||!authInfo" [@bounce]="bounceState">
   <button color="blue" id="cart-btn" ion-fab (click)="openChat()">

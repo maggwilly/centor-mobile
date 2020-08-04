@@ -18,7 +18,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
-import { Firebase } from '@ionic-native/firebase';
+import { FCM  as Firebase} from '@ionic-native/fcm'
 // Directives
 import { NotificationDirective } from '../directives/notification/notification';
 import { HideHeaderDirective } from '../directives/hide-header/hide-header';
@@ -34,7 +34,6 @@ import { ShortListComponent } from '../components/short-list/short-list';
 import { ResultatListComponent } from '../components/resultat-list/resultat-list';
 import { PopupMenuComponent } from '../components/popup-menu/popup-menu';
 // Modules
-
 import { IonicStorageModule } from '@ionic/storage';
 //import { BrowserModule} from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
@@ -59,7 +58,7 @@ const cloudSettings: CloudSettings = {
       android: {
         iconColor: "#00AEED",
         vibrate: true,
-        forceShow:true,       
+        forceShow:true,
         sound: true,
         icon: 'ic_notify'
       }
@@ -90,11 +89,10 @@ export const MAINPROVIDERS = [
 ];
 
 export const SHAREDPROVIDERS = [
-  Camera, 
+  Camera,
    GroupsProvider,
   ImghandlerProvider,
   File,
-
   FileChooser,
   FilePath,
   UserProvider,

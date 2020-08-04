@@ -8,7 +8,7 @@ import {
   transition,
   animate,
   keyframes,
-  OnChanges
+  OnChanges, Output, EventEmitter
 } from '@angular/core';
 import { NavController,App, NavParams ,ModalController, AlertController,Events } from 'ionic-angular';
 import { AppNotify } from '../../providers/app-notify';
@@ -105,6 +105,7 @@ export class ProgrammeComponent implements OnChanges{
   @Input()
   abonnementLoaded:any;
   zone:NgZone;
+  @Output() open: EventEmitter<any> = new EventEmitter();
   flipState: String = 'notFlipped';
   flyInOutState: String = 'in';
   fadeState: String = 'visible';
@@ -181,7 +182,7 @@ getClass(obj:any):string{
       }
     matiere.concours=this.concours;
    if(this.isExpired(this.abonnement)){
-         //this.inscrire();
+     this.open.emit(matiere.concours);
       return ;
    }else
      this.appCtrl.getRootNav().push('MatiereDetailsPage',{matiere:matiere});
