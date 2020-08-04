@@ -50,7 +50,7 @@
     "cordova-plugin-camera": "^3.0.0",
     "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-facebook4": "^6.4.0",
-    "cordova-plugin-fcm-with-dependecy-updated": "^7.0.9",
+    "cordova-plugin-fcm-with-dependecy-updated": "^3.2.0",
     "cordova-plugin-file": "^6.0.1",
     "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-filechooser": "^1.2.0",
@@ -85,6 +85,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "2.1.4",
+    "@ionic/cli-plugin-cordova": "1.6.2",
     "@ionic/cli-plugin-ionic-angular": "1.4.1",
     "@ionic/lab": "1.0.18",
     "ionic": "3.6.0",
@@ -116,13 +117,15 @@
         "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
       },
       "cordova-plugin-fcm-with-dependecy-updated": {
-        "ANDROID_FCM_VERSION": "19.0.0",
-        "ANDROID_GRADLE_TOOLS_VERSION": "3.5.3",
-        "ANDROID_GOOGLE_SERVICES_VERSION": "4.3.3",
-        "ANDROID_DEFAULT_NOTIFICATION_ICON": "@mipmap/ic_launcher"
-      },
-      "cordova-plugin-androidx": {},
-      "cordova-plugin-androidx-adapter": {}
+        "ANDROID_FCM_VERSION": "11.0.4",
+        "ANDROID_GRADLE_TOOLS_VERSION": "6.5",
+        "ANDROID_GOOGLE_SERVICES_VERSION": "3.1.0",
+        "ANDROID_DEFAULT_NOTIFICATION_ICON": "@mipmap/ic_launcher",
+        "FCM_CORE_VERSION": "16.0.9",
+        "FCM_VERSION": "18.0.0",
+        "GRADLE_TOOLS_VERSION": "3.5.0",
+        "GOOGLE_SERVICES_VERSION": "4.2.0"
+      }
     },
     "platforms": [
       "browser",
