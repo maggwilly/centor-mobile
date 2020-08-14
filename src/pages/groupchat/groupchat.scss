@@ -6,8 +6,10 @@ page-groupchat {
   $toUserBackgroundColor: #fcfcfc;
 
   ion-content .scroll-content {
-    background-image: url("../../assets/img/background/chat.jpg" );
-    background-size: cover;
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/centor-concours.appspot.com/o/chat.jpg?alt=media&token=eab3b0d3-2a41-41a2-b80b-c5c923cb1e1e" );
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
   }
 img.ng-lazyloaded {
   animation: fadein .5s;

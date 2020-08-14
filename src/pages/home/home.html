@@ -40,6 +40,13 @@
       </ion-row>
     </ion-grid>
     <ion-list *ngIf="stats">
+      <ion-item text-wrap detail-push (click)="showSelections('en_vus')">
+        <ion-avatar item-start>
+          <ion-text-avatar>{{stats.envueCount}}</ion-text-avatar>
+        </ion-avatar>
+        Concours populaires
+        <p>Les plus connus</p>
+      </ion-item>
       <ion-item text-wrap detail-push (click)="showSelections('interessants')">
         <ion-avatar item-start>
           <ion-text-avatar><span *ngIf="authInfo">{{stats.forusersCount}}</span><span *ngIf="!authInfo">?</span>
@@ -55,13 +62,7 @@
         Concours déjà lancés
         <p>En cours en ce moment</p>
       </ion-item>
-      <ion-item text-wrap detail-push (click)="showSelections('en_vus')">
-        <ion-avatar item-start>
-          <ion-text-avatar>{{stats.envueCount}}</ion-text-avatar>
-        </ion-avatar>
-        Concours populaires
-        <p>Les plus connus</p>
-      </ion-item>
+
     </ion-list>
   </div>
   <ion-list style="position: sticky; margin-bottom: 0; min-width: 100%">

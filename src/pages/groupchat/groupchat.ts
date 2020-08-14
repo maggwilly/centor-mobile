@@ -75,29 +75,7 @@ export class GroupchatPage {
 
   ionViewDidLoad() {
     this.groupName = this.navParams.get('groupName');
-    this.observeAuth();
-
-  }
-  observeAuth() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.initPage()
-      } else
-        this.signup();
-    })
-  }
-  signup() {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      this.zone.run(() => {
-        if (user) {
-          this.initPage()
-          unsubscribe();
-        } else {
-          unsubscribe();
-        }
-      });
-    });
-    this.appCtrl.getRootNav().push('LoginSliderPage', { redirectTo: true });
+    this.groupdisplayname=this.navParams.get('groupdisplayname');
   }
 
   initPage(){
@@ -124,8 +102,6 @@ export class GroupchatPage {
     this.groupservice.loockforgroupmsgs(this.groupName);
     this.groupservice.getmeingroup(this.groupName).then(me => {
       this.meingroup = me;
-      /*  if (!this.meingroup)
-          this.sendToAdmin = true;*/
     })
     this.groupservice.getgroupmsgs(this.groupName);
     this.events.subscribe('groupmsg', () => {
@@ -271,7 +247,7 @@ export class GroupchatPage {
 
   }
 
-onImageLoad(){
+  onImageLoad($event: any){
   this.scrollto();
 }
 

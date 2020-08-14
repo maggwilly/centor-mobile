@@ -44,6 +44,7 @@ import { CloudSettings } from '@ionic/cloud-angular';
 import { LimitToPipe } from '../pipes/limit-to/limit-to';
 import { RelativeTime } from '../pipes/relative-time/relative-time';
 import { ConcoursListComponent } from '../components/concours-list/concours-list';
+import {GroupmanagerProvider} from "../providers/groupmanager/groupmanager";
 const cloudSettings: CloudSettings = {
   core: {
     app_id: 'c3ad15a6'
@@ -91,6 +92,7 @@ export const MAINPROVIDERS = [
 export const SHAREDPROVIDERS = [
   Camera,
    GroupsProvider,
+  GroupmanagerProvider,
   ImghandlerProvider,
   File,
   FileChooser,

@@ -1,7 +1,6 @@
-
 <ion-header >
   <ion-navbar>
-  <ion-title *ngIf="partie">{{partie.titre}}</ion-title>  
+  <ion-title *ngIf="partie">{{partie.titre}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content >
@@ -9,13 +8,13 @@
     <h1><ion-icon name="ios-alert" color="danger"></ion-icon></h1>
        Le moment n'est pas encore arrivé de vous présenter cette partie du programme.
        Elle sera disponible pour vous en temps opportun selon la  progréssion.
-        Pour le moment, continuez d'exploiter les parties du programme déjà actives. 
+        Pour le moment, continuez d'exploiter les parties du programme déjà actives.
       <p>
       <br>
     <i>Il est important de respecter la progéssion définie. Ce-ci vous permet de rester mieux organisé dans votre préparation.
     </i>
     </p>
-  </ion-card>  
+  </ion-card>
 <ion-card *ngIf="partie&&partie.objectif" ion-item text-wrap text-center>
   <ion-card-title>Contenu </ion-card-title>
   <ion-card-content>
@@ -23,8 +22,8 @@
   </ion-card-content>
 </ion-card>
 <ion-card *ngIf="partie&&partie.prerequis" ion-item text-wrap text-center>
-  <ion-card-title>Description  </ion-card-title> 
- <ion-card-content  [MathJax]="partie.prerequis"> 
+  <ion-card-title>Description  </ion-card-title>
+ <ion-card-content  [MathJax]="partie.prerequis">
  </ion-card-content>
 </ion-card>
 </ion-content>

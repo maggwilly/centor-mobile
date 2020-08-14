@@ -11,6 +11,7 @@ import { TooltipsModule } from 'ionic-tooltips';
 import { FcmProvider } from '../providers/fcm/fcm';
 import { AbonnementProvider } from '../providers/abonnement/abonnement';
 import { firebaseConfig} from './app.firebaseconfig';
+import { GroupmanagerProvider } from '../providers/groupmanager/groupmanager';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { firebaseConfig} from './app.firebaseconfig';
   ],
   providers: [MAINPROVIDERS,SHAREDPROVIDERS,{ provide: ErrorHandler, useClass: IonicErrorHandler },
     FcmProvider,
-    AbonnementProvider]
+    AbonnementProvider,
+    GroupmanagerProvider]
 })
 export class AppModule {}

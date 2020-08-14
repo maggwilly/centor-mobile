@@ -11,6 +11,7 @@ import {IonicPage} from 'ionic-angular';
 import {FcmProvider, FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {concoursDetailsAnimation} from "../../annimations/annimations";
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
+import {GroupmanagerProvider} from "../../providers/groupmanager/groupmanager";
 
 @IonicPage()
 @Component({
@@ -45,6 +46,7 @@ export class ConcoursOptionsPage {
     public abonnementProvider:AbonnementProvider,
     public notify: AppNotify,
     public appCtrl: App,
+    public  grouManager:GroupmanagerProvider,
     private socialSharing: SocialSharing,
     public storage: Storage) {
     this.showMenu = this.navParams.get('showMenu');
@@ -104,10 +106,11 @@ export class ConcoursOptionsPage {
 
   observeAuth() {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      this.getAbonnement();
       this.toggleBounce();
       if (user) {
-        unsubscribe();
+        this.getAbonnement();
+        this.jointGroup();
+         unsubscribe();
        }
     });
   }
@@ -131,7 +134,8 @@ export class ConcoursOptionsPage {
 
 
   gotToPrepa($event?:any){
-    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
+    console.log( this.abonnement)
+    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id, showfree: this.abonnement==null} );
     modal.onDidDismiss((data) => {
       console.log("hengagaga gaga")
     });
@@ -139,7 +143,7 @@ export class ConcoursOptionsPage {
   }
 
   private handlePayementEvent(data) {
-    console.log(data)
+
     if (data && data.status == 'PAID') {
       this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
       this.getAbonnement(true);
@@ -167,21 +171,51 @@ export class ConcoursOptionsPage {
       return;
     this.abonnementProvider.checkAbonnementValidity(this.concours.id).then(data => {
       this.abonnement = data;
+
       this.abonnementLoaded = true;
       if($event)
         this.events.publish('payement:success', this.abonnement);
-      if (this.abonnement)
+      if (this.abonnement){
         this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
-
+        this.jointGroup();
+        }
     }, error => {
       this.notify.onError({message: 'Petit problème de connexion.'});
     });
   }
 
-  openChat() {
-    this.navCtrl.push('GroupchatPage', {groupName: this.concours.id, groupdisplayname: this.concours.nomConcours});
+  private jointGroup() {
+    this.grouManager.joinSessionGroup(this.concours.id);
   }
 
+  openChat() {
+    let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.zone.run(() => {
+        if (user) {
+          modal.dismiss(user);
+          this.navCtrl.push('GroupchatPage', {
+            groupName: this.concours.id,
+            groupdisplayname: this.concours.nomConcours
+          });
+          unsubscribe();
+          return;
+        }
+        unsubscribe();
+        modal.onDidDismiss((data, role) => {
+            if (data) {
+              this.navCtrl.push('GroupchatPage', {
+                groupName: this.concours.id,
+                groupdisplayname: this.concours.nomConcours
+              });
+              unsubscribe();
+            }
+          }
+        )
+        modal.present();
+      })
+    })
+  }
   getShowConcours(id: number) {
     return this.dataService.getShowSession(id).then(data => {
       if (data)

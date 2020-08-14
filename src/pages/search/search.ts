@@ -30,13 +30,19 @@ export class SearchPage {
   }
 
   ngAfterViewInit() {
-    this.vc.setFocus()
-    this.vc.inputFocused()
+      setTimeout(() => {
+        this.vc.setFocus();
+      }, 500);
+
     this.dataService.search(this.searchTerm$)
       .subscribe(results => {
         if(!results||results.length==0)
           return;
         this.results$ = results;
+        setTimeout(() => {
+          this.vc.setFocus();
+        }, 500);
+
       });
     this.searchTerm$.next('');
   }

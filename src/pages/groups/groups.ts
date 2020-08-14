@@ -23,11 +23,7 @@ export class GroupsPage {
       content: 'Getting your groups, Please wait...'
     });
     loader.present();
-    this.groupservice.getmygroups();
     loader.dismiss();
-    this.events.subscribe('newgroup', () => {
-      this.allmygroups = this.groupservice.mygroups;
-    })
   }
 
   ionViewDidLeave() {

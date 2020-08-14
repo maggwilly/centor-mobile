@@ -56,7 +56,7 @@ export class InformationPage {
   }
 
   processPayment() {
-  let modal=  this.modalCtrl.create('PricesPage',{price: this.price, product:0} );
+  let modal=  this.modalCtrl.create('PricesPage',{price: this.price, product:0, showfree: this.abonnement} );
     modal.onDidDismiss((data, role)=>{})
     modal.present();
   }

@@ -1,20 +1,26 @@
 page-concours-options {
- ion-spinner,
- ion-button {
- display: inline-block !important;
-}
+  ion-spinner,
+  ion-button {
+    display: inline-block !important;
+  }
 
- .concours-title{
-        background-color: color($colors,primary-clear);
-        margin-top:0px;
-        padding: 5px 21px;
-        height: 17%;
-       color:#fff;
-        h2{
-         font-weight: normal;
-        }
+  .concours-title {
+    background-color: color($colors, primary-clear);
+    margin-top: 0px;
+    padding: 5px 21px;
+    height: 17%;
+    color: #fff;
+
+    h2 {
+      font-weight: normal;
     }
-    .light-icon{
-        color:  #7F7F7F;
-       }  
+  }
+
+  .light-icon {
+    color: #7F7F7F;
+  }
+
+  ion-fab{
+  z-index: 99999;
+  }
 }

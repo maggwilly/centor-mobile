@@ -81,7 +81,7 @@ export class HomePage {
   }
 
   showSelections(target: string) {
-    if(target=='interessants'&&!this.authInfo)
+    if(target=='interessants'&&!firebase.auth().currentUser)
       return this.signup()
       let targetTitle="Pouvant m'interresser"
       switch (target) {
@@ -123,17 +123,18 @@ export class HomePage {
     }
 
   signup() {
+    let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
-          this.goToNex(user, unsubscribe);
+          modal.dismiss(user);
+          this.goToNex(user);
           unsubscribe();
         }
-        let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+        unsubscribe();
         modal.onDidDismiss((data, role) => {
           if (data) {
-            this.goToNex(user, unsubscribe);
-            unsubscribe();
+            this.goToNex(user);
           }
         })
         modal.present();
@@ -142,7 +143,7 @@ export class HomePage {
 
   }
 
-  private goToNex(user: firebase.User, unsubscribe: () => void) {
+  private goToNex(user: firebase.User) {
     this.authInfo = user;
     this.getAbonnement();
     this.notify.onSuccess({message: "Vous êtes connecté à votre compte."});

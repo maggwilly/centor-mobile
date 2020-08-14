@@ -105,12 +105,14 @@ export class ProgrammeComponent implements OnChanges{
   @Input()
   abonnementLoaded:any;
   zone:NgZone;
+  locked: any;
   @Output() open: EventEmitter<any> = new EventEmitter();
   flipState: String = 'notFlipped';
   flyInOutState: String = 'in';
   fadeState: String = 'visible';
   flashState: String = 'first';
   bounceState: String = 'noBounce';
+
   constructor(
     public navCtrl: NavController,
     public notify:AppNotify,
@@ -124,13 +126,17 @@ export class ProgrammeComponent implements OnChanges{
     this.toggleFlash();
   }
 
-  ngOnChanges() {}
+  ngOnChanges() {
+
+    this.locked=this.isExpired(this.abonnement);
+  }
 
  isExpired(abonnement:any){
    if(!abonnement)
      return true;
   let now=Date.now();
   let endDate=new Date(abonnement.endDate).getTime();
+
    return now>endDate;
    }
 

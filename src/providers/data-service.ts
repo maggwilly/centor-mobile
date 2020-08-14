@@ -57,9 +57,9 @@ getEcoles(start:number){
            .then(response =>response.json());
 
 }
-getSelectedSessions(ecole:number,uid?:any,filter?:string){
-  return !uid? new Promise(resolve => undefined):
-   this.http.get(apiConfig.baseUrl+ 'formated/session/selected/' + ecole + '/' + uid + '/json?filter='+filter,  { headers:this. headers })
+getSelectedSessions(ecole:number,filter?:string){
+  return !this.getUserUID()? new Promise(resolve => undefined):
+   this.http.get(apiConfig.baseUrl+ 'formated/session/selected/' + ecole + '/' + this.getUserUID() + '/json?filter='+filter,  { headers:this. headers })
           .toPromise()
            .then(response =>response.json());
 
@@ -238,7 +238,6 @@ getInfo(uid:any,registrationId?:any){
   }
 
 saveAnalyse(uid:any,concours:number,matiere:number,partie:number,analyse:any){
-  console.log(apiConfig.baseUrl  + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/new/json');
      return  this.http.post(apiConfig.baseUrl +'formated/analyse/'+uid+'/'+concours+'/'+matiere+'/'+partie+'/new/json',JSON.stringify(analyse ), { headers:this. headers })
               .toPromise()
                .then(response =>response.json());
@@ -247,7 +246,6 @@ saveAnalyse(uid:any,concours:number,matiere:number,partie:number,analyse:any){
 
 
 getAnalyse(uid:any,concours:number,matiere:number,partie:number){
-  console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json');
 
      return  this.http.get(apiConfig.baseUrl +'formated/analyse/'+uid+'/'+concours+'/'+matiere+'/'+partie+'/json', { headers:this. headers })
               .toPromise()
@@ -255,7 +253,6 @@ getAnalyse(uid:any,concours:number,matiere:number,partie:number){
 }
 
 getAnalyseObservable(uid: any, concours: number, matiere: number, partie: number) {
-  console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json');
     return this.http.get(apiConfig.baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json', { headers: this.headers })
     .map(response => response.json());
   }

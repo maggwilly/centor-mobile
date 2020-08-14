@@ -18,7 +18,7 @@ import {UserProvider} from "../providers/user/user";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
-const appVersion ='3.1.4';
+const appVersion ='3.2.4';
 
 export interface PageInterface {
   title: string;
@@ -50,8 +50,8 @@ export class MyApp {
   notificationId: string=firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;//= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
     { title: 'Accueil', component: 'HomePage', icon: 'home' },
-    { title: 'Tous les Concours', component: 'ConcoursPage', icon: 'school' },
-    { title: 'Resultats Disponibles', component: 'ResultatsPage', icon: 'md-list' },
+    { title: 'Les Concours', component: 'ConcoursPage', icon: 'school' },
+    { title: 'Arrêtés publiés', component: 'ResultatsPage', icon: 'md-list' },
     { title: 'A Propos de nous', component: 'AboutPage', icon: 'information-circle' }
   ];
   skipMsg: string = "Skip";
@@ -224,15 +224,16 @@ checkInfo(info:any){
 
   openSettingPage() {
     this.menu.close();
+    let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
+          modal.dismiss(user);
           this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
           unsubscribe();
           return;
         }
         unsubscribe();
-        let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
          modal.onDidDismiss((data, role) => {
           if (data) {
             this.nav.setRoot('HomePage');;
