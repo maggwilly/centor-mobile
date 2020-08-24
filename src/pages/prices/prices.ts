@@ -39,6 +39,7 @@ export class PricesPage {
       this.zone.run(() => {
         if (user) {
           this.bundle = bundle;
+          this.events.publish("logged:in")
           this.innerSlider.slideNext();
           this.createCommande(bundle);
           unsubscribe();
@@ -51,7 +52,7 @@ export class PricesPage {
             this.bundle = bundle;
             this.innerSlider.slideNext();
             this.createCommande(bundle);
-            unsubscribe();
+
           }
         })
         modal.present();
@@ -61,6 +62,7 @@ export class PricesPage {
 
   private createCommande(bundle) {
     this.abonnementProvider.startCommande(this.product, bundle).then(data => {
+      console.log(data)
       this.commande = data;
       this.firebaseNative.logEvent(`cmd_started_event`, {bundle: bundle, amount: data.amount});
     }, error => {
@@ -70,8 +72,12 @@ export class PricesPage {
 
   confirmCommende() {
     if (!this.commande.amount) {
-      this.abonnementProvider.confirmFreeCommende({status: "PAID",orderid: this.commande.order_id}).then(data => {
-        this.dismiss({status: "PAID"});
+      console.log(this.commande)
+      this.abonnementProvider.confirmFreeCommende({status: "PAID",orderid: this.commande.order_id})
+        .then(data => {
+          if(data&&data.abonnement)
+              this.dismiss({status: "PAID", amount:0});
+          else throw 'Nous avons rencontré un problème !';
       }, error => {
         this.notify.onError({message: 'Nous avons rencontré un problème !'});
       })

@@ -1,5 +1,5 @@
 import {Component, NgZone} from '@angular/core';
-import {NavController, App, NavParams, ModalController, LoadingController, Events} from 'ionic-angular';
+import {NavController, App, NavParams, ModalController, LoadingController, Events, AlertController} from 'ionic-angular';
 import firebase from 'firebase';
 import {MatieresPage} from '../matieres/matieres';
 import {Storage} from '@ionic/storage';
@@ -43,6 +43,7 @@ export class ConcoursOptionsPage {
     public events: Events,
     public loadingCtrl: LoadingController,
     private fcm: FcmProvider,
+    public alertCtrl: AlertController,
     public abonnementProvider:AbonnementProvider,
     public notify: AppNotify,
     public appCtrl: App,
@@ -51,6 +52,7 @@ export class ConcoursOptionsPage {
     public storage: Storage) {
     this.showMenu = this.navParams.get('showMenu');
     this.initPage();
+    this.listenToEvents();
     this.zone = new NgZone({});
       this.firebaseNative.setScreemName('concours_view');
   }
@@ -79,9 +81,50 @@ export class ConcoursOptionsPage {
       this.getShowConcours(id).then(() => {
          this.observeAuth();
       })
+
+  }
+  listenToEvents() {
+    this.events.subscribe('payement', data=>{
+      this.handlePayementEvent(data);
+    })
+    this.events.subscribe('score:matiere:updated', (data) => {
+      this.zone.run(() => {
+        if (!this.concours)
+          return
+        this.storage.set('_matieres_' + this.concours.id, this.concours.matieres)
+      });
+    });
+
   }
 
+  shouldAskJonGroup(id:any){
+    return this.storage.get(`skip_ask_group_${id}`)
+  }
 
+  askForJoinGroup() {
+    let alert = this.alertCtrl.create({
+      title: "Rejoindre le groupe de discussion",
+      message: "Voulez-vous intégrer le forum de discussion pour ce concous ?",
+      buttons: [
+        {
+          text: "Non",
+          role: 'cancel',
+          handler: () => { }
+        },
+        {
+          text: "Intégrer",
+          role: 'cancel',
+          handler: () => {
+            this.grouManager.joinSessionGroup(this.concours.id).then(()=>{
+              this.openChat();
+            });
+          }
+        }
+      ]
+    });
+    this.storage.set(`skip_ask_group_${this.concours.id}`, true);
+    alert.present()
+  }
   toggleFlip() {
     this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
   }
@@ -109,7 +152,10 @@ export class ConcoursOptionsPage {
       this.toggleBounce();
       if (user) {
         this.getAbonnement();
-        this.jointGroup();
+        this.shouldAskJonGroup(this.concours.id).then((data)=>{
+          if (!data)
+            this.askForJoinGroup();
+        })
          unsubscribe();
        }
     });
@@ -137,13 +183,12 @@ export class ConcoursOptionsPage {
     console.log( this.abonnement)
     let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id, showfree: this.abonnement==null} );
     modal.onDidDismiss((data) => {
-      console.log("hengagaga gaga")
+      this.handlePayementEvent(data)
     });
     modal.present();
   }
 
   private handlePayementEvent(data) {
-
     if (data && data.status == 'PAID') {
       this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
       this.getAbonnement(true);
@@ -177,16 +222,16 @@ export class ConcoursOptionsPage {
         this.events.publish('payement:success', this.abonnement);
       if (this.abonnement){
         this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
-        this.jointGroup();
+        this.shouldAskJonGroup(this.concours.id).then((data)=>{
+          if (!data)
+            this.askForJoinGroup();
+        })
         }
     }, error => {
       this.notify.onError({message: 'Petit problème de connexion.'});
     });
   }
 
-  private jointGroup() {
-    this.grouManager.joinSessionGroup(this.concours.id);
-  }
 
   openChat() {
     let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
@@ -194,10 +239,12 @@ export class ConcoursOptionsPage {
       this.zone.run(() => {
         if (user) {
           modal.dismiss(user);
+          this.events.publish("logged:in")
           this.navCtrl.push('GroupchatPage', {
             groupName: this.concours.id,
             groupdisplayname: this.concours.nomConcours
           });
+
           unsubscribe();
           return;
         }
@@ -208,7 +255,6 @@ export class ConcoursOptionsPage {
                 groupName: this.concours.id,
                 groupdisplayname: this.concours.nomConcours
               });
-              unsubscribe();
             }
           }
         )
@@ -253,19 +299,7 @@ export class ConcoursOptionsPage {
   }
 
 
-  listenToEvents() {
-    this.events.subscribe('payement', data=>{
-      this.handlePayementEvent(data);
-    })
-    this.events.subscribe('score:matiere:updated', (data) => {
-      this.zone.run(() => {
-        if (!this.concours)
-          return
-        this.storage.set('_matieres_' + this.concours.id, this.concours.matieres)
-      });
-    });
 
-  }
 
   openPage(page) {
     this.navCtrl.push(page)

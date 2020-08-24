@@ -1,6 +1,10 @@
 carousel {
+  min-height: 30%;
    .cover{
      background-size: cover;
+     ion-slides{
+       height: inherit;
+     }
    }
 
    .classic-button{

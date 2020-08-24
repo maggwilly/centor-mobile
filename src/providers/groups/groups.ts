@@ -66,6 +66,7 @@ export class GroupsProvider {
   getintogroup(currentgroupname) {
     if(!currentgroupname||!firebase.auth().currentUser)
       return  ;
+    this.currentgroupname = currentgroupname;
     firebase.database().ref(`/groupes/${currentgroupname}/info`).on('value', (snapshot) => {
       if (snapshot.val()) {
         this.groupdisplayname = snapshot.val().groupName;
@@ -73,8 +74,8 @@ export class GroupsProvider {
         this.groupmemberscount = snapshot.val().memberscount
         this.events.publish('gotintogroup');
       }
-      this.currentgroupname = currentgroupname;
     })
+
     return  firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${currentgroupname}/me`).update({ msgcount: 0, lastLogin: firebase.database.ServerValue.TIMESTAMP });
   }
 
@@ -184,14 +185,14 @@ export class GroupsProvider {
 }
 
   //nouvelle version cloud function send
-  addgroupmsg(newmessage, addinlist = true, currentgroupname =this.currentgroupname) {
-    if(!currentgroupname||!firebase.auth().currentUser)
+  addgroupmsg(newmessage, addinlist = true) {
+    if(!this.currentgroupname||!firebase.auth().currentUser)
       return  ;
     let message = this.addMsg(newmessage,addinlist);
     let copie = Object.assign({}, message);
     copie.pending = false;
   return new Promise((resolve, reject) => {
-    firebase.database().ref(`/groupes/${currentgroupname}/msgboard`).push(message).then(() => {
+    firebase.database().ref(`/groupes/${this.currentgroupname}/msgboard`).push(message).then(() => {
      firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${this.currentgroupname}/msgboard`).push(copie).then(() => {
                resolve(true);
      }, (err) => {

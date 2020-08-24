@@ -43,7 +43,7 @@
       la dégradation de la personne humaine, ou à des substances interdites.
     </p>
   </ion-item>
-<ion-infinite-scroll (ionInfinite)="doInfinite($event)" position='top' *ngIf="showInfinite">
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" position='top' *ngIf="showInfinite">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   <div class="message-wrap">
@@ -234,34 +234,26 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer  [style.height]="footerHeight()">
-  <ion-item class="file-preview" *ngIf="fileurl">
-    <ion-thumbnail item-left *ngIf="mesagetype=='image'">
-      <img [src]="_DomSanitizer.bypassSecurityTrustUrl(fileurl)">
-    </ion-thumbnail>
-    <span *ngIf="mesagetype=='image'">Envoyer cette image</span>
-    <p>Saisir une description de l'image </p>
-    <button ion-button item-right clear icon-only (click)="cancelFile()" item-right class="button-close">
-      <ion-icon name="ios-close-circle-outline"></ion-icon>
-    </button>
-  </ion-item>
-  <ion-grid class="input-wrap" no-border *ngIf="meingroup">
-    <ion-row>
-      <ion-col col-1>
-        <button ion-button small clear icon-only item-right (click)="switchEmojiPicker()">
-          <ion-icon name="md-happy"></ion-icon>
-        </button>
-      </ion-col>
-      <ion-col col-10>
-        <ion-textarea cols="50" #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()"  (resized)="onResized($event)" autosize>
-        </ion-textarea>
-      </ion-col>
-      <ion-col col-1>
-        <button ion-button clear icon-only item-right (click)="addgroupmsg()" [disabled]="!newmessage||(meingroup.blocked||meingroup.leaved)">
-          <ion-icon  name="md-send"></ion-icon>
-        </button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <emoji-picker *ngIf="showEmojiPicker" [(ngModel)]="newmessage"></emoji-picker>
+<ion-footer   [keyboardAttach]="content">
+  <ion-navbar>
+    <ion-grid class="input-wrap" no-border *ngIf="meingroup">
+      <ion-row>
+        <ion-col col-1>
+          <button ion-button small clear icon-only item-right (click)="switchEmojiPicker()">
+            <ion-icon name="md-happy"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-10>
+          <ion-textarea cols="50" #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()"   autosize>
+          </ion-textarea>
+        </ion-col>
+        <ion-col col-1>
+          <button ion-button clear icon-only item-right (click)="addgroupmsg()" [disabled]="!newmessage||(meingroup.blocked||meingroup.leaved)">
+            <ion-icon  name="md-send"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <emoji-picker *ngIf="showEmojiPicker" [(ngModel)]="newmessage"></emoji-picker>
+  </ion-navbar>
 </ion-footer>

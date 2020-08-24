@@ -2,15 +2,16 @@
   <ion-navbar hideBackButton>
     <button menuToggle ion-button icon-only>
       <ion-icon name="menu"></ion-icon>
-      <ion-badge class="notifications-badge" notification [notificationId]="notificationId" [registrationId]="registrationId" color="danger"></ion-badge>
+      <ion-badge class="notifications-badge" notification [notificationId]="notificationId"
+                 [registrationId]="registrationId" color="danger"></ion-badge>
     </button>
     <ion-title *ngIf="concours&&concours.concours"> {{concours.nomConcours}}</ion-title>
-    <ion-buttons  end>
+    <ion-buttons end>
       <button ion-button icon-only (click)="observeAuth(false)">
         <ion-icon name="md-refresh"></ion-icon>
       </button>
-    </ion-buttons >
-    <ion-buttons right >
+    </ion-buttons>
+    <ion-buttons right>
       <button ion-button icon-only (click)="showOptions()">
         <ion-icon name="md-open"></ion-icon>
       </button>
@@ -19,33 +20,40 @@
   </ion-navbar>
 </ion-header>
 <ion-content hide-fab>
-        <div class="card-background">
-          <ion-card-header>Tableau de bord</ion-card-header>
-          <ion-grid  style="height: 100%;justify-content: center;" *ngIf="!loaded">
-              <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
-                <ion-spinner   name="dots" class="vertical-center" ></ion-spinner>
-              </ion-row>
-             </ion-grid>
-              <dashboord-item  [authInfo]="authInfo" [analyse]="analyse" [concours]="concours" *ngIf="concours &&analyse&& loaded" [isShow]="isShow"></dashboord-item>
-          <ion-card-content *ngIf="!analyse && loaded" >
-            <p class="vertical-center" >
-           Nous n'avons  aucune information à vous présenter pour le moment car vous n'avez pas encore subi une évaluation.
-            </p>
-          </ion-card-content>
-        </div>
-        <div>
-          <programme [concours]="concours" (open)="gotToPrepa($event)"  [abonnement]="abonnement" [authInfo]="authInfo" [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
-        </div>
-<ion-fab bottom right #fab  [@bounce]="bounceState">
-  <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
-    <ion-icon name="ios-chatboxes-outline"></ion-icon>
-    <ion-badge color="blue"id="cart-badge"  notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
-  </button>
-</ion-fab>
-</ion-content>
-<ion-footer *ngIf="isExpired(abonnement)&&(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
-    <button ion-button color="orange"  large full no-margin icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="gotToPrepa()">
-      <ion-icon name="list" color="white"></ion-icon>
-      <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
+  <div class="card-background">
+    <ion-card-header>Tableau de bord</ion-card-header>
+    <ion-grid style="height: 100%;justify-content: center;" *ngIf="!loaded">
+      <ion-row justify-content-center align-items-center style="height: 100%;justify-content: center;">
+        <ion-spinner name="dots" class="vertical-center"></ion-spinner>
+      </ion-row>
+    </ion-grid>
+    <dashboord-item [authInfo]="authInfo" [analyse]="analyse" [concours]="concours" *ngIf="concours &&analyse&& loaded"
+                    [isShow]="isShow"></dashboord-item>
+    <ion-card-content *ngIf="!analyse && loaded">
+      <p class="vertical-center">
+        Nous n'avons aucune information à vous présenter pour le moment car vous n'avez pas encore subi une évaluation.
+      </p>
+    </ion-card-content>
+  </div>
+  <div>
+    <programme [concours]="concours" (open)="gotToPrepa($event)" [abonnement]="abonnement" [authInfo]="authInfo"
+               [analyse]="analyse" *ngIf="concours" [matiereLoaded]="matiereLoaded"
+               [abonnementLoaded]="abonnementLoaded"></programme>
+  </div>
+  <ion-fab bottom right #fab [@bounce]="bounceState">
+    <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
+      <ion-icon name="ios-chatboxes-outline"></ion-icon>
+      <ion-badge color="blue" id="cart-badge" notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
     </button>
+  </ion-fab>
+</ion-content>
+<ion-footer >
+  <div *ngIf="isExpired(abonnement)&&(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
+  <button ion-button color="orange" large full no-margin icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)"
+          (click)="gotToPrepa()">
+    <ion-icon name="list" color="white"></ion-icon>
+    <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span
+    *ngIf="abonnement"> Poursuivre la préparation</span>
+  </button>
+  </div>
 </ion-footer>

@@ -23,6 +23,7 @@ export class InformationPage {
     public abonnementProvider:AbonnementProvider,
     public dataService: DataService,) {
     this.abonnement= this.navParams.get('abonnement');
+    this.listenToEvents();
   }
 
 
@@ -56,8 +57,10 @@ export class InformationPage {
   }
 
   processPayment() {
-  let modal=  this.modalCtrl.create('PricesPage',{price: this.price, product:0, showfree: this.abonnement} );
-    modal.onDidDismiss((data, role)=>{})
+  let modal=  this.modalCtrl.create('PricesPage',{price: this.price, product:0, showfree: this.abonnement==null} );
+    modal.onDidDismiss((data, role)=>{
+      this.handlePayementEvent(data);
+    })
     modal.present();
   }
 

@@ -16,10 +16,11 @@ export class NotificationDirective {
   @Input("notificationId") notificationId:string;
 
   @Input("registrationId") registerId: any;
-  @Input("groupname") groupname: any; 
-  
+  @Input("groupname") groupname: any;
+
   count:number;
-  firegroup = firebase.database().ref('/groups');
+  firegroup = firebase.database().ref('/messages' +
+    '');
   constructor(private elementRef: ElementRef, public dataService: DataService, public events: Events, public storage: Storage, ) {
 
     this.events.subscribe('message:read', (data) => {
@@ -52,5 +53,5 @@ export class NotificationDirective {
     this.ngOnChanges();
     }
 
-   
+
 }

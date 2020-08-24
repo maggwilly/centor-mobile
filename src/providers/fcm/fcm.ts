@@ -30,7 +30,9 @@ export class FcmProvider {
     return this.firebaseNative.onNotification();
   }
 
-  setUserId(userId) {}
+  setUserId(userId) {
+
+  }
 
   listenTopic(topic) {
     return this.firebaseNative.subscribeToTopic(topic);

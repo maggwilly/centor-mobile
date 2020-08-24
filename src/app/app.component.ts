@@ -18,7 +18,7 @@ import {UserProvider} from "../providers/user/user";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
-const appVersion ='3.2.4';
+const appVersion ='3.3.0';
 
 export interface PageInterface {
   title: string;
@@ -32,7 +32,9 @@ export interface PageInterface {
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  rootPage: any = (!document.URL.startsWith('http') || this.platform.is('core') || this.platform.is('mobileweb')) ? 'ProcessingPage' : 'HomePage';//TabsPage;TutorialPage;// MatieresPage;//
+  rootPage: any = (!document.URL.startsWith('http') ||
+    this.platform.is('core') ||
+    this.platform.is('mobileweb')) ? 'ProcessingPage' : 'HomePage';//TabsPage;TutorialPage;// MatieresPage;//
   authInfo: any;
   concours: any;
   paidConcours: any[];
@@ -100,13 +102,23 @@ export class MyApp {
 
   }
   listenProfilEvents(){
+    this.events.subscribe('logged:in',()=>{
+      this.storage.get('registrationId').then(token =>{
+        this.userProvider.addToken(token);
+      })
+
+    })
+
     this.events.subscribe('picture:change',imageData =>{
       this.imgservice.storeImage(imageData, '/profileimages').then(url => {
         this.user.info.photoURL=url;
         this.events.publish('picture:changed',url);
+        if(!url)
+          return
         this.userProvider.updateimage(url).then((res: any) => { })
       })
     })
+
    this.events.subscribe('displayName:change',displayname =>{
      this.user.info.displayName=displayname;
     this.userProvider.updatedisplayname(displayname);
@@ -184,13 +196,14 @@ export class MyApp {
       this.defaultAvatar = info ? info.photoURL : firebase.auth().currentUser.photoURL;
       return this.dataService.getInfo(firebase.auth().currentUser.uid, this.registrationId).then((info) => {
         if (info) {
+          info.photoURL=firebase.auth().currentUser.photoURL
           this.user.info = info;
-          this.defaultAvatar = info.photoURL;
+          this.defaultAvatar = firebase.auth().currentUser.photoURL;
           this.storage.set(firebase.auth().currentUser.uid, info);
-          if (!info.phone || !info.displayName)
-            this.openModal('SignupModalPage', {info:info});
-         }
-      },
+             if (!info.phone || !info.displayName)
+                this.openModal('SignupModalPage', {info:info});
+          }
+        },
         error => {
           this.notify.onError({ message: 'Petit problème de connexion.' });
         })
@@ -228,8 +241,9 @@ checkInfo(info:any){
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
-          modal.dismiss(user);
-          this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
+           modal.dismiss(user);
+           this.events.publish("logged:in")
+             this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
           unsubscribe();
           return;
         }
@@ -237,7 +251,6 @@ checkInfo(info:any){
          modal.onDidDismiss((data, role) => {
           if (data) {
             this.nav.setRoot('HomePage');;
-            unsubscribe();
           }else{
             this.user = undefined;
             this.paidConcours = [];
@@ -265,10 +278,8 @@ checkInfo(info:any){
       this.fcm.onTokenRefresh().subscribe(token => {
         this.registration(token);
       });
-
-      this.fcm.listenTopic('centor-public');
      this.fcm.onNotification().subscribe(data => {
-      if (data.tap) {
+      if (data.wasTapped) {
         if (data.page) {
            this.rootSet = true;
           switch (data.page) {
@@ -302,6 +313,7 @@ checkInfo(info:any){
         alert.present();
       };
     });
+      this.fcm.listenTopic('centor-public');
     }
 
   }
@@ -322,7 +334,6 @@ checkInfo(info:any){
    firebase.messaging().requestPermission()
       .then(() => {
         return firebase.messaging().getToken().then(token => {
-          console.log(token);
           this.registration(token);
         }, error => {
           console.log(error);
@@ -376,12 +387,13 @@ checkInfo(info:any){
       if (user) {
         this.authInfo = user;
         this.fcm.setUserId(user.uid);
-        this.user = { info: this.authInfo };
+        this.user = { info: user};
         this.notificationId = user.uid;
-        this.getUserProfile().then(()=>{
-        this.loadAbonnement();
-
-        });
+        this.zone.run(() => {
+          this.getUserProfile().then(()=>{
+           this.loadAbonnement();
+          });
+        })
       } else {
         this.user = undefined;
         this.paidConcours = [];

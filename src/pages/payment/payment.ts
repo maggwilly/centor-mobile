@@ -20,13 +20,12 @@ export class PaymentPage {
               public viewCtrl: ViewController,
               public navParams: NavParams) {
     this.paymentdata= this.navParams.get('paymentdata');
-    console.log(this.paymentdata);
   }
 
   ionViewDidLoad() {}
 
   onFrameError($event){
-    console.log($event)
+    console.log(JSON.stringify($event))
     this.dismiss($event.detail.error)
   }
 

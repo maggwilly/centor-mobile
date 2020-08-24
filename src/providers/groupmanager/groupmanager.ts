@@ -20,7 +20,7 @@ export class GroupmanagerProvider {
     if(!currentgroupname||!firebase.auth().currentUser)
       return  ;
     return  this.getgroupinfos(currentgroupname).then((info) => {
-        firebase.database().ref(`/groupes/${currentgroupname}/members/${firebase.auth().currentUser.uid}`).update(updates?updates:(info?info:{ acceptNotification: true})).then(()=>{
+        return firebase.database().ref(`/groupes/${currentgroupname}/members/${firebase.auth().currentUser.uid}`).update(updates?updates:(info?info:{ acceptNotification: true})).then(()=>{
         })
           .catch((err) => {
             console.log(err)

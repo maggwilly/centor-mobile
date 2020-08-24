@@ -17,8 +17,7 @@
 <div padding>
  <button ion-item text-wrap (click)="openRessources()">
   <ion-icon ios="ios-albums" md="md-albums" item-left></ion-icon>
-<ion-icon [hidden]="authInfo" name="lock-outline" item-right ></ion-icon>
-<ion-icon [hidden]="!authInfo" name="ios-arrow-forward" item-right ></ion-icon>
+<ion-icon  name="ios-arrow-forward" item-right ></ion-icon>
    Documents <ion-badge color="blue" *ngIf="concours.newressource">Nouveau</ion-badge>
       <p>
         Sujets, Corrigés, Travaux dirigés,condensés de cours, etc.

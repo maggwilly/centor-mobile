@@ -5,11 +5,8 @@ import { Http } from '@angular/http';
 import { window } from 'rxjs/operator/window';
 import { FilePath } from '@ionic-native/file-path';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-/*
-  Generated class for the ImghandlerProvider provider.
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
+import {finalize} from "rxjs/operators";
+
 @Injectable()
 export class ImghandlerProvider {
   nativepath: any;
@@ -17,7 +14,22 @@ export class ImghandlerProvider {
   constructor(public filechooser: FileChooser, public FilePath: FilePath, private camera: Camera,public http: Http,) {
   }
 
-
+  getImage(targetWidth?: number, targetHeight?:number) {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      cameraDirection: 1,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: 0
+    }
+    if (targetWidth &&targetHeight){
+      options.targetWidth = targetWidth;
+      options.targetHeight = targetHeight;
+      options.allowEdit=true;
+    }
+    return  this.camera.getPicture(options)
+  }
 
   uploadimage(sourceType=0) {
     var promise = new Promise((resolve, reject) => {
@@ -38,65 +50,30 @@ export class ImghandlerProvider {
           .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
             resolve(picture.downloadURL);
           });
-      });   
-     
-
-     
-      /*
-
-        this.filechooser.open().then((url) => {
-          (<any>window).FilePath.resolveNativePath(url, (result) => {
-            this.nativepath = result;
-            (<any>window).resolveLocalFileSystemURL(this.nativepath, (res) => {
-              res.file((resFile) => {
-                var reader = new FileReader();
-                reader.readAsArrayBuffer(resFile);
-                reader.onloadend = (evt: any) => {
-                  var imgBlob = new Blob([evt.target.result], { type: 'image/jpeg' });
-                  var imageStore = this.firestore.ref('/profileimages').child(firebase.auth().currentUser.uid);
-                  imageStore.put(imgBlob).then((res) => {
-                    this.firestore.ref('/profileimages').child(firebase.auth().currentUser.uid).getDownloadURL().then((url) => {
-                      resolve(url);
-                    }).catch((err) => {
-                        alert(err);
-                    })
-                  }).catch((err) => {
-                    alert(err);
-                  })
-                }
-              })
-            })
-          })
-      })*/
-    })    
-     return promise;   
+      });
+    })
+     return promise;
   }
+
   getImageTest() {
     return this.http.get('assets/data/image', {})
       .toPromise()
       .then(response => response.text());
-  } 
+  }
 
-  getImage(targetWidth?: number, targetHeight?:number) {
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      cameraDirection: 1,
-      mediaType: this.camera.MediaType.PICTURE,
-      sourceType: 0
-    }
-    if (targetWidth &&targetHeight){
-      options.targetWidth = targetWidth;
-      options.targetHeight = targetHeight;
-      options.allowEdit=true;
-    }
-    return this.camera.getPicture(options)
-  } 
+
+
+
 
   storeImage(imageData, path: string = '/picmsgs'){
-    return firebase.storage().ref(path).child(this.guid())
-    .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => picture.downloadURL)
+    return new Promise(resolve => {
+      const fileRef =  firebase.storage().ref(path).child(this.guid());
+      const  uploadTask=fileRef.putString(imageData, 'base64', { contentType: 'image/jpeg' });
+      uploadTask.then(picture =>{
+        resolve(fileRef.getDownloadURL());
+      })
+    })
+
 }
 
 
@@ -126,8 +103,8 @@ export class ImghandlerProvider {
             })
           })
       })
-    })    
-     return promise;   
+    })
+     return promise;
   }
 
   picmsgstore(sourceType=0) {
@@ -145,34 +122,10 @@ export class ImghandlerProvider {
           .putString(imageData, 'base64', { contentType: 'image/jpeg' }).then(picture => {
             resolve(picture.downloadURL);
           });
-      });   
-      
-     /*   this.filechooser.open().then((url) => {
-          (<any>window).FilePath.resolveNativePath(url,result=> {
-            this.nativepath = result;
-            (<any>window).resolveLocalFileSystemURL(this.nativepath, (res) => {
-              res.file((resFile) => {
-                var reader = new FileReader();
-                reader.readAsArrayBuffer(resFile);
-                reader.onloadend = (evt: any) => {
-                  var imgBlob = new Blob([evt.target.result], { type: 'image/jpeg' });
-                  var uuid = this.guid();
-                  var imageStore = this.firestore.ref('/picmsgs').child('picmsg' + uuid);
-                  imageStore.put(imgBlob).then((res) => {
-                      resolve(res.downloadURL);
-                    }).catch((err) => {
-                      alert(err);
-                    })
-                  .catch((err) => {
-                    alert(err);
-                  })
-                }
-              })
-            })
-          })
-      })*/
-    })   
-     return promise;   
+      });
+
+    })
+     return promise;
   }
 
   filemsgstore() {
@@ -189,17 +142,17 @@ export class ImghandlerProvider {
               break;
             case "docx":
               type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              break; 
+              break;
             case "jpg":
             case "png":
               type = 'image/jpeg'
-              break; 
+              break;
             case "doc":
               type = 'application/msword'
-              break; 
+              break;
             case "xlsx":
               type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-              break;                                                   
+              break;
             default:
               break;
           }
@@ -216,7 +169,7 @@ export class ImghandlerProvider {
               resolve(res.downloadURL);
             }).catch((err) => {
               alert(err);
-            })           
+            })
           });
 
         })
@@ -245,12 +198,12 @@ export class ImghandlerProvider {
             reject(e);
           };
 
-          
+
         });
       });
     });
   }
-  
+
   getfilename(filestring) {
 
     let file

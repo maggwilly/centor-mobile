@@ -30,17 +30,19 @@
             </ion-col>
       </ion-row>
    <programme [concours]="concours" [abonnement]="abonnement" [authInfo]="authInfo" *ngIf="concours" (open)="gotToPrepa($event)"  [matiereLoaded]="matiereLoaded" [abonnementLoaded]="abonnementLoaded"></programme>
- <ion-fab bottom right #fab  [@bounce]="bounceState">
+ <ion-fab bottom right #fab  [@bounce]="bounceState" fixed style="z-index: 999">
   <button color="blue" id="cart-btn" ion-fab (click)="openChat()">
     <ion-icon name="ios-chatboxes-outline"></ion-icon>
     <ion-badge color="blue" id="cart-badge"  notification [groupname]="concours.id" *ngIf="concours"></ion-badge>
   </button>
 </ion-fab>
 </ion-content>
-<ion-footer *ngIf="isExpired(abonnement)&&(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
+<ion-footer >
+  <div *ngIf="isExpired(abonnement)&&(concours&&concours.matieres&&concours.matieres.length&&concours.price)">
   <button ion-button color="orange"  ion-button large full no-margin icon-left *ngIf="abonnementLoaded &&isExpired(abonnement)" (click)="gotToPrepa()">
     <ion-icon name="list" color="white"></ion-icon>
     <span *ngIf="!abonnement">Accéder aux travaux dirigés</span> <span *ngIf="abonnement"> Poursuivre la préparation</span>
   </button>
+  </div>
 </ion-footer>
 

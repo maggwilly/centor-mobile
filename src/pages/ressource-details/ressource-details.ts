@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import {App, IonicPage, NavController, NavParams, Platform, LoadingController, ModalController} from 'ionic-angular';
+import {Events,App, IonicPage, NavController, NavParams, Platform, LoadingController, ModalController} from 'ionic-angular';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
@@ -30,6 +30,7 @@ export class RessourceDetailsPage {
     public appCtrl: App,
     public notify: AppNotify,
     public platform: Platform,
+    public events: Events,
     public modalCtrl: ModalController,
     public firebaseNative: Firebase,
     public loadingCtrl: LoadingController,
@@ -60,6 +61,7 @@ export class RessourceDetailsPage {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
+          this.events.publish("logged:in")
           this.createCommande();
           unsubscribe();
           return;
@@ -69,7 +71,6 @@ export class RessourceDetailsPage {
         modal.onDidDismiss((data, role) => {
           if (data) {
             this.createCommande();
-            unsubscribe();
           }
         })
         modal.present();

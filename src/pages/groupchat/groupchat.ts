@@ -37,8 +37,6 @@ export class GroupchatPage {
   fileurl: any=''
   fileData: any = ''
   mesagetype: any ='simplemsg'
-  abonnement:any;
-  abonnementLoaded=false;
   groupdisplayname:any
   groupnberofmembers;
   meingroup={};
@@ -76,9 +74,7 @@ export class GroupchatPage {
   ionViewDidLoad() {
     this.groupName = this.navParams.get('groupName');
     this.groupdisplayname=this.navParams.get('groupdisplayname');
-  }
 
-  initPage(){
     this.alignuid = firebase.auth().currentUser.uid;
     this.photoURL = firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
     this.storage.get('_messages_' + this.groupName).then(data => {
@@ -96,7 +92,7 @@ export class GroupchatPage {
       this.groupnberofmembers = this.groupservice.groupmemberscount;
     })
     this.groupName = this.navParams.get('groupName');
-    this.groupservice.getintogroup(this.groupName).catch(error => {
+    this.groupservice.getintogroup(this.groupName).then(()=>{}).catch(error => {
       this.notify.onError({ message: 'Problème de connexion' });
     })
     this.groupservice.loockforgroupmsgs(this.groupName);
@@ -107,8 +103,6 @@ export class GroupchatPage {
     this.events.subscribe('groupmsg', () => {
       this.allgroupmsgs = [];
       this.allgroupmsgs = this.groupservice.groupmsgs;
-      //console.log(JSON.stringify(this.groupservice.groupmsgs));
-
       this.storage.set('_messages_' + this.groupName, this.allgroupmsgs);
       setTimeout(() => {
         this.scrollto();
@@ -117,12 +111,7 @@ export class GroupchatPage {
     if (!this.groupName)
       return
     this.groupdisplayname = this.groupservice.groupdisplayname ? this.groupservice.groupdisplayname : this.groupdisplayname;
-    this.abonnementProvider.checkAbonnementValidity( this.groupName).then(data => {
-      this.abonnement = data;
-      this.abonnementLoaded = true;
-    }, error => {
-      this.notify.onError({ message: 'Problème de connexion' });
-    });
+
   }
   ionViewWillLeave() {
     //this.events.unsubscribe('groupmsg');
@@ -202,7 +191,6 @@ export class GroupchatPage {
   }
 
   addgroupmsg() {
-
     let newMessage :any = {
        text: this.urlify(this.newmessage),
        type: this.mesagetype,
@@ -210,40 +198,20 @@ export class GroupchatPage {
        toAdmin: this.sendToAdmin
       }
     this.firebaseNative.logEvent('message_send', { newMessage: newMessage.type });
-    if(!this.newmessage && !this.fileurl)
+    if(!this.newmessage )
         return
-    if (this.sendToAdmin && this.isExpired(this.abonnement))
-       return
     this.newmessage = '';
     this.fileurl = '';
     this.mesagetype = 'simplemsg'
     this.scrollto(true);
     this.messageInput.setFocus()
-    if (newMessage.type=='image'){
-      this.groupservice.addMsg(newMessage, true, this.toUser?this.toUser.uid:'')
-      this.imgstore.storeImage(this.fileData).then(url=>{
-        newMessage.fileurl=url;
-        if (this.sendToAdmin)
-           this.groupservice.postmsgstoadmin(newMessage,false)
-        else if(this.toUser)
-          this.groupservice.addnewmessage(newMessage, false, this.toUser.uid)
-             else
-               this.groupservice.addgroupmsg(newMessage, false)
-      })
-      return
-    }
-    if(this.sendToAdmin)
-     this.groupservice.postmsgstoadmin(newMessage)
-    else if (this.toUser)
-      this.groupservice.addnewmessage(newMessage, true,this.toUser.uid)
-      else
       this.groupservice.addgroupmsg(newMessage)
   }
 
   onFocus() {
     this.showEmojiPicker = false;
     this.content.resize();
-    this.scrollto(true);
+   this.scrollto(true);
 
   }
 
@@ -257,14 +225,14 @@ export class GroupchatPage {
          this.scrollingToTop = false;
     if (this.scrollingToTop)
           return;
-   /* if (!this.content)
+    if (!this.content)
       return  setTimeout(() => {
          this. scrollto();
         }, 200);
     if (this.content.isScrolling )
       return setTimeout(() => {
         this.scrollto();
-      }, 200);*/
+      }, 200);
     if (!this.content)
       return;
         if (this.content._scroll)
@@ -295,18 +263,7 @@ export class GroupchatPage {
     this.navCtrl.push('RessourceDetailsPage', { ressource_id: ressource.id });
   }
 
-footerHeight(){
-  let baseHeight=18;
-  if(this.showEmojiPicker)
-    baseHeight=baseHeight+192;
-  if (this.fileurl)
-    baseHeight = baseHeight + 89;
-  baseHeight+=this.textZise;
-  return baseHeight+'px';
-}
-  onResized($event){
-    this.textZise=$event;
-  }
+
   presentSheet(msg: any){
 
     let sheet = this.actionSheet.create({

@@ -131,7 +131,6 @@ getShowArticle(id:number){
 
 }
 
-  /*Recherche la date de derniere mise a jour*/
   getShowNotification(id: number, registrationId?:any) {
     return this.http.get(apiConfig.baseUrl + 'formated/notification/' + id + '/show/json?registrationId='+ registrationId+'&uid= ' + this.getUserUID(), { headers: this.headers })
       .toPromise()
@@ -140,7 +139,7 @@ getShowArticle(id:number){
   }
 
 
- /*Recherche la date de derniere mise a jour*/
+
  addRegistration(registrationId:string,registration:any){
    return this.http.post(apiConfig.baseUrl +'formated/registration/'+registrationId+'/new/json',JSON.stringify(registration ),  { headers:this. headers })
            .toPromise()
@@ -149,16 +148,13 @@ getShowArticle(id:number){
 
 
 
- /*Recherche la date de derniere mise a jour*/
  getShowSession(id:number){
-
    return this.http.get(apiConfig.baseUrl + 'formated/session/' + id + '/show/json' + '?uid= ' + this.getUserUID(),  { headers:this. headers })
            .toPromise()
             .then(response =>response.json());
 
 }
 
- /*Recherche la date de derniere mise a jour*/
 getMatieres(programme:number){
   return this.http.get(apiConfig.baseUrl + 'formated/matiere/' + programme + '/json' + '?uid=' + this.getUserUID(),  { headers:this. headers })
               .toPromise()
@@ -174,7 +170,7 @@ getMatieres(programme:number){
 
 }
 
- /*Recherche la date de derniere mise a jour*/
+
 getQuestions(qcm:number){
   return this.http.get(apiConfig.baseUrl + 'formated/question/' + qcm + '/json' + '?uid= ' + this.getUserUID(),  { headers:this. headers })
               .toPromise()
@@ -188,7 +184,7 @@ getQuestions(qcm:number){
 
   }
 
-  /*Recherche la date de derniere mise a jour*/
+
   getSessionRessources(session: any) {
     return this.http.get(apiConfig.baseUrl  + 'formated/ressource/' + session + '/json' + '?uid=' + this.getUserUID(), { headers: this.headers })
       .toPromise()
@@ -201,7 +197,7 @@ getQuestions(qcm:number){
       .map(response => response.json());
   }
 
- /*Recherche la date de derniere mise a jour*/
+
  suivreSession(id:any,uid:any,status?:any){
    return this.http.get(apiConfig.baseUrl  + 'formated/session/' + id + '/' + uid + '/follows/json?status=' + status, { headers:this. headers })
            .toPromise()
@@ -223,14 +219,13 @@ getInfo(uid:any,registrationId?:any){
                .then(response =>response.json());
 }
 
-  /*Recherche la date de derniere mise a jour*/
+
   getAmbassadorObservable(uid: any) {
     return this.http.get(apiConfig.baseUrl + 'formated/info/' + uid + '/ambassador/json', { headers: this.headers })
       .map(response => response.json());
   }
 
 
-  /*Recherche la date de derniere mise a jour*/
   getInfoObservable(uid: any, registrationId?: any) {
     return IntervalObservable
       .create(1500)
@@ -261,6 +256,5 @@ getAnalyseObservable(uid: any, concours: number, matiere: number, partie: number
     return this.http.get(apiConfig.baseUrl  + 'formated/partie/is/avalable/json?session=' + session + '&partie=' + partie, { headers: this.headers })
       .map(response => response.json());
   }
-
 
 }

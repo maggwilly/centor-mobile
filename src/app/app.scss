@@ -1,35 +1,24 @@
-// http://ionicframework.com/docs/v2/theming/
 
-
-// App Global Sass
-// --------------------------------------------------
-// Put style rules here that you want to apply globally. These
-// styles are for the entire app and not just one component.
-// Additionally, this file can be also used as an entry point
-// to import other Sass files to be included in the output CSS.
-//
-// Shared Sass variables, which can be used to adjust Ionic's
-// default Sass variables, belong in "theme/variables.scss".
-//
-// To declare rules for a specific mode, create a child rule
-// for the .md, .ios, or .wp mode classes. The mode class is
-// automatically applied to the <body> element in the app.
 .scroll {
   height: 100%;
 }
- ion-content {
-        background: linear-gradient(0deg, #eeeef1 0%, white 80%, white 100%);
-        ion-item{
-         background-color: transparent;
-         }
-      }
-.bg-white{
-   background: linear-gradient(0deg, white 0%, white 80%, white 100%);
+
+ion-content {
+  background: linear-gradient(0deg, #eeeef1 0%, white 80%, white 100%);
+
+  ion-item {
+    background-color: transparent;
+  }
 }
+
+.bg-white {
+  background: linear-gradient(0deg, white 0%, white 80%, white 100%);
+}
+
 @media only screen and (min-width: 300px) {
   .scroll-content:not(.show-scrollbar) {
-      margin-right: -10px;
-      overflow-y: scroll;
+    margin-right: -10px;
+    overflow-y: scroll;
   }
 }
 
@@ -40,165 +29,175 @@
   margin: 0 auto;
 }
 
-.bg-light{
-  background-color:  map-get($colors, light);
+.bg-light {
+  background-color: map-get($colors, light);
+
   .item-ligth, .item-md,
-    .label-md,{
-      background-color: transparent;
+  .label-md, {
+    background-color: transparent;
   }
 }
-  .transparent-list {
-      ion-item{
-        background-color: transparent;
-        border: none !important;
-      }
-     .item-md,.label-md,{
-      background-color: transparent;
+
+.transparent-list {
+  ion-item {
+    background-color: transparent;
+    border: none !important;
   }
-    }
+
+  .item-md, .label-md, {
+    background-color: transparent;
+  }
+}
 
 
-   .dasboard{
-      width: 100%;
-     // display: inline-block;
-      text-align: center;
-      min-height:18%;
-      border-radius: 12px;
-      margin-bottom: 0px;
-   .span-value{
-        height: 64px;
-        width: 64px;
-        border-radius: 12px;
-        display:  inline-block;
-        font-weight: normal;
-        font-size: 1.0em;
-        text-align: center;
-        padding:8px;
-        line-height: 100%;
-      //  box-shadow: 0px 9px 20px -3px rgba(142, 136, 146, 0.75);
-    }
+.dasboard {
+  width: 100%;
+  // display: inline-block;
+  text-align: center;
+  min-height: 18%;
+  border-radius: 12px;
+  margin-bottom: 0px;
 
-   .span-title{
-         width: auto;
-         text-align: center;
-         font-size: 0.76em;
-         display:  inline-block;
-         padding-top: 1%;
-         color:  map-get($colors, primary);
-    }
+  .span-value {
+    height: 64px;
+    width: 64px;
+    border-radius: 12px;
+    display: inline-block;
+    font-weight: normal;
+    font-size: 1.0em;
+    text-align: center;
+    padding: 8px;
+    line-height: 100%;
+    //  box-shadow: 0px 9px 20px -3px rgba(142, 136, 146, 0.75);
+  }
+
+  .span-title {
+    width: auto;
+    text-align: center;
+    font-size: 0.76em;
+    display: inline-block;
+    padding-top: 1%;
+    color: map-get($colors, primary);
+  }
 
 }
+
 .pannel {
-     min-height: 100px;
-}
-.carousel {
-     height:180px;
-}
-.card-background {
-    position: relative;
-    min-height: 200px;
+  min-height: 100px;
 }
 
+
+.card-background {
+  position: relative;
+  min-height: 200px;
+}
 
 
 /* Larger than a phone */
-@media (min-width:  576px) {
-    .item-md,
-    .label-md,
-    [text-wrap] .label-md
-    {
-     font-size:1.9rem;
-      p {
-        font-size:1.7rem;
-     }
+@media (min-width: 576px) {
+  .item-md,
+  .label-md,
+  [text-wrap] .label-md {
+    font-size: 1.9rem;
+
+    p {
+      font-size: 1.7rem;
+    }
   }
   p {
-        font-size:1.7rem;
-    }
- .swiper-slide{
-       font-size:30px;
-    }
+    font-size: 1.7rem;
+  }
+  .swiper-slide {
+    font-size: 30px;
+  }
   .item > ion-icon, .item-inner > ion-icon {
     min-height: 4.0rem;
     font-size: 4.1rem;
     line-height: 1;
-}
-  .dasboard{
-      height: 100%;
-         ion-grid,
-         ion-row{
-           min-height: 200px;
-         }
-     .span-value{
-        height: 125px;
-        width: 125px;
-         padding:13px;
-    }
-     .span-title{
-        width: auto;
-        font-size: 1.7em;
-    }
+  }
+  .dasboard {
+    height: 100%;
+
+    ion-grid,
+    ion-row {
+      min-height: 200px;
     }
 
-      .dasboard{
-          .span-value{
-           font-size:2.2em;
-     }
-
+    .span-value {
+      height: 125px;
+      width: 125px;
+      padding: 13px;
     }
 
-.carousel {
-     height:240px;
-}
-.pannel{
+    .span-title {
+      width: auto;
+      font-size: 1.7em;
+    }
+  }
+
+  .dasboard {
+    .span-value {
+      font-size: 2.2em;
+    }
+
+  }
+
+  .pannel {
     min-height: 180px;
-}
+  }
 
 
-.fab[mini]{
-  margin: 12px;
-  width: 60px;
-  height: 60px;
-  line-height: 60px;
-}
+  .fab[mini] {
+    margin: 12px;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+  }
 
-.fab{
+  .fab {
     font-size: 21px;
- }
+  }
 }
 
 
 @media screen and (max-width: 768px) {
-  #right-pannel { display: none; }  /* show it on small screens */
+  #right-pannel {
+    display: none;
+  }
+  /* show it on small screens */
 }
 
 .borded-list-item {
- .none,.success,.warning,.danger{
-  margin-top: 2px;
-  padding-left: 8px;
+  .none, .success, .warning, .danger {
+    margin-top: 2px;
+    padding-left: 8px;
   }
 
- }
- .none{
-   border-left: 5px solid color($colors, primary);
- }
- .success{
-     border-left: 5px solid color($colors, secondary);
- }
-  .warning{
-     border-left: 5px solid color($colors, orange);
- }
-  .danger{
-    border-left: 5px solid color($colors, danger);
- }
+}
 
-.special-item{
-    ion-icon{
-        color:  #7F7F7F;
-    }
-    }
+.none {
+  border-left: 5px solid color($colors, primary);
+}
 
-.option-relative-top-right{
+.success {
+  border-left: 5px solid color($colors, secondary);
+}
+
+.warning {
+  border-left: 5px solid color($colors, orange);
+}
+
+.danger {
+  border-left: 5px solid color($colors, danger);
+}
+
+.special-item {
+  ion-icon {
+    color: #7F7F7F;
+  }
+}
+
+.option-relative-top-right {
   display: block;
   position: absolute;
   font-weight: bold;
@@ -206,7 +205,7 @@
   right: 15px;
 }
 
-.option-relative-top-left{
+.option-relative-top-left {
   display: block;
   position: absolute;
   font-weight: bold;
@@ -214,7 +213,7 @@
   left: 8px;
 }
 
-.option-relative-bottom-right{
+.option-relative-bottom-right {
   display: block;
   position: absolute;
   font-weight: bold;
@@ -228,10 +227,10 @@
 }
 
 .vertical-center {
-   position: absolute;
-   display: inline-block;
-   top: 35%;
-   transform: translateY(-50%);
+  position: absolute;
+  display: inline-block;
+  top: 35%;
+  transform: translateY(-50%);
 }
 
 .top-radius {
@@ -251,21 +250,25 @@
   .back-button {
     color: white;
   }
+
   .toolbar-background,
   ion-navbar,
   ion-header {
     background: transparent !important;
     background-color: transparent !important;
   }
+
   .header-md::after,
   .toolbar-background-ios {
     background-image: none;
     border-bottom: 0;
   }
+
   .header-ios .toolbar-background-ios,
   .footer-ios .toolbar-background-ios {
     border: 0;
   }
+
   // ---
 }
 
@@ -275,17 +278,20 @@
   #profile-bg {
     padding: 5px 15px;
     height: 26vh;
-    background: linear-gradient(rgba(6,92,121,0),  rgba(6,92,121,0.61)) , url('../assets/images/material-design-background.jpg');
+    background: linear-gradient(rgba(6, 92, 121, 0), rgba(6, 92, 121, 0.61)), url('../assets/images/material-design-background.jpg');
     background-size: cover;
     color: white;
+
     .name {
       position: absolute;
       top: 17.5vh;
-      font-size:2.5vh;
+      font-size: 2.5vh;
       margin-bottom: 3px;
     }
-     box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
+
+    box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
   }
+
   .user-avatar {
     padding: .4em;
     height: 12vh;
@@ -294,12 +300,14 @@
     //height: 75px;
     //box-shadow: 0px 11px 20px -3px rgba(142, 136, 146, 0.75);
   }
+
   h3,
   .label,
   {
     color: #999;
     font-weight: 400;
   }
+
   ion-icon {
     color: #777;
   }
@@ -308,84 +316,102 @@
 
 /* overlay */
 .overlay {
-	background:rgba(0,0,0, 0.2);
-	position:absolute;
-	left:0; right:0; top:0; bottom:0;
-	z-index:1; /* required for IE */
+  background: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1; /* required for IE */
   //z-index: -100;
-	-webkit-transition: all 1s;
-	   -moz-transition: all 1s;
-		 -o-transition: all 1s;
-			transition: all 1s;
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
 }
+
 /* dark overlay */
 .overlay.dark-0 {
-	background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 }
+
 .overlay.dark-1 {
-	background-color: rgba(0,0,0,.1);
+  background-color: rgba(0, 0, 0, .1);
 }
+
 .overlay.dark-2 {
-	background-color: rgba(0,0,0,.2);
+  background-color: rgba(0, 0, 0, .2);
 }
+
 .overlay.dark-3 {
-	background-color: rgba(0,0,0,.3);
+  background-color: rgba(0, 0, 0, .3);
 }
+
 .overlay.dark-4 {
-	background-color: rgba(0,0,0,.4);
+  background-color: rgba(0, 0, 0, .4);
 }
+
 .overlay.dark-5 {
-	background-color: rgba(0,0,0,.5);
+  background-color: rgba(0, 0, 0, .5);
 }
+
 .overlay.dark-6 {
-	background-color: rgba(0,0,0,.6);
+  background-color: rgba(0, 0, 0, .6);
 }
+
 .overlay.dark-7 {
-	background-color: rgba(0,0,0,.7);
+  background-color: rgba(0, 0, 0, .7);
 }
+
 .overlay.dark-8 {
-	background-color: rgba(0,0,0,.8);
+  background-color: rgba(0, 0, 0, .8);
 }
+
 .overlay.dark-9 {
-	background-color: rgba(0,0,0,.9);
+  background-color: rgba(0, 0, 0, .9);
 }
+
 .overlay.dark-10 {
-	background-color: rgba(0,0,0,1);
+  background-color: rgba(0, 0, 0, 1);
 }
 
-.toast-error{
-   .toast-wrapper{
-       width: 100%;
-       .toast-message{
-         background:  color($colors,danger);
-         background-color:  color($colors,danger);
-         margin-top:0px;
-        text-align:center;
-         color:#fff;}
+.toast-error {
+  .toast-wrapper {
+    width: 100%;
+
+    .toast-message {
+      background: color($colors, danger);
+      background-color: color($colors, danger);
+      margin-top: 0px;
+      text-align: center;
+      color: #fff;
+    }
   }
 }
 
-.toast-success{
-       .toast-message{
-         width: 100%;
-         background:  color($colors,orange);
-         background-color:  color($colors,orange);
-         margin-top:0px;
-         color:#fff;}
+.toast-success {
+  .toast-message {
+    width: 100%;
+    background: color($colors, secondary);
+    background-color: color($colors, secondary);
+    margin-top: 0px;
+    color: #fff;
   }
+}
 
-.toast-info{
-       .toast-wrapper{
-         width: 98%;
-         background:  color($colors,white);
-         background-color:  color($colors,white);
-         margin-top:0px;
-         border-radius: 10px;
-          .toast-message,.toast-button{
-            color:rgb(46, 44, 44);
-          }
-        }
+.toast-info {
+  .toast-wrapper {
+    width: 98%;
+    background: color($colors, facebook);
+    background-color: color($colors, facebook);
+    margin-top: 0px;
+    border-radius: 10px;
+
+    .toast-message, .toast-button {
+      color: rgb(46, 44, 44);
+    }
   }
+}
 
 .box {
   display: flex;

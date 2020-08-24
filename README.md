@@ -1,26 +1,29 @@
-This is a starter template for [Ionic](http://ionicframework.com/docs/) projects.
+Build:
 
-## How to use this template
-
-*This template does not work on its own*. The shared files for each starter are found in the [ionic2-app-base repo](https://github.com/ionic-team/ionic2-app-base).
-
-To use this template, either create a new ionic project using the ionic node.js utility, or copy the files from this repository into the [Starter App Base](https://github.com/ionic-team/ionic2-app-base).
-
-### With the Ionic CLI:
-
-Take the name after `ionic2-starter-`, and that is the name of the template to be used when using the `ionic start` command below:
-
-```bash
-$ sudo npm install -g ionic cordova
-$ ionic start mySideMenu sidemenu
+- ```cordova platform add android```
+- ```cordova build --release ```
+- Before :
+1. add ```./config.xml```
 ```
-
-Then, to run it, cd into `mySideMenu` and run:
-
-```bash
-$ ionic cordova platform add ios
-$ ionic cordova run ios
+     <?xml version='1.0' encoding='utf-8'?>
+ <widget id="com.example" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+     ...
+     <platform name="android">
+         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
+             <application android:networkSecurityConfig="@xml/network_security_config"/>
+             <application android:usesCleartextTraffic="true" />
+         </edit-config>
+         <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
+      ...
+ </widget>
 ```
-
-Substitute ios for android if not on a Mac.
-
+2. at platform/android ... /res/android/xml/, the network_security_config.xml :
+```
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+      <domain includeSubdomains="true">localhost</domain>
+    </domain-config>
+</network-security-config>
+```
+- ```cordova build --release ```
