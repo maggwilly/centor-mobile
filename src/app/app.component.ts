@@ -52,9 +52,10 @@ export class MyApp {
   notificationId: string=firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;//= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
     { title: 'Accueil', component: 'HomePage', icon: 'home' },
-    { title: 'Les Concours', component: 'ConcoursPage', icon: 'school' },
+    { title: 'Les concours', component: 'ConcoursPage', icon: 'school' },
     { title: 'Arrêtés publiés', component: 'ResultatsPage', icon: 'md-list' },
-    { title: 'A Propos de nous', component: 'AboutPage', icon: 'information-circle' }
+    { title: 'A Propos de nous', component: 'AboutPage', icon: 'information-circle' },
+    { title: 'Admin', component: 'GroupsPage', icon: 'people-outline' }
   ];
   skipMsg: string = "Skip";
   state: string = 'x';
@@ -97,7 +98,6 @@ export class MyApp {
         this.startApp();
         this.splashScreen.hide();
       }
-
     });
 
   }
@@ -231,8 +231,6 @@ checkInfo(info:any){
       this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
       .present();
   }
-
-
 
 
   openSettingPage() {
