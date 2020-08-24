@@ -116,6 +116,7 @@ export class ConcoursOptionsPage {
           role: 'cancel',
           handler: () => {
             this.grouManager.joinSessionGroup(this.concours.id).then(()=>{
+              this.fcm.listenTopic(`centor-group-${this.concours.id}`);
               this.openChat();
             });
           }
@@ -193,7 +194,7 @@ export class ConcoursOptionsPage {
       this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
       this.getAbonnement(true);
       this.alert = true;
-      this.fcm.listenTopic('centor-group-' + this.concours.id);
+      this.fcm.listenTopic(`centor-group-${this.concours.id}`);
     }
   }
 
