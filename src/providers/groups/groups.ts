@@ -35,7 +35,7 @@ export class GroupsProvider {
   }
 
   getmygroups() {
-    this.firegroup.child(firebase.auth().currentUser.uid).once('value', (snapshot) => {
+    firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}`).once('value', (snapshot) => {
       this.mygroups = [];
       if(snapshot.val() != null) {
         var temp = snapshot.val();
@@ -54,34 +54,29 @@ export class GroupsProvider {
 
   getmeingroup(groupname) {
     var promise = new Promise((resolve, reject) => {
-      this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').once('value', (snapshot) => {
+      firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${groupname}`).once('value', (snapshot) => {
         var temp = snapshot.val()
            resolve(temp);
-      }).catch((err) => {
-        reject(err);
       })
     })
     return promise;
   }
 
-  updatemeingroup(groupname,arg:any) {
-    return this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').update(arg)
-  }
 
-  getintogroup(groupname) {
-    this.firegroupsession.child(groupname).child('info').on('value', (snapshot) => {
+  getintogroup(currentgroupname) {
+    if(!currentgroupname||!firebase.auth().currentUser)
+      return  ;
+    this.currentgroupname = currentgroupname;
+    firebase.database().ref(`/groupes/${currentgroupname}/info`).on('value', (snapshot) => {
       if (snapshot.val()) {
         this.groupdisplayname = snapshot.val().groupName;
         this.grouppic = snapshot.val().grouppic ? snapshot.val().grouppic : '';
         this.groupmemberscount = snapshot.val().memberscount
         this.events.publish('gotintogroup');
       }
-      this.currentgroupname = groupname;
     })
-    return  this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').once('value', (snapshot) => {
-      if (snapshot.val())
-        return this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').update({ msgcount: 0, lastLogin: firebase.database.ServerValue.TIMESTAMP })
-    })
+
+    return  firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${currentgroupname}/me`).update({ msgcount: 0, lastLogin: firebase.database.ServerValue.TIMESTAMP });
   }
 
   getownership(groupname) {
@@ -138,23 +133,6 @@ export class GroupsProvider {
   }
 
 
-  joinSessionGroup(newmember) {
-    return this.firegroupsession.child(this.currentgroupname).child('members').child(newmember.uid).set(newmember).then(() => {
-      this.getsessionownerimage().then(() => {
-          this.firegroup.child(newmember.uid).child(this.currentgroupname).set({
-            groupimage: this.grouppic ? this.grouppic:'',
-            me: { acceptNotification: true, msgcount:0},
-            msgboard: ''
-          }).catch((err) => {
-            console.log(err);
-          })
-        })
-        this.getintogroup(this.currentgroupname);
-      })
-
-  }
-
-
 
   getgroupmembers() {
     this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).once('value', (snapshot) => {
@@ -171,19 +149,6 @@ export class GroupsProvider {
   }
 
 
-
-  leavegroup(groupName) {
-    return new Promise((resolve, reject) => {
-      this.firegroupsession.child(groupName).child('members').child(firebase.auth().currentUser.uid).remove().then(() => {
-              this.firegroup.child(firebase.auth().currentUser.uid).child(groupName).remove().then(() => {
-                  resolve(true);
-              }).catch((err) => {
-                reject(err);
-              })
-            })
-
-    })
-  }
 
   deletegroup() {
     return new Promise((resolve, reject) => {
@@ -220,13 +185,15 @@ export class GroupsProvider {
 }
 
   //nouvelle version cloud function send
-  addgroupmsg(newmessage, addinlist = true, currentgroupname = 0) {
+  addgroupmsg(newmessage, addinlist = true) {
+    if(!this.currentgroupname||!firebase.auth().currentUser)
+      return  ;
     let message = this.addMsg(newmessage,addinlist);
     let copie = Object.assign({}, message);
     copie.pending = false;
   return new Promise((resolve, reject) => {
-   this.firegroupsession.child(this.currentgroupname).child('msgboard').push(message).then(() => {
-     this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push(copie).then(() => {
+    firebase.database().ref(`/groupes/${this.currentgroupname}/msgboard`).push(message).then(() => {
+     firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${this.currentgroupname}/msgboard`).push(copie).then(() => {
                resolve(true);
      }, (err) => {
 
@@ -262,12 +229,10 @@ export class GroupsProvider {
 
  deletemsg(msg) {
     return new Promise((resolve, reject) => {
-      this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname)
-      .child('msgboard').orderByChild('uiniqid').equalTo(msg.uiniqid)
+      firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${this.currentgroupname}/msgboard`).orderByChild('uiniqid').equalTo(msg.uiniqid)
       .once('value', snapshot => {
         snapshot.forEach( (itemSnapshot)=> {
           itemSnapshot.ref.remove();
-         // console.log(itemSnapshot.key);
           return true;
         })
       })
@@ -284,8 +249,8 @@ export class GroupsProvider {
     let copie = Object.assign({}, message);
     copie.pending = false;
     new Promise((resolve, reject) => {
-      this.firegroup.child(toUser).child(this.currentgroupname).child('msgboard').push(copie).then(() => {
-        this.firegroup.child(firebase.auth().currentUser.uid).child(this.currentgroupname).child('msgboard').push(copie).then(() => {
+      firebase.database().ref(`/messages/${toUser}/${this.currentgroupname}/msgboard`).push(copie).then(() => {
+        firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${this.currentgroupname}/msgboard`).push(copie).then(() => {
           resolve(true);
         })
 
@@ -313,15 +278,15 @@ export class GroupsProvider {
   }
 
   loockforgroupmsgs(groupname) {
-    this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').off()
-    this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').on('child_added', (snapshot) => {
+    firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${groupname}/msgboard`).off()
+    firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${groupname}/msgboard`).on('child_added', (snapshot) => {
       this.events.publish('newgroupmsg');
     })
   }
 
   getgroupmsgs(groupname) {
     this.limitTo += 10;
-    return this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('msgboard').orderByChild('timestamp').limitToLast(this.limitTo).on('value', (snapshot) => {
+    return firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${groupname}/msgboard`).orderByChild('timestamp').limitToLast(this.limitTo).on('value', (snapshot) => {
       var tempmsgholder = snapshot.val();
       this.groupmsgs = [];
       for (var key in tempmsgholder)
@@ -332,7 +297,7 @@ export class GroupsProvider {
 
   getmsgcount(groupname) {
     var promise = new Promise((resolve, reject) => {
-      this.firegroup.child(firebase.auth().currentUser.uid).child(groupname).child('me').child('msgcount').on('value', (snapshot) => {
+      firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${groupname}/msgcount`).on('value', (snapshot) => {
         let msgcount = snapshot.val();
         resolve(msgcount);
       })

@@ -14,14 +14,14 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content hide-header [header]="head" class="bg-white">
-  <carousel></carousel>
-  <div>
+<ion-content hide-header [header]="head" class="bg-white box">
+
+  <div class="row footer">
     <ion-list no-lines>
       <button ion-item no-lines text-wrap class="inform abonne" *ngIf="isExpired(abonnement)"
               (click)="startabonnement()">
         <ion-icon name="ios-notifications" item-left [@flip]="flipState" *ngIf="abonnementLoaded||!authInfo"></ion-icon>
-        <ion-spinner item-left color="white" name="ios" *ngIf="!abonnementLoaded&&authInfo"></ion-spinner>
+        <ion-spinner item-left color="white" name="ios" *ngIf="abonnementLoaded&&isExpired(abonnement)"></ion-spinner>
         <h2>Abonnez-vous maintenant</h2>
         <p>Recevez des alertes sur les concours et les bourses d'étude.</p>
       </button>
@@ -40,6 +40,13 @@
       </ion-row>
     </ion-grid>
     <ion-list *ngIf="stats">
+      <ion-item text-wrap detail-push (click)="showSelections('en_vus')">
+        <ion-avatar item-start>
+          <ion-text-avatar>{{stats.envueCount}}</ion-text-avatar>
+        </ion-avatar>
+        Concours populaires
+        <p>Les plus connus</p>
+      </ion-item>
       <ion-item text-wrap detail-push (click)="showSelections('interessants')">
         <ion-avatar item-start>
           <ion-text-avatar><span *ngIf="authInfo">{{stats.forusersCount}}</span><span *ngIf="!authInfo">?</span>
@@ -55,30 +62,24 @@
         Concours déjà lancés
         <p>En cours en ce moment</p>
       </ion-item>
-      <ion-item text-wrap detail-push (click)="showSelections('en_vus')">
-        <ion-avatar item-start>
-          <ion-text-avatar>{{stats.envueCount}}</ion-text-avatar>
-        </ion-avatar>
-        Concours populaires
-        <p>Les plus connus</p>
-      </ion-item>
+    </ion-list>
+    <ion-list>
+      <a ion-item no-lines text-wrap class="inform" detail-none (click)="openPage('ConcoursPage')">
+        <ion-icon name="list" item-left></ion-icon>
+        <h2>Liste de tous les concours</h2>
+        <p>Les informations détaillées sur tous les concours </p>
+      </a>
+      <a ion-item no-lines text-wrap class="inform" detail-none [href]="telegram">
+        <ion-icon ios="ios-chatbubbles" md="md-chatbubbles" color="primary" item-left></ion-icon>
+        <h2>Rejoignez notre communauté</h2>
+        <p>Integrez le canal de discussion ici </p>
+      </a>
+      <a ion-item no-lines text-wrap class="inform" detail-none>
+        <ion-icon ios="ios-albums" md="md-albums" item-left></ion-icon>
+        <h2>Préparation au concours, Documents</h2>
+        <p>Programme de préparation et des documents de qualité</p>
+      </a>
     </ion-list>
   </div>
-  <ion-list style="position: sticky; margin-bottom: 0; min-width: 100%">
-    <a ion-item no-lines text-wrap class="inform" detail-none (click)="openPage('ConcoursPage')">
-      <ion-icon name="list" item-left></ion-icon>
-      <h2>Liste de tous les concours</h2>
-      <p>Les informations détaillées sur tous les concours </p>
-    </a>
-    <a ion-item no-lines text-wrap class="inform" detail-none [href]="telegram">
-      <ion-icon ios="ios-chatbubbles" md="md-chatbubbles"  color="primary"  item-left></ion-icon>
-      <h2>Rejoignez notre communauté</h2>
-      <p>Integrez le canal de discussion ici </p>
-    </a>
-    <a ion-item no-lines text-wrap class="inform" detail-none>
-      <ion-icon ios="ios-albums" md="md-albums" item-left></ion-icon>
-      <h2>Préparation au concours, Documents</h2>
-      <p>Programme de préparation et des documents de qualité</p>
-    </a>
-  </ion-list>
+  <carousel class="row content"></carousel>
 </ion-content>

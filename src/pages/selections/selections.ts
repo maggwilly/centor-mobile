@@ -39,11 +39,11 @@ export class SelectionsPage {
     this.observeAuth();
   }
 
-  
+
   ionViewDidLoad() {
    /* this.storage.get('_concours_'+this.target).then((data)=>{
-      this._concours=data?data:[]; 
-            this.loadData();          
+      this._concours=data?data:[];
+            this.loadData();
     },error=>{
 
     }) */
@@ -51,8 +51,7 @@ export class SelectionsPage {
 
   loadData() {
     let id=this.ecole?this.ecole.id:0
-    let uid=firebase.auth().currentUser?firebase.auth().currentUser.uid:'null'
-    return this.dataService.getSelectedSessions(id,uid,this.target).then((data) => {
+    return this.dataService.getSelectedSessions(id,this.target).then((data) => {
       this._concours = data ? data : [];
       this.loaded=true;
       this.storage.set('_concours_'+this.target, this._concours).then(() => { }, error => { });
@@ -68,9 +67,8 @@ export class SelectionsPage {
         unsubscribe();
   } else {
     this.authInfo = undefined;
-    unsubscribe();
   }
-  }); 
+  });
   }
 
   showOptions(concours: any) {

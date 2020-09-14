@@ -1,5 +1,5 @@
 import {Component, NgZone} from '@angular/core';
-import {Events, App, NavController, NavParams, ViewController, ModalController, LoadingController} from 'ionic-angular';
+import {Events, App, NavController, NavParams, ViewController, ModalController, LoadingController, AlertController} from 'ionic-angular';
 import {DataService} from '../../providers/data-service';
 import {Storage} from '@ionic/storage';
 import firebase from 'firebase';
@@ -9,6 +9,8 @@ import {GroupsProvider} from '../../providers/groups/groups';
 import {FcmProvider, FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 import {matiereListAnimations} from "../../annimations/annimations";
+import {GroupmanagerProvider} from "../../providers/groupmanager/groupmanager";
+
 @IonicPage()
 @Component({
   selector: 'page-matieres',
@@ -32,7 +34,8 @@ export class MatieresPage {
   flyInOutState: String = 'in';
   fadeState: String = 'visible';
   bounceState: String = 'noBounce';
-  alert=false;
+  alert = false;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -44,6 +47,8 @@ export class MatieresPage {
     private fcm: FcmProvider,
     public events: Events,
     public appCtrl: App,
+    public alertCtrl: AlertController,
+    public  grouManager: GroupmanagerProvider,
     public groupservice: GroupsProvider,
     public loadingCtrl: LoadingController,
     public notify: AppNotify,
@@ -55,7 +60,6 @@ export class MatieresPage {
     this.isShow = false;
   }
 
-
   ionViewDidEnter() {
     this.storage.get('registrationId').then((data) => {
       this.registrationId = data;
@@ -63,6 +67,36 @@ export class MatieresPage {
     this.observeAuth();
   }
 
+  shouldAskJonGroup(id:any){
+    return this.storage.get(`skip_ask_group_${id}`)
+  }
+
+
+  askForJoinGroup() {
+    let alert = this.alertCtrl.create({
+      title: "Rejoindre le groupe de discussion",
+      message: "Voulez-vous intégrer le forum de discussion pour ce concous ?",
+      buttons: [
+        {
+          text: "Non",
+          role: 'cancel',
+          handler: () => {}
+        },
+        {
+          text: "Intégrer",
+          role: 'cancel',
+          handler: () => {
+            this.grouManager.joinSessionGroup(this.concours.id).then(()=>{
+              this.fcm.listenTopic(`centor-group-${this.concours.id}`);
+              this.openChat();
+            });
+          }
+        }
+      ]
+    });
+    this.storage.set(`skip_ask_group_${this.concours.id}`, true);
+    alert.present()
+  }
 
   initPage() {
     this.abonnement = this.navParams.get('abonnement');
@@ -72,9 +106,11 @@ export class MatieresPage {
           this.abonnement = data;
           this.concours = this.abonnement.session;
           this.getShowConcours().then(() => {
-            this.observeAuth();});
+            this.observeAuth();
+          });
           this.loadMatieres()
-        }, error => { });
+        }, error => {
+        });
     else {
       this.concours = this.abonnement.session;
       this.getShowConcours().then(() => {
@@ -87,18 +123,23 @@ export class MatieresPage {
 
   observeAuth(show: boolean = true) {
     this.notificationId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;
-   const unsubscribe=  firebase.auth().onAuthStateChanged(user => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.authInfo = user
         this.notificationId = user.uid;
         this.getAnalyse(show);
         this.getAbonnement();
+        this.shouldAskJonGroup(this.concours.id).then((data)=>{
+          if (!data)
+              this.askForJoinGroup();
+         })
         unsubscribe();
-       } else {
+      } else {
         this.authInfo = undefined;
       }
     });
   }
+
   toggleFlip() {
     this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
   }
@@ -142,23 +183,52 @@ export class MatieresPage {
 
   }
 
-  getAbonnement($event?:any) {
+  getAbonnement($event?: any) {
     if (!this.concours)
       return
     this.abonnementProvider.checkAbonnementValidity(this.concours.id).then(data => {
-       this.abonnement = data;
-       this.abonnementLoaded = true;
-      if($event)
+      this.abonnement = data;
+      this.abonnementLoaded = true;
+      if ($event)
         this.events.publish('payement:success', this.abonnement);
+      this.shouldAskJonGroup(this.concours.id).then((data)=>{
+        if (!data)
+          this.askForJoinGroup();
+      })
       if (this.abonnement)
         this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
-     }, error => {
+    }, error => {
       this.notify.onError({message: 'Petit problème de connexion.'});
     });
   }
 
   openChat() {
-    this.navCtrl.push('GroupchatPage', {groupName: this.concours.id, groupdisplayname: this.concours.nomConcours});
+    let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.zone.run(() => {
+        if (user) {
+          modal.dismiss(user);
+          this.navCtrl.push('GroupchatPage', {
+            groupName: this.concours.id,
+            groupdisplayname: this.concours.nomConcours
+          });
+          this.events.publish("logged:in")
+          unsubscribe();
+          return;
+        }
+        unsubscribe();
+         modal.onDidDismiss((data, role) => {
+            if (data) {
+              this.navCtrl.push('GroupchatPage', {
+                groupName: this.concours.id,
+                groupdisplayname: this.concours.nomConcours
+              });
+            }
+          }
+        )
+        modal.present();
+      })
+    })
   }
 
 
@@ -176,7 +246,7 @@ export class MatieresPage {
 
 
   listenToEvents() {
-    this.events.subscribe('payement', data=>{
+    this.events.subscribe('payement', data => {
       this.handlePayementEvent(data);
     })
     this.events.subscribe('score:matiere:updated', (data) => {
@@ -240,11 +310,15 @@ export class MatieresPage {
     })
   }
 
-  gotToPrepa(){
-     let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
-       modal.onDidDismiss((data) => {
-       console.log("hengagaga gaga")
-     });
+  gotToPrepa($event?: any) {
+    let modal = this.modalCtrl.create('PricesPage', {
+      price: this.concours.price,
+      product: this.concours.id,
+      showfree: this.abonnement == null
+    });
+    modal.onDidDismiss((data) => {
+      this.handlePayementEvent(data);
+    });
     modal.present();
   }
 
@@ -253,7 +327,7 @@ export class MatieresPage {
       this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
       this.getAbonnement(true);
       this.alert = true;
-      this.fcm.listenTopic('centor-group-' + this.concours.id);
+      this.fcm.listenTopic(`centor-group-${this.concours.id}`);
     }
   }
 }

@@ -32,20 +32,20 @@
         </button>
         <button menuClose="left" ion-item detail-none (click)="openMessages()">
           <ion-icon name="paper" item-left></ion-icon>
-          <span>Annonces</span>
+          <span>Les Annonces</span>
           <ion-badge class="notifications-badge" notification [notificationId]="notificationId"
                      [registrationId]="registrationId" item-right
                      color="danger"></ion-badge>
         </button>
+        <a  menuClose="left" ion-item detail-none [href]="telegram">
+          <ion-icon ios="ios-chatbubbles" md="md-chatbubbles"  color="primary" item-left></ion-icon>
+          <span>Rejoignez-Nous </span>
+        </a>
         <button menuClose="left" ion-item detail-none (click)="openSettingPage()">
           <ion-icon name="person" item-left></ion-icon>
           <span *ngIf="user">Mon compte</span>
           <span *ngIf="!user">Connexion</span>
         </button>
-        <a  menuClose="left" ion-item detail-none [href]="telegram">
-          <ion-icon ios="ios-chatbubbles" md="md-chatbubbles"  color="primary" item-left></ion-icon>
-          <span>Rejoignez-nous </span>
-        </a>
       </ion-list>
     </ion-content>
   </ion-menu>

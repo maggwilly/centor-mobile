@@ -6,9 +6,13 @@ page-groupchat {
   $toUserBackgroundColor: #fcfcfc;
 
   ion-content .scroll-content {
-   //background-color: #f7eff5;
-   // background-image: url("../assets/img/background/chat.jpg" );
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/centor-concours.appspot.com/o/chat.jpg?alt=media&token=eab3b0d3-2a41-41a2-b80b-c5c923cb1e1e" );
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+
   }
+
 img.ng-lazyloaded {
   animation: fadein .5s;
 }
@@ -18,8 +22,11 @@ img.ng-lazyloaded {
 }
   ion-footer {
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
-    background-color: #fff;
-    height: 255px;
+   // background-color:transparent !important;
+    height: auto;
+    .toolbar-background-md{
+      background: transparent !important;
+    }
   }
 
   .line-breaker {
@@ -28,9 +35,9 @@ img.ng-lazyloaded {
 
   .input-wrap {
     padding: 0 5px;
+    background-color: transparent !important;
     ion-textarea {
       position: static;
-
     }
     ion-col.col {
       padding: 0;
@@ -47,8 +54,6 @@ img.ng-lazyloaded {
     }
   }
 .file-preview{
-//  position: -webkit-sticky;
- // position: sticky;
   bottom: 0px;
   height: 100px;
   img{
@@ -71,8 +76,7 @@ img.ng-lazyloaded {
   textarea.text-input{
     border-radius: 9px;
     outline: none !important;
-    padding: 7px 8px;
-    margin-bottom: 6px;
+    padding: 5px 4px;
     border-color: #719ECE;
     box-sizing: border-box;
     box-shadow: 0 0 4px #719ECE;

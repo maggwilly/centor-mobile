@@ -57,9 +57,9 @@ getEcoles(start:number){
            .then(response =>response.json());
 
 }
-getSelectedSessions(ecole:number,uid?:any,filter?:string){
-  return !uid? new Promise(resolve => undefined):
-   this.http.get(apiConfig.baseUrl+ 'formated/session/selected/' + ecole + '/' + uid + '/json?filter='+filter,  { headers:this. headers })
+getSelectedSessions(ecole:number,filter?:string){
+  return !this.getUserUID()? new Promise(resolve => undefined):
+   this.http.get(apiConfig.baseUrl+ 'formated/session/selected/' + ecole + '/' + this.getUserUID() + '/json?filter='+filter,  { headers:this. headers })
           .toPromise()
            .then(response =>response.json());
 
@@ -131,7 +131,6 @@ getShowArticle(id:number){
 
 }
 
-  /*Recherche la date de derniere mise a jour*/
   getShowNotification(id: number, registrationId?:any) {
     return this.http.get(apiConfig.baseUrl + 'formated/notification/' + id + '/show/json?registrationId='+ registrationId+'&uid= ' + this.getUserUID(), { headers: this.headers })
       .toPromise()
@@ -140,7 +139,7 @@ getShowArticle(id:number){
   }
 
 
- /*Recherche la date de derniere mise a jour*/
+
  addRegistration(registrationId:string,registration:any){
    return this.http.post(apiConfig.baseUrl +'formated/registration/'+registrationId+'/new/json',JSON.stringify(registration ),  { headers:this. headers })
            .toPromise()
@@ -149,16 +148,13 @@ getShowArticle(id:number){
 
 
 
- /*Recherche la date de derniere mise a jour*/
  getShowSession(id:number){
-
    return this.http.get(apiConfig.baseUrl + 'formated/session/' + id + '/show/json' + '?uid= ' + this.getUserUID(),  { headers:this. headers })
            .toPromise()
             .then(response =>response.json());
 
 }
 
- /*Recherche la date de derniere mise a jour*/
 getMatieres(programme:number){
   return this.http.get(apiConfig.baseUrl + 'formated/matiere/' + programme + '/json' + '?uid=' + this.getUserUID(),  { headers:this. headers })
               .toPromise()
@@ -174,7 +170,7 @@ getMatieres(programme:number){
 
 }
 
- /*Recherche la date de derniere mise a jour*/
+
 getQuestions(qcm:number){
   return this.http.get(apiConfig.baseUrl + 'formated/question/' + qcm + '/json' + '?uid= ' + this.getUserUID(),  { headers:this. headers })
               .toPromise()
@@ -188,7 +184,7 @@ getQuestions(qcm:number){
 
   }
 
-  /*Recherche la date de derniere mise a jour*/
+
   getSessionRessources(session: any) {
     return this.http.get(apiConfig.baseUrl  + 'formated/ressource/' + session + '/json' + '?uid=' + this.getUserUID(), { headers: this.headers })
       .toPromise()
@@ -201,7 +197,7 @@ getQuestions(qcm:number){
       .map(response => response.json());
   }
 
- /*Recherche la date de derniere mise a jour*/
+
  suivreSession(id:any,uid:any,status?:any){
    return this.http.get(apiConfig.baseUrl  + 'formated/session/' + id + '/' + uid + '/follows/json?status=' + status, { headers:this. headers })
            .toPromise()
@@ -223,14 +219,13 @@ getInfo(uid:any,registrationId?:any){
                .then(response =>response.json());
 }
 
-  /*Recherche la date de derniere mise a jour*/
+
   getAmbassadorObservable(uid: any) {
     return this.http.get(apiConfig.baseUrl + 'formated/info/' + uid + '/ambassador/json', { headers: this.headers })
       .map(response => response.json());
   }
 
 
-  /*Recherche la date de derniere mise a jour*/
   getInfoObservable(uid: any, registrationId?: any) {
     return IntervalObservable
       .create(1500)
@@ -238,7 +233,6 @@ getInfo(uid:any,registrationId?:any){
   }
 
 saveAnalyse(uid:any,concours:number,matiere:number,partie:number,analyse:any){
-  console.log(apiConfig.baseUrl  + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/new/json');
      return  this.http.post(apiConfig.baseUrl +'formated/analyse/'+uid+'/'+concours+'/'+matiere+'/'+partie+'/new/json',JSON.stringify(analyse ), { headers:this. headers })
               .toPromise()
                .then(response =>response.json());
@@ -247,7 +241,6 @@ saveAnalyse(uid:any,concours:number,matiere:number,partie:number,analyse:any){
 
 
 getAnalyse(uid:any,concours:number,matiere:number,partie:number){
-  console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json');
 
      return  this.http.get(apiConfig.baseUrl +'formated/analyse/'+uid+'/'+concours+'/'+matiere+'/'+partie+'/json', { headers:this. headers })
               .toPromise()
@@ -255,7 +248,6 @@ getAnalyse(uid:any,concours:number,matiere:number,partie:number){
 }
 
 getAnalyseObservable(uid: any, concours: number, matiere: number, partie: number) {
-  console.log(this._baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json');
     return this.http.get(apiConfig.baseUrl + 'formated/analyse/' + uid + '/' + concours + '/' + matiere + '/' + partie + '/json', { headers: this.headers })
     .map(response => response.json());
   }
@@ -264,6 +256,5 @@ getAnalyseObservable(uid: any, concours: number, matiere: number, partie: number
     return this.http.get(apiConfig.baseUrl  + 'formated/partie/is/avalable/json?session=' + session + '&partie=' + partie, { headers: this.headers })
       .map(response => response.json());
   }
-
 
 }

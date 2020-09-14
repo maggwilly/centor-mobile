@@ -14,6 +14,7 @@ import {payGardeConfig} from "../../app/app.apiconfigs";
 export class PricesPage {
   price: any;
   product: any;
+  showfree: any;
   commande: any;
   bundle: any
   @ViewChild('innerSlider') innerSlider: Slides;
@@ -30,6 +31,7 @@ export class PricesPage {
     this.zone = new NgZone({});
     this.price = this.navParams.get('price');
     this.product = this.navParams.get('product');
+    this.showfree = this.navParams.get('showfree');
   }
 
   slideNext(bundle) {
@@ -37,18 +39,20 @@ export class PricesPage {
       this.zone.run(() => {
         if (user) {
           this.bundle = bundle;
+          this.events.publish("logged:in")
           this.innerSlider.slideNext();
           this.createCommande(bundle);
           unsubscribe();
           return;
         }
+        unsubscribe();
         let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
         modal.onDidDismiss((data, role) => {
           if (data) {
             this.bundle = bundle;
             this.innerSlider.slideNext();
             this.createCommande(bundle);
-            unsubscribe();
+
           }
         })
         modal.present();
@@ -58,8 +62,8 @@ export class PricesPage {
 
   private createCommande(bundle) {
     this.abonnementProvider.startCommande(this.product, bundle).then(data => {
+      console.log(data)
       this.commande = data;
-      console.log(this.commande )
       this.firebaseNative.logEvent(`cmd_started_event`, {bundle: bundle, amount: data.amount});
     }, error => {
       this.notify.onError({message: 'Problème de connexion.'});
@@ -68,12 +72,12 @@ export class PricesPage {
 
   confirmCommende() {
     if (!this.commande.amount) {
-      let status = {
-        status: "SUCCESS",
-        order_id: this.commande.order_id
-      };
-      this.abonnementProvider.confirmFreeCommende(status).then(data => {
-        this.dismiss({status: "PAID"});
+      console.log(this.commande)
+      this.abonnementProvider.confirmFreeCommende({status: "PAID",orderid: this.commande.order_id})
+        .then(data => {
+          if(data&&data.abonnement)
+              this.dismiss({status: "PAID", amount:0});
+          else throw 'Nous avons rencontré un problème !';
       }, error => {
         this.notify.onError({message: 'Nous avons rencontré un problème !'});
       })

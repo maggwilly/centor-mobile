@@ -1,29 +1,17 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import firebase from 'firebase';
-import { Http, Headers } from '@angular/http';
+import {Http} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-/*
-  Generated class for the UserProvider provider.
+import {apiConfig} from "../../app/app.apiconfigs";
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
+
 @Injectable()
 export class UserProvider {
   firedata = firebase.database().ref('/users');
-  _baseUrl = 'https://concours.centor.org/v1/'
-  private headers = new Headers({ 'Content-Type': 'application/json' });
-  constructor(public http: Http) {
+  private headers = apiConfig.headers;
+  _baseUrl = apiConfig.baseUrl;
 
-  }
-
-  /*
-  Adds a new user to the system.
-  Called from - signup.ts
-  Inputs - The new user object containing the email, password and displayName.
-  Outputs - Promise.
-
-   */
+  constructor(public http: Http) {}
 
   adduser(newuser) {
     var promise = new Promise((resolve, reject) => {
@@ -32,18 +20,17 @@ export class UserProvider {
           displayName: newuser.displayName,
           photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
         }).then(() => {
-          this.firedata.child( firebase.auth().currentUser.uid).set({
-            uid:  firebase.auth().currentUser.uid,
+          this.firedata.child(firebase.auth().currentUser.uid).set({
+            uid: firebase.auth().currentUser.uid,
             displayName: newuser.displayName,
             photoURL: 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
           }).then(() => {
-
-            resolve({ success: true });
-            }).catch((err) => {
-              reject(err);
-          })
+            resolve({success: true});
           }).catch((err) => {
             reject(err);
+          })
+        }).catch((err) => {
+          reject(err);
         })
       }).catch((err) => {
         reject(err);
@@ -52,18 +39,11 @@ export class UserProvider {
     return promise;
   }
 
-  /*
-  For resetting the password of the user.
-  Called from - passwordreset.ts
-  Inputs - email of the user.
-  Output - Promise.
-
-   */
 
   passwordreset(email) {
     var promise = new Promise((resolve, reject) => {
       firebase.auth().sendPasswordResetEmail(email).then(() => {
-        resolve({ success: true });
+        resolve({success: true});
       }).catch((err) => {
         reject(err);
       })
@@ -71,53 +51,50 @@ export class UserProvider {
     return promise;
   }
 
-  /*
+  addToken(token: any) {
+    if (!firebase.auth().currentUser||!token)
+      return;
+    firebase.database().ref(`/users/${firebase.auth().currentUser.uid}/registrationsId/${token}`).set(true)
+  }
 
-  For updating the users collection and the firebase users list with
-  the imageurl of the profile picture stored in firebase storage.
-  Called from - profilepic.ts
-  Inputs - Url of the image stored in firebase.
-  OUtputs - Promise.
-
-  */
 
   updateimage(imageurl) {
-      var promise = new Promise((resolve, reject) => {
-        if(!firebase.auth().currentUser)
-          reject(false);
-           firebase.auth().currentUser.updateProfile({
-              displayName:  firebase.auth().currentUser.displayName,
-              photoURL: imageurl
-          }).then(() => {
-              firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({
-              displayName:  firebase.auth().currentUser.displayName,
-              photoURL: imageurl,
-              uid: firebase.auth().currentUser.uid
-              }).then(() => {
-                  this.http.post(this._baseUrl + 'formated/info/' + firebase.auth().currentUser.uid + '/edit/json', JSON.stringify({
-                  displayName:  firebase.auth().currentUser.displayName,
-                  photoURL: imageurl,
-                }), { headers: this.headers })
-                  .toPromise()
-                  .then(response =>{
-                          resolve({ success: true });
-                  })
-                  }).catch((err) => {
-                      reject(err);
-                  })
-          }).catch((err) => {
-                reject(err);
-             })
+    var promise = new Promise((resolve, reject) => {
+      if (!firebase.auth().currentUser)
+        reject(false);
+      firebase.auth().currentUser.updateProfile({
+        displayName: firebase.auth().currentUser.displayName,
+        photoURL: imageurl
+      }).then(() => {
+        firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({
+          displayName: firebase.auth().currentUser.displayName,
+          photoURL: imageurl,
+          uid: firebase.auth().currentUser.uid
+        }).then(() => {
+          this.http.post(this._baseUrl + 'formated/info/' + firebase.auth().currentUser.uid + '/edit/json', JSON.stringify({
+            displayName: firebase.auth().currentUser.displayName,
+            photoURL: imageurl,
+          }), {headers: this.headers})
+            .toPromise()
+            .then(response => {
+              resolve({success: true});
+            })
+        }).catch((err) => {
+          reject(err);
+        })
+      }).catch((err) => {
+        reject(err);
       })
-      return promise;
+    })
+    return promise;
   }
 
   getuserdetails() {
     var promise = new Promise((resolve, reject) => {
-    this.firedata.child(firebase.auth().currentUser.uid).once('value', (snapshot) => {
-      resolve(snapshot.val());
-    }).catch((err) => {
-      reject(err);
+      this.firedata.child(firebase.auth().currentUser.uid).once('value', (snapshot) => {
+        resolve(snapshot.val());
+      }).catch((err) => {
+        reject(err);
       })
     })
     return promise;
@@ -125,30 +102,30 @@ export class UserProvider {
 
   updatedisplayname(newname) {
     let promise = new Promise((resolve, reject) => {
-      if(!firebase.auth().currentUser)
-         reject(false);
-       firebase.auth().currentUser.updateProfile({
-      displayName: newname,
-      photoURL:  firebase.auth().currentUser.photoURL
-    }).then(() => {
-      this.firedata.child(firebase.auth().currentUser.uid).update({
+      if (!firebase.auth().currentUser)
+        reject(false);
+      firebase.auth().currentUser.updateProfile({
         displayName: newname,
-        photoURL:  firebase.auth().currentUser.photoURL,
-        uid:  firebase.auth().currentUser.uid
+        photoURL: firebase.auth().currentUser.photoURL
       }).then(() => {
-        this.http.post(this._baseUrl + 'formated/info/' + firebase.auth().currentUser.uid + '/edit/json', JSON.stringify({
-          displayName:  firebase.auth().currentUser.displayName,
-        }), { headers: this.headers })
-          .toPromise()
-          .then(response => {
-            resolve({ success: true });
-          })
+        this.firedata.child(firebase.auth().currentUser.uid).update({
+          displayName: newname,
+          photoURL: firebase.auth().currentUser.photoURL,
+          uid: firebase.auth().currentUser.uid
+        }).then(() => {
+          this.http.post(this._baseUrl + 'formated/info/' + firebase.auth().currentUser.uid + '/edit/json', JSON.stringify({
+            displayName: firebase.auth().currentUser.displayName,
+          }), {headers: this.headers})
+            .toPromise()
+            .then(response => {
+              resolve({success: true});
+            })
+        }).catch((err) => {
+          reject(err);
+        })
       }).catch((err) => {
         reject(err);
       })
-      }).catch((err) => {
-        reject(err);
-    })
     })
     return promise;
   }

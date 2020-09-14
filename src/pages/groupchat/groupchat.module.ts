@@ -6,12 +6,15 @@ import { EmojiProvider } from "../../providers/emoji";
 import { QuestionViewComponent } from '../../components/question-view/question-view';
 import { SharedDirectivesModule } from '../../app/shared.module';
 import { SharedProvidersModule} from '../../app/shared.module';
+import { KeyboardAttachDirective } from '../../directives/keyboard-attach/keyboard-attach';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import {AutosizeModule} from 'ngx-autosize';
+import {Keyboard} from "@ionic-native/keyboard";
 @NgModule({
   declarations: [
     GroupchatPage,
     QuestionViewComponent,
+    KeyboardAttachDirective
   ],
   imports: [
     IonicPageModule.forChild(GroupchatPage),
@@ -27,7 +30,8 @@ import {AutosizeModule} from 'ngx-autosize';
   entryComponents: [QuestionViewComponent],
 
   providers: [
-    EmojiProvider
+    EmojiProvider,
+    Keyboard,
   ]
 })
 export class GroupchatPageModule {}

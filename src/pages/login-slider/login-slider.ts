@@ -1,4 +1,3 @@
-
 import { Component, ViewChild, ElementRef, Renderer,} from '@angular/core';
 import { AlertController, App, Platform,  LoadingController, Slides, IonicPage,NavParams,ViewController  } from 'ionic-angular';
 import { EmailValidator } from '../../validators/email';
@@ -17,7 +16,7 @@ export class LoginSliderPage {
   public loginForm: any;
   public resetPasswordForm;
   public signupForm;
-  public backgroundImage = 'assets/img/background/background-6.jpg';
+  public backgroundImage = 'assets/img/background/background-5.jpg';
   public target=1;
   singupStape=false;
   loginStape=true;

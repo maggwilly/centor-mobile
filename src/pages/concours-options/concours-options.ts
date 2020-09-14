@@ -1,5 +1,5 @@
 import {Component, NgZone} from '@angular/core';
-import {NavController, App, NavParams, ModalController, LoadingController, Events} from 'ionic-angular';
+import {NavController, App, NavParams, ModalController, LoadingController, Events, AlertController} from 'ionic-angular';
 import firebase from 'firebase';
 import {MatieresPage} from '../matieres/matieres';
 import {Storage} from '@ionic/storage';
@@ -11,6 +11,7 @@ import {IonicPage} from 'ionic-angular';
 import {FcmProvider, FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {concoursDetailsAnimation} from "../../annimations/annimations";
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
+import {GroupmanagerProvider} from "../../providers/groupmanager/groupmanager";
 
 @IonicPage()
 @Component({
@@ -42,13 +43,16 @@ export class ConcoursOptionsPage {
     public events: Events,
     public loadingCtrl: LoadingController,
     private fcm: FcmProvider,
+    public alertCtrl: AlertController,
     public abonnementProvider:AbonnementProvider,
     public notify: AppNotify,
     public appCtrl: App,
+    public  grouManager:GroupmanagerProvider,
     private socialSharing: SocialSharing,
     public storage: Storage) {
     this.showMenu = this.navParams.get('showMenu');
     this.initPage();
+    this.listenToEvents();
     this.zone = new NgZone({});
       this.firebaseNative.setScreemName('concours_view');
   }
@@ -77,9 +81,51 @@ export class ConcoursOptionsPage {
       this.getShowConcours(id).then(() => {
          this.observeAuth();
       })
+
+  }
+  listenToEvents() {
+    this.events.subscribe('payement', data=>{
+      this.handlePayementEvent(data);
+    })
+    this.events.subscribe('score:matiere:updated', (data) => {
+      this.zone.run(() => {
+        if (!this.concours)
+          return
+        this.storage.set('_matieres_' + this.concours.id, this.concours.matieres)
+      });
+    });
+
   }
 
+  shouldAskJonGroup(id:any){
+    return this.storage.get(`skip_ask_group_${id}`)
+  }
 
+  askForJoinGroup() {
+    let alert = this.alertCtrl.create({
+      title: "Rejoindre le groupe de discussion",
+      message: "Voulez-vous intégrer le forum de discussion pour ce concous ?",
+      buttons: [
+        {
+          text: "Non",
+          role: 'cancel',
+          handler: () => { }
+        },
+        {
+          text: "Intégrer",
+          role: 'cancel',
+          handler: () => {
+            this.grouManager.joinSessionGroup(this.concours.id).then(()=>{
+              this.fcm.listenTopic(`centor-group-${this.concours.id}`);
+              this.openChat();
+            });
+          }
+        }
+      ]
+    });
+    this.storage.set(`skip_ask_group_${this.concours.id}`, true);
+    alert.present()
+  }
   toggleFlip() {
     this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
   }
@@ -104,10 +150,14 @@ export class ConcoursOptionsPage {
 
   observeAuth() {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      this.getAbonnement();
       this.toggleBounce();
       if (user) {
-        unsubscribe();
+        this.getAbonnement();
+        this.shouldAskJonGroup(this.concours.id).then((data)=>{
+          if (!data)
+            this.askForJoinGroup();
+        })
+         unsubscribe();
        }
     });
   }
@@ -130,21 +180,21 @@ export class ConcoursOptionsPage {
   }
 
 
-  gotToPrepa(){
-    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id} );
+  gotToPrepa($event?:any){
+    console.log( this.abonnement)
+    let modal=  this.modalCtrl.create('PricesPage',{price: this.concours.price, product:this.concours.id, showfree: this.abonnement==null} );
     modal.onDidDismiss((data) => {
-      console.log("hengagaga gaga")
+      this.handlePayementEvent(data)
     });
     modal.present();
   }
 
   private handlePayementEvent(data) {
-    console.log(data)
     if (data && data.status == 'PAID') {
       this.notify.onSuccess({message: "Felicitation ! Votre inscription a été prise en compte.", position: 'top'});
       this.getAbonnement(true);
       this.alert = true;
-      this.fcm.listenTopic('centor-group-' + this.concours.id);
+      this.fcm.listenTopic(`centor-group-${this.concours.id}`);
     }
   }
 
@@ -167,21 +217,52 @@ export class ConcoursOptionsPage {
       return;
     this.abonnementProvider.checkAbonnementValidity(this.concours.id).then(data => {
       this.abonnement = data;
+
       this.abonnementLoaded = true;
       if($event)
         this.events.publish('payement:success', this.abonnement);
-      if (this.abonnement)
+      if (this.abonnement){
         this.firebaseNative.listenTopic('centor-group-' + this.concours.id);
-
+        this.shouldAskJonGroup(this.concours.id).then((data)=>{
+          if (!data)
+            this.askForJoinGroup();
+        })
+        }
     }, error => {
       this.notify.onError({message: 'Petit problème de connexion.'});
     });
   }
 
-  openChat() {
-    this.navCtrl.push('GroupchatPage', {groupName: this.concours.id, groupdisplayname: this.concours.nomConcours});
-  }
 
+  openChat() {
+    let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.zone.run(() => {
+        if (user) {
+          modal.dismiss(user);
+          this.events.publish("logged:in")
+          this.navCtrl.push('GroupchatPage', {
+            groupName: this.concours.id,
+            groupdisplayname: this.concours.nomConcours
+          });
+
+          unsubscribe();
+          return;
+        }
+        unsubscribe();
+        modal.onDidDismiss((data, role) => {
+            if (data) {
+              this.navCtrl.push('GroupchatPage', {
+                groupName: this.concours.id,
+                groupdisplayname: this.concours.nomConcours
+              });
+            }
+          }
+        )
+        modal.present();
+      })
+    })
+  }
   getShowConcours(id: number) {
     return this.dataService.getShowSession(id).then(data => {
       if (data)
@@ -219,19 +300,7 @@ export class ConcoursOptionsPage {
   }
 
 
-  listenToEvents() {
-    this.events.subscribe('payement', data=>{
-      this.handlePayementEvent(data);
-    })
-    this.events.subscribe('score:matiere:updated', (data) => {
-      this.zone.run(() => {
-        if (!this.concours)
-          return
-        this.storage.set('_matieres_' + this.concours.id, this.concours.matieres)
-      });
-    });
 
-  }
 
   openPage(page) {
     this.navCtrl.push(page)

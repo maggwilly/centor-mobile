@@ -1,9 +1,9 @@
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyBrbc1Rps9F_s8bJ3ZrWxkYsk5ygoHnp3c",
-  authDomain: "trainings-fa73e.firebaseapp.com",
-  databaseURL: "https://trainings-fa73e.firebaseio.com",
-  projectId: "trainings-fa73e",
-  storageBucket: "trainings-fa73e.appspot.com",
-  messagingSenderId: "163815809818"
-}; 
+  apiKey: "AIzaSyDBnfsDCMJXJsBVjlk0_h0VREMqeTucvSs",
+  authDomain: "centor-concours.firebaseapp.com",
+  databaseURL: "https://centor-concours.firebaseio.com",
+  projectId: "centor-concours",
+  storageBucket: "centor-concours.appspot.com",
+  messagingSenderId: "319489328580"
+};

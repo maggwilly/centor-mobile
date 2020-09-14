@@ -7,58 +7,40 @@
 <ion-header>
   <ion-navbar color="hcolor">
     <ion-title>Options</ion-title>
-    <ion-buttons right>
-      <ion-spinner color="white" name="ios" *ngIf="uploapping&&submitedp"></ion-spinner>
-      <button ion-button icon-only (click)="updateproceed()" *ngIf="!submitedp&&uploapping">
-        <ion-icon name="md-done-all"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content>
-
-  <ion-list >
+<ion-content *ngIf="meingroup">
+  <ion-list>
     <ion-list-header>
       Options de discussion
     </ion-list-header>
-      <ion-item  (click)="chooseimage()" *ngIf="meingroup&&!leaved">
-        <ion-avatar item-start>
-          <img [src]="_DomSanitizer.bypassSecurityTrustUrl(photoURL)" *ngIf="uploapping">
-          <img  [defaultImage]="defaultAvatar" [lazyLoad]="photoURL" [offset]="offset" *ngIf="!uploapping">
-        </ion-avatar>
-        <p class="username">Photo</p>
-     <ion-spinner item-right name="dots" *ngIf="uploapping"></ion-spinner>        
-      </ion-item>
-     <ion-item *ngIf="meingroup&&!leaved">
-            <ion-icon name='person' item-start></ion-icon>
-            <ion-label floating>Vore nom</ion-label>
-            <ion-input type="text" [(ngModel)]="meingroup.displayName" placeholder="saisir votre nom" name="displayName" (ionChange)="updateDisplayName()"></ion-input>
-   </ion-item>
-    <ion-item *ngIf="meingroup&&!leaved">
+    <ion-item >
       <ion-icon name='ios-notifications' item-start></ion-icon>
       <ion-label>Recevoir les alerte</ion-label>
-      <ion-toggle  [(ngModel)]="meingroup.acceptNotification" (ionChange)="update()"></ion-toggle>
+      <ion-toggle [(ngModel)]="meingroup.acceptNotification" (ionChange)="update()"></ion-toggle>
     </ion-item>
-<div padding>
-      <button (click)="presentSheetLeaveGroup()" ion-button block color="danger" outline *ngIf="meingroup&&!leaved">
+    <div padding>
+      <button (click)="presentSheetLeaveGroup()" ion-button block color="danger" outline *ngIf="!meingroup.leaved">
         Quitter le groupe
       </button>
-      <button (click)="joinGroup()" ion-button block  outline *ngIf="leaved||!meingroup" [disabled]="submited">
-        Intégrer  le groupe
+      <button (click)="joinGroup()" ion-button block outline *ngIf="meingroup.leaved" [disabled]="submited">
+        Intégrer le groupe
       </button>
-</div>
-  <ion-item *ngIf="meingroup&&meingroup.blocked" class="send-message" text-wrap>
-    <ion-icon name="md-alert" color="danger" item-left></ion-icon>
-    <p>Vous êtes bloqué et ne pouvez plus participer aux discussions dans ce groupe. Le blockage survient si vos pratiques vont
-      à l'encontre des règle chez centor. Vous pouvez être bloqué si vous utilisez des expressions liées à la violence, à la
-      dégradation de la personne humaine, ou à des substances interdites.
-    </p>
-  </ion-item>
-  <ion-item *ngIf="leaved||!meingroup" class="send-message" text-wrap>
-    <ion-icon name="ios-alert" color="danger" item-left></ion-icon>
-    <p>Vous avez quité le groupe. Vous ne pouvez plus ni envoyer ni recevoir des messages des membres.
-       Vous pouvez continuer à discuter avec un enseignant.
-    </p>
-  </ion-item>
+    </div>
+    <ion-item *ngIf="meingroup&&meingroup.blocked" class="send-message" text-wrap>
+      <ion-icon name="md-alert" color="danger" item-left></ion-icon>
+      <p>Vous êtes bloqué et ne pouvez plus participer aux discussions dans ce groupe. Le blockage survient si vos
+        pratiques vont
+        à l'encontre des règle chez centor. Vous pouvez être bloqué si vous utilisez des expressions liées à la
+        violence, à la
+        dégradation de la personne humaine, ou à des substances interdites.
+      </p>
+    </ion-item>
+    <ion-item *ngIf="meingroup.leaved||!meingroup" class="send-message" text-wrap>
+      <ion-icon name="ios-alert" color="danger" item-left></ion-icon>
+      <p>Vous avez quité le groupe. Vous ne pouvez plus ni envoyer ni recevoir des messages des membres.
+        Vous pouvez continuer à discuter avec un enseignant.
+      </p>
+    </ion-item>
   </ion-list>
 </ion-content>

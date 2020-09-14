@@ -34,18 +34,8 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content  hide-fab #container  [ngStyle]="{ 'background-image': 'url(' + groupBg + ')'}">
+<ion-content  hide-fab #container >
 <div *ngIf="allgroupmsgs&&allgroupmsgs.length">
-  <ion-item *ngIf="(!sendToAdmin&&!meingroup)&&!isExpired(abonnement)" class="send-message" text-wrap no-border>
-    <ion-icon name="person" item-left></ion-icon>
-    <p>Vous ne pouvez pas échanger dans cette discussion.</p>
-  </ion-item>
-  <ion-item *ngIf="(sendToAdmin||!meingroup)&&isExpired(abonnement)" class="send-message" text-wrap>
-    <ion-icon name="ios-alert" color="danger" item-left></ion-icon>
-    <p>Votre inscription au programme est arrivée à expiration et vous n'avez plus accès à certaines fonctionnalités de ce groupe.
-      Vous ne pouvez plus parler directement à un enseignant, recevoir leur message, et bien d'autres.
-    </p>
-  </ion-item>
   <ion-item *ngIf="meingroup&&meingroup.blocked" class="send-message" text-wrap no-border>
     <ion-icon name="md-alert" color="danger" item-left></ion-icon>
     <p>Vous êtes bloqué et ne pouvez plus participer aux discussions dans ce groupe. Le blockage survient si vos pratiques vont
@@ -53,7 +43,7 @@
       la dégradation de la personne humaine, ou à des substances interdites.
     </p>
   </ion-item>
-<ion-infinite-scroll (ionInfinite)="doInfinite($event)" position='top' *ngIf="showInfinite">
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" position='top' *ngIf="showInfinite">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
   <div class="message-wrap">
@@ -175,7 +165,7 @@
         <img class="profile-pic right"  [src]="item.photoURL" image-cache/>
         <div class="chat-bubble right slide-right">
          <a  *ngIf="item.message&&item.message.fileurl" no-lines [href]="item.message.fileurl">
-            <img   [src]="item.message.fileurl" (onLoad)="onImageLoad($event)" *ngIf="!item.pending&&item.message&&item.message.type=='image'"  class="message-img" image-cache>
+            <img [src]="item.message.fileurl" (onLoad)="onImageLoad($event)" *ngIf="!item.pending&&item.message&&item.message.type=='image'" class="message-img" image-cache>
           </a>
           <img  [src]="secureUrl(item.message.fileurl)" *ngIf="item.pending&&item.message&&item.message.type=='image'" class="message-img">
           <question-view *ngIf="item.message&&item.message.type=='question'" [question]="item.message.question"></question-view>
@@ -244,45 +234,26 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer  [style.height]="footerHeight()">
-  <ion-item class="file-preview" *ngIf="fileurl">
-    <ion-thumbnail item-left *ngIf="mesagetype=='image'">
-      <img [src]="_DomSanitizer.bypassSecurityTrustUrl(fileurl)">
-    </ion-thumbnail>
-    <span *ngIf="mesagetype=='image'">Envoyer cette image</span>
-    <p>Saisir une description de l'image </p>
-    <button ion-button item-right clear icon-only (click)="cancelFile()" item-right class="button-close">
-      <ion-icon name="ios-close-circle-outline"></ion-icon>
-    </button>
-  </ion-item>
-  <ion-grid class="input-wrap" no-border>
-    <ion-row>
-      <ion-col col-1>
-        <button ion-button small clear icon-only item-right (click)="switchEmojiPicker()">
-          <ion-icon name="md-happy"></ion-icon>
-        </button>
-      </ion-col>
-      <ion-col col-1>
-        <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="sendToAdmin">
-          <ion-icon name="md-person"></ion-icon>
-        </button>
-        <button ion-button clear small icon-only item-right (click)="toggleDest()" *ngIf="!sendToAdmin">
-          <ion-icon name="ios-people-outline"></ion-icon>
-        </button>
-      </ion-col>
-      <ion-col col-8>
-        <ion-textarea cols="50" #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()" class="text-mesg" (resized)="onResized($event)" autosize>
-        </ion-textarea>
-      </ion-col>
-      <ion-col col-2>
-        <button ion-button clear icon-only item-right (click)="addgroupmsg()" [hidden]="(!newmessage&&!fileurl)">
-          <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
-        </button>
-        <button ion-button clear icon-only item-right (click)="presentSheetSendFile()" [hidden]="!(!newmessage&&!fileurl)">
-          <ion-icon name="ios-send" ios="ios-attach" md="md-attach"></ion-icon>
-        </button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <emoji-picker *ngIf="showEmojiPicker" [(ngModel)]="newmessage"></emoji-picker>
+<ion-footer   [keyboardAttach]="content">
+  <ion-navbar>
+    <ion-grid class="input-wrap" no-border *ngIf="meingroup">
+      <ion-row>
+        <ion-col col-1>
+          <button ion-button small clear icon-only item-right (click)="switchEmojiPicker()">
+            <ion-icon name="md-happy"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-10>
+          <ion-textarea cols="50" #chat_input [placeholder]="placeholder()" [(ngModel)]="newmessage"  (ionFocus)="onFocus()"   autosize>
+          </ion-textarea>
+        </ion-col>
+        <ion-col col-1>
+          <button ion-button clear icon-only item-right (click)="addgroupmsg()" [disabled]="!newmessage||(meingroup.blocked||meingroup.leaved)">
+            <ion-icon  name="md-send"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <emoji-picker *ngIf="showEmojiPicker" [(ngModel)]="newmessage"></emoji-picker>
+  </ion-navbar>
 </ion-footer>

@@ -7,12 +7,6 @@ import { AppNotify } from '../../providers/app-notify';
 import { DataService } from '../../providers/data-service';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 import { homeAnnimation } from "../../annimations/annimations";
-/**
- * Generated class for the HomePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -48,6 +42,7 @@ export class HomePage {
     public dataService: DataService, ) {
     this.zone = new NgZone({});
     this.firebaseNative.setScreemName('home_page');
+    this.observeAuth();
   }
 
   ionViewDidLoad() {
@@ -60,7 +55,7 @@ export class HomePage {
     },error=>{
       console.log(error)
     })
-    this.observeAuth();
+
   }
   toggleBounce() {
     this.bounceState = (this.bounceState == 'noBounce') ? 'bouncing' : 'noBounce';
@@ -81,7 +76,7 @@ export class HomePage {
   }
 
   showSelections(target: string) {
-    if(target=='interessants'&&!this.authInfo)
+    if(target=='interessants'&&!firebase.auth().currentUser)
       return this.signup()
       let targetTitle="Pouvant m'interresser"
       switch (target) {
@@ -97,10 +92,11 @@ export class HomePage {
       }
     this.navCtrl.push('SelectionsPage', {targetTitle: targetTitle, target: target });
   }
+
   observeAuth() {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      this.getAbonnement();
       if (user) {
+        this.getAbonnement();
         unsubscribe();
       }
     });
@@ -123,17 +119,18 @@ export class HomePage {
     }
 
   signup() {
+    let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
-          this.goToNex(user, unsubscribe);
+          modal.dismiss(user);
+          this.goToNex(user);
           unsubscribe();
         }
-        let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+        unsubscribe();
         modal.onDidDismiss((data, role) => {
           if (data) {
-            this.goToNex(user, unsubscribe);
-            unsubscribe();
+            this.goToNex(user);
           }
         })
         modal.present();
@@ -142,15 +139,14 @@ export class HomePage {
 
   }
 
-  private goToNex(user: firebase.User, unsubscribe: () => void) {
+  private goToNex(user: firebase.User) {
     this.authInfo = user;
     this.getAbonnement();
-    this.notify.onSuccess({message: "Vous êtes connecté à votre compte."});
     return;
   }
 
   getAbonnement() {
-    this.abonnementProvider.checkAbonnementValidity( 0).then(data => {
+   return  this.abonnementProvider.checkAbonnementValidity( 0).then(data => {
       this.abonnement = data;
       this.abonnementLoaded = true;
     }, error => {

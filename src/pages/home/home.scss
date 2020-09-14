@@ -44,9 +44,24 @@ ion-avatar img  {
   max-width: 150px !important;  //any size
   max-height: 150px !important; //any size
   }
-.flex-box{
-  display: flex;
-  flex-direction: column;
-}
 
+ion-list{
+   min-width: 100%;
+}
+  .scroll-content {
+    display: flex;
+    -webkit-flex-direction: column-reverse;
+    flex-direction: column-reverse;
+  }
+
+  .row {}
+
+  .row.content {
+    flex: 1;
+    overflow: auto;
+  }
+  .row.footer {
+    position: sticky;
+    margin-bottom: -10px;
+  }
 }

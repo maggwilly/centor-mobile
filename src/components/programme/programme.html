@@ -3,8 +3,8 @@
   <ion-list  class="borded-list-item" inset>
     <ion-item text-wrap (click)="show(matiere)" *ngFor="let matiere of concours.matieres"
       [ngClass]="getClass(matiere.analyse)" class="img-round" >
-      <ion-icon [hidden]="!abonnementLoaded&&authInfo" name="lock-outline" item-right *ngIf="isExpired(abonnement)"></ion-icon>
-      <ion-icon [hidden]="!abonnementLoaded&&authInfo"name="ios-arrow-forward" item-right *ngIf="!isExpired(abonnement)"></ion-icon>
+      <ion-icon [hidden]="!abonnementLoaded&&authInfo" name="lock-outline" item-right *ngIf="locked"></ion-icon>
+      <ion-icon [hidden]="!abonnementLoaded&&authInfo"name="ios-arrow-forward" item-right *ngIf="!locked"></ion-icon>
       <ion-spinner item-right [hidden]="abonnementLoaded||!authInfo"  name="dots"></ion-spinner>
       {{matiere.titre}}
       <p>{{matiere.description}}</p>
@@ -17,8 +17,7 @@
 <div padding>
  <button ion-item text-wrap (click)="openRessources()">
   <ion-icon ios="ios-albums" md="md-albums" item-left></ion-icon>
-<ion-icon [hidden]="authInfo" name="lock-outline" item-right ></ion-icon>
-<ion-icon [hidden]="!authInfo" name="ios-arrow-forward" item-right ></ion-icon>
+<ion-icon  name="ios-arrow-forward" item-right ></ion-icon>
    Documents <ion-badge color="blue" *ngIf="concours.newressource">Nouveau</ion-badge>
       <p>
         Sujets, Corrigés, Travaux dirigés,condensés de cours, etc.
