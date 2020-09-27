@@ -285,7 +285,7 @@ export class GroupsProvider {
   }
 
   getgroupmsgs(groupname) {
-    this.limitTo += 10;
+    this.limitTo += 100;
     return firebase.database().ref(`/messages/${firebase.auth().currentUser.uid}/${groupname}/msgboard`).orderByChild('timestamp').limitToLast(this.limitTo).on('value', (snapshot) => {
       var tempmsgholder = snapshot.val();
       this.groupmsgs = [];

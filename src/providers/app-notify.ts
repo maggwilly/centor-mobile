@@ -9,7 +9,7 @@ export class AppNotify {
     private toastCtrl: ToastController
   ) {
     this.toastCtrl = toastCtrl;
-  
+
   }
 
   onSuccess(toastOpts: ToastOptions) {
@@ -52,7 +52,7 @@ export class AppNotify {
   onInfo(toastOpts: ToastOptions) {
     let errorToast = this.toastCtrl.create({
       message: toastOpts.message,
-      closeButtonText: toastOpts.closeButtonText || 'O',
+      closeButtonText: toastOpts.closeButtonText || 'OK',
       duration: toastOpts.duration || 15000,
       position: toastOpts.position || 'top',
       showCloseButton: toastOpts.showCloseButton || true,

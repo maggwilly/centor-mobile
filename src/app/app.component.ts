@@ -1,24 +1,34 @@
-import { Component, NgZone } from '@angular/core';
-import { ViewChild } from '@angular/core';
-import { Events, ModalController, Platform, Nav, MenuController, LoadingController, AlertController, ActionSheetController } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { DataService } from '../providers/data-service';
-import { AngularFireDatabase } from 'angularfire2/database';
-import { Storage } from '@ionic/storage';
+import {Component, NgZone} from '@angular/core';
+import {ViewChild} from '@angular/core';
+import {
+  Events,
+  ModalController,
+  Platform,
+  Nav,
+  MenuController,
+  LoadingController,
+  AlertController,
+  ActionSheetController
+} from 'ionic-angular';
+import {StatusBar} from '@ionic-native/status-bar';
+import {SplashScreen} from '@ionic-native/splash-screen';
+import {DataService} from '../providers/data-service';
+import {AngularFireDatabase} from 'angularfire2/database';
+import {Storage} from '@ionic/storage';
 import firebase from 'firebase';
-import { AppNotify } from '../providers/app-notify';
-import { FcmProvider } from '../providers/fcm/fcm';
-import { Deeplinks } from '@ionic-native/deeplinks';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import {AppNotify} from '../providers/app-notify';
+import {FcmProvider} from '../providers/fcm/fcm';
+import {Deeplinks} from '@ionic-native/deeplinks';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 import 'rxjs/add/operator/take';
 import {AbonnementProvider} from "../providers/abonnement/abonnement";
 import {ImghandlerProvider} from "../providers/imghandler/imghandler";
 import {UserProvider} from "../providers/user/user";
+import {NotificationData} from "@ionic-native/fcm";
 //import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
 
 
-const appVersion ='3.3.0';
+const appVersion = '3.3.8';
 
 export interface PageInterface {
   title: string;
@@ -27,14 +37,13 @@ export interface PageInterface {
   logsOut?: boolean;
   index?: number;
 }
+
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  rootPage: any = (!document.URL.startsWith('http') ||
-    this.platform.is('core') ||
-    this.platform.is('mobileweb')) ? 'ProcessingPage' : 'HomePage';//TabsPage;TutorialPage;// MatieresPage;//
+  rootPage: any = 'ProcessingPage';
   authInfo: any;
   concours: any;
   paidConcours: any[];
@@ -46,26 +55,27 @@ export class MyApp {
   defaultAvatar = 'assets/images/default-avatar.jpg';
   offset = 100;
   registrationId;
-  modalshow=false;
-  rootSet:boolean=false;
-  telegram: any='https://t.me/centorconcours';
-  notificationId: string=firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;//= window.localStorage.getItem('registrationId');
+  modalshow = false;
+  rootSet: boolean = false;
+  telegram: any = 'https://t.me/centorconcours';
+  notificationId: string = firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;//= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
-    { title: 'Accueil', component: 'HomePage', icon: 'home' },
-    { title: 'Les Concours', component: 'ConcoursPage', icon: 'school' },
-    { title: 'Arrêtés publiés', component: 'ResultatsPage', icon: 'md-list' },
-    { title: 'A Propos de nous', component: 'AboutPage', icon: 'information-circle' }
+    {title: 'Accueil', component: 'HomePage', icon: 'home'},
+    {title: 'Les Concours', component: 'ConcoursPage', icon: 'school'},
+    {title: 'Arrêtés publiés', component: 'ResultatsPage', icon: 'md-list'},
+    {title: 'A Propos de nous', component: 'AboutPage', icon: 'information-circle'}
   ];
   skipMsg: string = "Skip";
   state: string = 'x';
   abonnement: any;
   currentMessage = new BehaviorSubject(null)
-  constructor(public platform: Platform,
+  constructor(
+    public platform: Platform,
     public menu: MenuController,
     public dataService: DataService,
-    public abonnementProvider:AbonnementProvider,
+    public abonnementProvider: AbonnementProvider,
     public notify: AppNotify,
-    private fcm: FcmProvider,
+    public fcm: FcmProvider,
     public af: AngularFireDatabase,
     public storage: Storage,
     public modalCtrl: ModalController,
@@ -75,66 +85,58 @@ export class MyApp {
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     public events: Events,
-     public userProvider: UserProvider,
-     public imgservice: ImghandlerProvider,
-    private deeplinks: Deeplinks
+    public userProvider: UserProvider,
+    public imgservice: ImghandlerProvider,
+    public deeplinks: Deeplinks
   ) {
     this.zone = new NgZone({});
-    platform.ready().then(() => {
-
-      this.storage.get('registrationId').then((data)=>{
-        this.registrationId = data;
-      })
-      this.statusBar.backgroundColorByHexString("#065C79");
-    //
-      this.listenProfilEvents();
-      try{
-        this.registerForNotification();
-        //this.registerForNotificationWeb();
-      }catch (e) {
-        console.log(e);
-      }finally {
-        this.startApp();
+     platform.ready().then(() => {
+      try {
+        this.statusBar.backgroundColorByHexString("#065C79");
         this.splashScreen.hide();
+          this.listensFcmEvents();
+      } catch (e) {
+         console.log(e);
+      } finally {
+        this.listenProfilEvents();
+        this.storage.get('registrationId').then((data) => {this.registrationId = data;})
       }
-
     });
-
   }
-  listenProfilEvents(){
-    this.events.subscribe('logged:in',()=>{
-      this.storage.get('registrationId').then(token =>{
+
+  listenProfilEvents() {
+    this.events.subscribe('logged:in', () => {
+      this.storage.get('registrationId').then(token => {
         this.userProvider.addToken(token);
       })
-
     })
 
-    this.events.subscribe('picture:change',imageData =>{
+    this.events.subscribe('picture:change', imageData => {
       this.imgservice.storeImage(imageData, '/profileimages').then(url => {
-        this.user.info.photoURL=url;
-        this.events.publish('picture:changed',url);
-        if(!url)
+        this.user.info.photoURL = url;
+        this.events.publish('picture:changed', url);
+        if (!url)
           return
-        this.userProvider.updateimage(url).then((res: any) => { })
+        this.userProvider.updateimage(url).then((res: any) => {
+        })
       })
     })
 
-   this.events.subscribe('displayName:change',displayname =>{
-     this.user.info.displayName=displayname;
-    this.userProvider.updatedisplayname(displayname);
-  })
- }
-
+    this.events.subscribe('displayName:change', displayname => {
+      this.user.info.displayName = displayname;
+      this.userProvider.updatedisplayname(displayname);
+    })
+  }
 
   animationDone() {
     this.state = 'x';
   }
 
   getAbonnement() {
-    this.abonnementProvider.checkAbonnementValidity( 0).then(data => {
+    this.abonnementProvider.checkAbonnementValidity(0).then(data => {
       this.abonnement = data;
     }, error => {
-      this.notify.onError({ message: 'Petit problème de connexion.' });
+      this.notify.onError({message: 'Petit problème de connexion.'});
     });
   }
 
@@ -146,24 +148,52 @@ export class MyApp {
     return now > endDate;
   }
 
+  listensFcmEvents() {
+    if(this.platform.is("cordova")){
+    this.fcm.getNotification().then(data =>{
+      if(data){
+        console.log(data)
+        this.handleNotificationData(data);
+      }else{
+        this.startNormalApp();
+      }
+      this.fcm.onNotification().subscribe((data:any) => {
+        this.showMessage(data);
+      }, err => {
+        console.log(err)
+      })
+    })
+    this.fcm.getToken().then(token => {
+      this.registration(token);
+    }, err => {
+      console.log(err)
+    });
 
-  startApp() {
-    if(this.rootSet)
-        return;
-	   this.observeAuth();
-    this.storage.get('read-tutorial-centor').then(data=>{
+    this.fcm.onTokenRefresh().subscribe(token => {
+      this.registration(token);
+    }, err => {
+      console.log(err)
+    });
+    this.fcm.listenTopic('centor-public');
+      return;
+    }
+    this.startNormalApp();
+  }
+
+  startNormalApp() {
+    this.observeAuth();
+    this.storage.get('read-tutorial-centor').then(data => {
       if (!data) {
         const modal = this.modalCtrl.create('TutorialPage');
         modal.onDidDismiss(data => {
-            this.storage.set('read-tutorial-centor', true)
+          this.storage.set('read-tutorial-centor', true)
         });
         modal.present();
       }
-    },error=>{
-      this.notify.onError({ message: JSON.stringify(error) });
+    }, error => {
+      this.notify.onError({message: JSON.stringify(error)});
     })
 
-    if (!document.URL.startsWith('http') || this.platform.is('core') || this.platform.is('mobileweb'))
     this.storage.get('_preferences')
       .then((data) => {
         this.concours = data;
@@ -171,23 +201,15 @@ export class MyApp {
           this.showDetails(this.concours);
         else
           this.nav.setRoot('HomePage');
-      }, error=>{
+      }, error => {
         this.nav.setRoot('HomePage');
       });
-      else
-        this.nav.setRoot('HomePage');
-
   }
 
-
   openMessages() {
-    // navigate to the new page if it is not the current page
     this.nav.setRoot('NotificationsPage');
     this.menu.close();
   }
-
-
-
 
   getUserProfile() {
     this.getAbonnement();
@@ -195,44 +217,41 @@ export class MyApp {
       this.user.info = info ? info : firebase.auth().currentUser;
       this.defaultAvatar = info ? info.photoURL : firebase.auth().currentUser.photoURL;
       return this.dataService.getInfo(firebase.auth().currentUser.uid, this.registrationId).then((info) => {
-        if (info) {
-          info.photoURL=firebase.auth().currentUser.photoURL
-          this.user.info = info;
-          this.defaultAvatar = firebase.auth().currentUser.photoURL;
-          this.storage.set(firebase.auth().currentUser.uid, info);
-             if (!info.phone || !info.displayName)
-                this.openModal('SignupModalPage', {info:info});
+          if (info) {
+            info.photoURL = firebase.auth().currentUser.photoURL
+            this.user.info = info;
+            this.defaultAvatar = firebase.auth().currentUser.photoURL;
+            this.storage.set(firebase.auth().currentUser.uid, info);
+            if (!info.phone || !info.displayName)
+              this.openModal('SignupModalPage', {info: info});
           }
         },
         error => {
-          this.notify.onError({ message: 'Petit problème de connexion.' });
+          this.notify.onError({message: 'Petit problème de connexion.'});
         })
     })
 
   }
 
 
-checkInfo(info:any){
-  if(!info){
-    this.dataService.getInfoObservable(this.authInfo.uid, this.registrationId).subscribe(data => {
-      this.user.info = data.json();
-    }, error => {
-      this.notify.onError({ message: 'Problème de connexion.' });
-    });
+  checkInfo(info: any) {
+    if (!info) {
+      this.dataService.getInfoObservable(this.authInfo.uid, this.registrationId).subscribe(data => {
+        this.user.info = data.json();
+      }, error => {
+        this.notify.onError({message: 'Problème de connexion.'});
+      });
+    }
   }
-
-}
 
 
   openModal(pageName, arg?: any) {
     if (this.modalshow)
-       return
-      this.modalshow=true;
-      this.modalCtrl.create(pageName, arg, { cssClass: 'inset-modal' })
+      return
+    this.modalshow = true;
+    this.modalCtrl.create(pageName, arg, {cssClass: 'inset-modal'})
       .present();
   }
-
-
 
 
   openSettingPage() {
@@ -241,17 +260,18 @@ checkInfo(info:any){
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       this.zone.run(() => {
         if (user) {
-           modal.dismiss(user);
-           this.events.publish("logged:in")
-             this.nav.push('SettingPage', { authInfo: firebase.auth().currentUser });
+          modal.dismiss(user);
+          this.events.publish("logged:in")
+          this.nav.push('SettingPage', {authInfo: firebase.auth().currentUser});
           unsubscribe();
           return;
         }
         unsubscribe();
-         modal.onDidDismiss((data, role) => {
+        modal.onDidDismiss((data, role) => {
           if (data) {
-            this.nav.setRoot('HomePage');;
-          }else{
+            this.nav.setRoot('HomePage');
+            ;
+          } else {
             this.user = undefined;
             this.paidConcours = [];
           }
@@ -262,61 +282,76 @@ checkInfo(info:any){
 
   }
 
-  openPage(page: PageInterface, navParams: any = null, root = false, ) {
+  openPage(page: PageInterface, navParams: any = null, root = false,) {
     this.menu.close();
     if (root)
       this.nav.setRoot(page.component, navParams);
-    this.nav.push(page.component, navParams);
+    else
+      this.nav.push(page.component, navParams);
   }
 
-  registerForNotification() {
-    this.observeAuth();
-    if (this.platform.is('android')) {
-      this.fcm.getToken().then(token => {
-         this.registration(token);
-      });
-      this.fcm.onTokenRefresh().subscribe(token => {
-        this.registration(token);
-      });
-     this.fcm.onNotification().subscribe(data => {
-      if (data.wasTapped) {
-        if (data.page) {
-           this.rootSet = true;
-          switch (data.page) {
+
+  private handleNotificationData(data: any) {
+        switch (data.page) {
           case 'resultat':
-              this.nav.setRoot('ResultatsPage', { showMenu: true });
+            this.nav.setRoot('ResultatsPage', {showMenu: true});
             break;
-            case 'rappel':
-              this.nav.setRoot('NotificationsPage', { showMenu: true });
-              break;
-            case 'document':
-              this.nav.setRoot('RessourceDetailsPage', { ressource_id: data.id, showMenu: true});
-              break;
-            case 'concours':
-              this.nav.setRoot('ConcoursOptionsPage', { id: data.id, showMenu: true});
-              break;
-            case 'notification':
-              this.nav.setRoot('ArticleDetailsPage', { notification_id: data.id, showMenu: true });
-              break;
-            case 'chat':
-              this.nav.setRoot('GroupchatPage', { groupName: data.id, showMenu: true});
-              break;
+          case 'document':
+            this.nav.setRoot('RessourceDetailsPage', {ressource_id: data.id, showMenu: true});
+            break;
+          case 'concours':
+            this.nav.setRoot('ConcoursOptionsPage', {id: data.id, showMenu: true});
+            break;
+          case 'notification':
+            this.nav.setRoot('ArticleDetailsPage', {notification_id: data.id, showMenu: true});
+            break;
+          case 'chat':
+            this.openChat(data.id,data.groupdisplayname);
+            break;
           default:
-              this.nav.setRoot('HomePage');
+            this.startNormalApp();
             break;
-        }
-        }
-      }else {
-        if (!data.body)
-          return
-        let alert = this.notify.onInfo({ message: '' + data.title.substring(0, 30) +' ... '+data.body.substring(0, 50)+''});
-        alert.present();
-      };
-    });
-      this.fcm.listenTopic('centor-public');
     }
-
   }
+
+  openChat(groupName:any, groupdisplayname:any) {
+    let modal = this.modalCtrl.create('LoginSliderPage', {redirectTo: true});
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.zone.run(() => {
+        if (user) {
+          modal.dismiss(user);
+          this.events.publish("logged:in")
+          this.nav.setRoot('GroupchatPage', {
+            groupName: groupName,
+            groupdisplayname: groupdisplayname,
+            showMenu: true
+          });
+
+          unsubscribe();
+          return;
+        }
+        unsubscribe();
+        modal.onDidDismiss((data, role) => {
+            if (data) {
+              this.nav.setRoot('GroupchatPage', {
+                groupName: groupName,
+                groupdisplayname: groupdisplayname,
+                showMenu: true
+              });
+            }
+          }
+        )
+        modal.present();
+      })
+    })
+  }
+  private showMessage(data: NotificationData) {
+    let alert = this.notify.onInfo({
+      message: JSON.stringify(data) //'' + data.title.substring(0, 30) + ' ... ' + data.body.substring(0, 50)
+    });
+    alert.present();
+  }
+
   ngAfterViewInitr() {
     this.deeplinks.routeWithNavController(this.nav, {
       '/resultat': 'ResultatsPage',
@@ -331,53 +366,54 @@ checkInfo(info:any){
 
   registerForNotificationWeb() {
     this.observeAuth();
-   firebase.messaging().requestPermission()
+    firebase.messaging().requestPermission()
       .then(() => {
         return firebase.messaging().getToken().then(token => {
           this.registration(token);
         }, error => {
           console.log(error);
-
         })
       }, error => {
-       console.log(error);
-
+        console.log(error);
       })
 
     firebase.messaging().onMessage((payload) => {
       console.log("Message received. ", payload);
-        this.currentMessage.next(payload)
+      this.currentMessage.next(payload)
     });
-
   }
 
   registration(registrationId: any) {
     this.registrationId = registrationId;
-    this.storage.set('registrationId', registrationId).then(()=>{
-      this.dataService.addRegistration(registrationId, { registrationId: registrationId ,appVersion: appVersion }).then((data) => {
+    this.storage.set('registrationId', registrationId).then(() => {
+      this.dataService.addRegistration(registrationId, {
+        registrationId: registrationId,
+        appVersion: appVersion
+      }).then((data) => {
       }, error => {
-        this.notify.onError({message:'problème de connexion.'});
+        this.notify.onError({message: 'problème de connexion.'});
       })
-    },error=>{
-      this.dataService.addRegistration(registrationId, { registrationId: registrationId, appVersion: appVersion }).then((data) => {
+    }, error => {
+      this.dataService.addRegistration(registrationId, {
+        registrationId: registrationId,
+        appVersion: appVersion
+      }).then((data) => {
       }, error => {
-        this.notify.onError({message:'problème de connexion.'});
+        this.notify.onError({message: 'problème de connexion.'});
       })
     });
-
   }
 
 
-
   loadAbonnement() {
-    this.storage.get('_abonnements').then((dtata)=>{
+    this.storage.get('_abonnements').then((dtata) => {
       this.paidConcours = dtata ? dtata : [];
-    this.abonnementProvider.getAbonnementsObservable().subscribe((data:any[]) => {
-      this.paidConcours = data ? data : [];
-      this.storage.set('_abonnements', data);
-    }, error => {
-      this.notify.onError({ message: 'Problème de connexion.' });
-    })
+      this.abonnementProvider.getAbonnementsObservable().subscribe((data: any[]) => {
+        this.paidConcours = data ? data : [];
+        this.storage.set('_abonnements', data);
+      }, error => {
+        this.notify.onError({message: 'Problème de connexion.'});
+      })
     })
   }
 
@@ -387,11 +423,11 @@ checkInfo(info:any){
       if (user) {
         this.authInfo = user;
         this.fcm.setUserId(user.uid);
-        this.user = { info: user};
+        this.user = {info: user};
         this.notificationId = user.uid;
         this.zone.run(() => {
-          this.getUserProfile().then(()=>{
-           this.loadAbonnement();
+          this.getUserProfile().then(() => {
+            this.loadAbonnement();
           });
         })
       } else {
@@ -402,23 +438,20 @@ checkInfo(info:any){
     this.events.subscribe('payement:success', (data) => {
       this.zone.run(() => {
         this.loadAbonnement();
-
       });
     });
 
     this.events.subscribe('profil:updated', (data) => {
       this.zone.run(() => {
-        this.user = { info: data };
+        this.user = {info: data};
       });
     });
   }
 
-
-
-
   showDetails(abonnement: any) {
-    this.nav.setRoot('MatieresPage', { abonnement: abonnement });
-    this.storage.set('_preferences', abonnement).catch(error => { });
+    this.nav.setRoot('MatieresPage', {abonnement: abonnement});
+    this.storage.set('_preferences', abonnement).catch(error => {
+    });
     this.menu.close();
   }
 

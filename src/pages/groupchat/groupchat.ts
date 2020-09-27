@@ -27,24 +27,24 @@ export class GroupchatPage {
   defaultAvatar = 'assets/images/default-avatar.jpg';  offset = 100;
   owner: boolean = false;
   groupName:any;
-  newmessage='';
+  newmessage:string='';
   allgroupmsgs;
-  alignuid;
-  photoURL;
-  imgornot;
-  showEmojiPicker = false;
-  sendToAdmin = false;
-  fileurl: any=''
-  fileData: any = ''
-  mesagetype: any ='simplemsg'
+  alignuid:any;
+  photoURL:any;
+  imgornot:any;
+  showEmojiPicker:boolean = false;
+  sendToAdmin:boolean = false;
+  fileurl: string=''
+  fileData: string = ''
+  mesagetype: string ='simplemsg'
   groupdisplayname:any
   groupnberofmembers;
-  meingroup={};
+  meingroup:any ={};
   bg: boolean = true;
   scrollingToTop:boolean=true;
   showInfinite=false;
   toUser:any;
-  showMenu;
+  showMenu:boolean;
   textZise:any;
   zone: NgZone;
   constructor(public navCtrl: NavController,
@@ -72,16 +72,9 @@ export class GroupchatPage {
   }
 
   ionViewDidLoad() {
+    this.authUser();
     this.groupName = this.navParams.get('groupName');
     this.groupdisplayname=this.navParams.get('groupdisplayname');
-
-    this.alignuid = firebase.auth().currentUser.uid;
-    this.photoURL = firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
-    this.storage.get('_messages_' + this.groupName).then(data => {
-      this.allgroupmsgs = data ? data : [];
-      this.groupservice.groupmsgs = data ? data : [];
-      this.showInfinite = true;
-    });
     this.events.subscribe('newgroupmsg', () => {
       this.scrollto();
     })
@@ -103,7 +96,6 @@ export class GroupchatPage {
     this.events.subscribe('groupmsg', () => {
       this.allgroupmsgs = [];
       this.allgroupmsgs = this.groupservice.groupmsgs;
-      this.storage.set('_messages_' + this.groupName, this.allgroupmsgs);
       setTimeout(() => {
         this.scrollto();
       }, 1000);
@@ -113,6 +105,16 @@ export class GroupchatPage {
     this.groupdisplayname = this.groupservice.groupdisplayname ? this.groupservice.groupdisplayname : this.groupdisplayname;
 
   }
+
+  private authUser() {
+  const us= firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.alignuid = firebase.auth().currentUser.uid;
+        this.photoURL = firebase.auth().currentUser.photoURL ? firebase.auth().currentUser.photoURL : 'https://firebasestorage.googleapis.com/v0/b/trainings-fa73e.appspot.com/o/ressources%2Fdefault-avatar.jpg?alt=media&token=20d68783-da1b-4df9-bb4c-d980b832338d'
+        us();
+      }});
+   }
+
   ionViewWillLeave() {
     //this.events.unsubscribe('groupmsg');
    // this.events.unsubscribe('gotintogroup');
@@ -265,7 +267,7 @@ export class GroupchatPage {
 
 
   presentSheet(msg: any){
-
+    this.alignuid = firebase.auth().currentUser.uid;
     let sheet = this.actionSheet.create({
       enableBackdropDismiss: true,
       title: 'Que voulez vous faire',
