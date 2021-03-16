@@ -104,9 +104,12 @@ export class RessourceDetailsPage {
       payerphone:  this.commande.info.phone
     }
     let modal=  this.modalCtrl.create('PaymentPage',{paymentdata:paymentdata} );
-    modal.onDidDismiss((detail, role)=>{
-      console.log(detail);
-       this.commande.paid=(detail && detail.data && detail.data.status === 'PAID');
+       modal.onDidDismiss((detail, role)=>{
+      if(detail && detail.data && detail.data.status === 'PAID') {
+        this.commande.paid = true;
+      } else{
+        this.notify.onError({message: 'Payment echoué !'});
+      }
     })
     modal.present();
   }

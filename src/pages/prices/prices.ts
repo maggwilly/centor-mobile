@@ -61,7 +61,7 @@ export class PricesPage {
   }
 
   private createCommande(bundle) {
-    this.abonnementProvider.startCommande(this.product, bundle).then(data => {
+   return  this.abonnementProvider.startCommande(this.product, bundle).then(data => {
       this.commande = data;
       this.firebaseNative.logEvent(`cmd_started_event`, {bundle: bundle, amount: data.amount});
     }, error => {
@@ -96,11 +96,14 @@ export class PricesPage {
       payerphone:  this.commande.info.phone
     }
     let modal = this.modalCtrl.create('PaymentPage', {paymentdata: paymentdata});
-    modal.onDidDismiss((detail) => {
+     modal.onDidDismiss(async (detail) => {
           if(detail && detail.data && detail.data.status === 'PAID') {
             this.dismiss(detail.data);
           }else if (detail && detail.data && detail.data.status === 'CANCELED'){
             this.notify.onError({message: 'Payemnet annule'});
+          }else if(detail && detail.data && detail.data.status === 'FAILED'){
+            this.notify.onError({message: 'Payment echoué !'});
+            await this.createCommande(this.bundle);
           }
     })
     modal.present();

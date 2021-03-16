@@ -11,7 +11,7 @@
       </ion-buttons>
     </ion-navbar>
   </ion-header>
- <payment-frame *ngIf="paymentdata" [apikey]="paymentdata.apikey"
+ <pg-payment-form *ngIf="paymentdata" [apikey]="paymentdata.apikey"
                 [serviceid]="paymentdata.serviceid"
                 [orderid]="paymentdata.orderid"
                 [amount]="paymentdata.amount"
@@ -23,5 +23,5 @@
                 (onFrameError)="onFrameError($event)"
                 (onPaymentCancel)="onPaymentCancel($event)"
                 (onPaymentComplete)="onPaymentComplete($event)">
- </payment-frame>
+ </pg-payment-form>
 </ion-content>
