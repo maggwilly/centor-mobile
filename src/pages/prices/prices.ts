@@ -62,7 +62,6 @@ export class PricesPage {
 
   private createCommande(bundle) {
     this.abonnementProvider.startCommande(this.product, bundle).then(data => {
-      console.log(data)
       this.commande = data;
       this.firebaseNative.logEvent(`cmd_started_event`, {bundle: bundle, amount: data.amount});
     }, error => {
@@ -72,7 +71,6 @@ export class PricesPage {
 
   confirmCommende() {
     if (!this.commande.amount) {
-      console.log(this.commande)
       this.abonnementProvider.confirmFreeCommende({status: "PAID",orderid: this.commande.order_id})
         .then(data => {
           if(data&&data.abonnement)
@@ -92,13 +90,18 @@ export class PricesPage {
       apikey: payGardeConfig.apiKey,
       orderid: this.commande.order_id,
       amount: this.commande.amount,
+      acceptmultipayment:true,
       currency: 'XAF',
-      payeremail: firebase.auth().currentUser.email || this.commande.info.email,
+      payeremail:  firebase.auth().currentUser.email || this.commande.info.email,
       payerphone:  this.commande.info.phone
     }
     let modal = this.modalCtrl.create('PaymentPage', {paymentdata: paymentdata});
-    modal.onDidDismiss((data) => {
-         this.dismiss(data);
+    modal.onDidDismiss((detail) => {
+          if(detail && detail.data && detail.data.status === 'PAID') {
+            this.dismiss(detail.data);
+          }else if (detail && detail.data && detail.data.status === 'CANCELED'){
+            this.notify.onError({message: 'Payemnet annule'});
+          }
     })
     modal.present();
   }

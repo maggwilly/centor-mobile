@@ -26,107 +26,169 @@ const portal_api_base_url = "http://api.paygarde.com";
       this.attachShadow({ mode: 'open' });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
       this.iframe = this.shadowRoot.querySelector('iframe');
-      this.onPaymentStart = new CustomEvent('onPaymentStart',{cancelable: true, detail:{}});
-      this.onPaymentComplete = new CustomEvent('onPaymentComplete',{cancelable: true, detail:{}});
-      this.onPaymentCancel = new CustomEvent('onPaymentCancel',{cancelable: true, detail:{}});
-      this.onFrameError = new CustomEvent('onFrameError',{cancelable: true, detail:{}});
+      this.onPaymentStart = new CustomEvent('onPaymentStart',{cancelable: true, detail:{data:''}});
+      this.onPaymentComplete = new CustomEvent('onPaymentComplete',{cancelable: true, detail:{data:''}});
+      this.onPaymentCancel = new CustomEvent('onPaymentCancel',{cancelable: true, detail:{data:''}});
+      this.onFrameError = new CustomEvent('onFrameError',{cancelable: true, detail:{data:''}});
     }
 
     connectedCallback() {
-     this.handlePayementEvents();
-      if (!this.hasAttribute('country')) {
-        this.setAttribute('country', 'CM');
-      }
-      if (!this.hasAttribute('lang')) {
-        this.setAttribute('lang', navigator.language);
-      }
-      if (!this.hasAttribute('currency')) {
-        this.setAttribute('currency', 'XAF');
-      }
-      if (!this.hasAttribute('acceptmultipayment')) {
-        this.setAttribute('acceptmultipayment', false);
-      }
+      this.showLoading();
+      this.handlePayementEvents();
+    }
+
+    showLoading() {
+      let html = `<html>
+<head>
+<style>
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body class="box">
+<div class="loader"></div>
+</body>
+</html>`;
+      const blob = new Blob([html], {type: 'text/html'});
+      this.iframe.src = window.URL.createObjectURL(blob);
+    }
+
+    showErrorsMessage(err) {
+      let message = err.message || 'Unable to initialize payment.';
+      let html =
+        `<html>  
+        <head>  
+            <style>  
+                body {  
+                    font-family: -apple-system, ubuntu, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;  
+                    color: #414141;  
+                    background: #ecf0f1;  
+                }  
+                #failure path {  
+                    fill: #e74c3c;  
+                }  
+                h3 {  
+                    font-weight: normal;  
+                }  
+                .card {  
+                    background: #fff;  
+                    width: 90% ; height: 50%;  
+                    margin: 20% auto; padding-top: 57px;  
+                    text-align: center;  
+                }
+                .msg-txt{
+                  width: 80%;
+                  margin: auto;
+                  font: 17px  ubuntu, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+                  line-height: 1.6;
+                }  
+            </style>  
+        </head>  
+        </head>  
+        <body><div id="failure" class="card">  
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 16.538l-4.592-4.548 4.546-4.587-1.416-1.403-4.545 4.589-4.588-4.543-1.405 1.405 4.593 4.552-4.547 4.592 1.405 1.405 4.555-4.596 4.591 4.55 1.403-1.416z"/></svg>  
+            <h2>Error</h2>  
+            <p class="msg-txt">${message}.</p>  
+        </div>  
+        </body>  
+        </html>`;
+      const blob = new Blob([html], {type: 'text/html'});
+      this.iframe.src = window.URL.createObjectURL(blob);
     }
 
     getCkoutData() {
       return {
-        serviceid: this.serviceid,
+        serviceid: this.serviceid || '',
         orderid: this.orderid,
         amount: this.amount,
         lang: (this.lang || 'EN').slice(0,2).toUpperCase(),
         currency: (this.currency || 'XAF').toUpperCase(),
         country: (this.country || 'CM').slice(0,2).toUpperCase(),
-        acceptpartialpayment: this.acceptmultipayment,
-        payerphone: this.payerphone,
-        payeremail: this.payeremail,
-        primaryColor: this.primarycolor,
+        acceptpartialpayment: this.acceptmultipayment || false,
+        payerphone: this.payerphone || '',
+        payeremail: this.payeremail || '',
+        primaryColor: this.primarycolor || 'default',
         viewMode: this.viewmode || 'full',
         collectpayergeneratlinfo: this.collectpayergeneratlinfo || false,
       };
     }
 
 
+    checkProperties(obj) {
+      for (var key in obj) {
+        if (obj[key] === null)
+          return false;
+      }
+      return true;
+    }
     attributeChangedCallback(name, oldValue, newValue){
       let self=this;
-      if (this.hasAttributs()&&!this.hasAttribute('isloading')){
-        setTimeout(()=>{
-        this.setAttribute('isloading', true);
         const apikey= this.apikey;
-        const ckout_data = this.getCkoutData();
+        const ckoutData = this.getCkoutData();
+        if(!this.checkProperties(ckoutData) || apikey===null || this.hasAttribute('isloading'))
+           return;
+       this.setAttribute("isloading",true);
+        let body = JSON.stringify(ckoutData);
+        console.log(body);
         (function () {
-          fetch(`${portal_api_base_url}/api/v1/payment-requests/embeded`, {
+          fetch(`${portal_api_base_url}/api/v1/payment-requests/embedded`, {
             method: "post",
-            body: JSON.stringify(ckout_data),
-            headers: {'Content-Type': 'application/json','Authorization': `Bearer ${apikey}`}
+            body: body ,
+            headers: {'Content-Type': 'application/json','Api-key': `${apikey}`}
           }).then(function (response) {
-            return response.json()
-              .then(json => {
-                if (response.ok) {
-                  return json
-                }
-                return Promise.reject(Object.assign({}, json, {
-                  status: response.status,
-                  statusText: response.statusText
-                }))
-              })
-          }).then(data=>{
-            self.loadIframe(data, self);
+            console.log(response.ok);
+             return  response.json().then(function (data) {
+               if(response.ok) {
+                 self.loadIframe(data, self);
+               }else self.showErrorsMessage(data);
+              });
           }).catch(err => {
+            self.showErrorsMessage(err);
             self.onFrameError.detail.error=err;
-            self.dispatchEvent(self.onFrameError);
+            self.dispatchEvent(err);
           })
         })();
-      },50);
-      }
-    }
-
-    hasAttributs(){
-      return this.hasAttribute('apikey')&&
-        this.hasAttribute('serviceid')&&
-        this.hasAttribute('orderid')&&
-        this.hasAttribute('country')&&
-        this.hasAttribute('currency')&&
-        this.hasAttribute('amount');
     }
 
     loadIframe(data) {
-      this.iframe.src = data.fulllurl;
+      this.iframe.src = data.fullUrl;
     }
 
     handlePayementEvents() {
       let self=this;
       (function () {
         function handlerEvent($message) {
-          console.log($message)
           switch ($message.data.event) {
             case 'OnPaymentStart': {
               self.onPaymentStart.detail.data=$message.data.body;
-              this.dispatchEvent(self.onPaymentStart);
+              self.dispatchEvent(self.onPaymentStart);
               break;
             }
             case 'OnPaymentComplete': {
               self.onPaymentComplete.detail.data=$message.data.body;
-              this.dispatchEvent(self.onPaymentComplete);
+              self.dispatchEvent(self.onPaymentComplete);
               break;
             }
             case 'OnPaymentCancel': {
@@ -140,7 +202,7 @@ const portal_api_base_url = "http://api.paygarde.com";
       })();
     }
     static get observedAttributes() {
-      return ['apikey','serviceid','orderid','amount','currency','lang','acceptmultipayment','payerphone','payeremail','country'];
+      return ['collectpayergeneratlinfo', 'apikey','serviceid','orderid','amount','currency','lang','payerphone','acceptmultipayment','payeremail','country'];
     }
 
     set isloading(isloading) {
@@ -227,6 +289,7 @@ const portal_api_base_url = "http://api.paygarde.com";
     }
     disconnectedCallback() {
     }
+
   }
   window.customElements.define('payment-frame', PaymentFrame);
 })();

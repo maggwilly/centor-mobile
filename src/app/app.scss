@@ -425,7 +425,7 @@ modal-wrapper {
   }
 }
 
-@media only screen and (min-height: 0px) and (min-width: 0px) {
+@media only screen and (min-height: 600px) and (min-width: 768px) {
   .modal-wrapper {
     width: 400px;
   }

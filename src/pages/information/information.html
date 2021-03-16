@@ -46,6 +46,6 @@
     <p *ngIf="!isExpired(abonnement)">Votre code candidat est le <b>{{abonnement.id}}</b></p>
   </div>
   <div padding *ngIf="isExpired(abonnement)">
-    <button *ngIf="price" ion-button block color="orange" (click)="processPayment()">M'abonner</button>
+    <button *ngIf="price" ion-button block round large color="orange" (click)="processPayment()">M'abonner</button>
   </div>
 </ion-content>

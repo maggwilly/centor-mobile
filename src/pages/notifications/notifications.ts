@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, Platform, LoadingController, AlertController} from 'ionic-angular';
+import {ModalController,NavController, NavParams, Platform, LoadingController, AlertController} from 'ionic-angular';
 import {Storage} from '@ionic/storage';
 import {AppNotify} from '../../providers/app-notify';
 import {DataService} from '../../providers/data-service';
@@ -8,12 +8,7 @@ import {IonicPage} from 'ionic-angular';
 import {FcmProvider as Firebase} from '../../providers/fcm/fcm';
 import {AbonnementProvider} from "../../providers/abonnement/abonnement";
 
-/**
- * Generated class for the NotificationsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+
 
 @IonicPage()
 @Component({
@@ -31,6 +26,7 @@ export class NotificationsPage {
     public navParams: NavParams,
     public storage: Storage,
     public alertCtrl: AlertController,
+    public modalCtrl: ModalController,
     public notify: AppNotify,
     public firebaseNative: Firebase,
     public dataService: DataService,
@@ -47,7 +43,7 @@ export class NotificationsPage {
       this.notificationId = id;
       this.observeAuth()
     })
-    
+
   }
 
   observeAuth() {
@@ -82,6 +78,10 @@ export class NotificationsPage {
       })
     });
 
+  }
+  openSearchPage() {
+    this.modalCtrl.create('SearchPage', {queryText:"Annonce"} )
+      .present();
   }
 
 

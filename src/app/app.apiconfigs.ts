@@ -7,5 +7,5 @@ export const apiConfig = {
 
 export const payGardeConfig ={
   serviceId:'62828464-fc9c-4908-a6ff-f0b849aeca70',
-  apiKey:''
+  apiKey:'UFJPRDoxYTA2ODQxNy0yNjk1LTQzNjUtOTMzZS03YWRlY2YwYTkxY2Y='
 }

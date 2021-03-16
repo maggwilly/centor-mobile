@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Events, Searchbar, Platform, NavController, NavParams } from 'ionic-angular';
+import {ModalController, Events, Searchbar, Platform, NavController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
@@ -25,6 +25,7 @@ export class ResultatsPage {
     public storage: Storage,
     public dataService: DataService,
     public notify: AppNotify,
+    public modalCtrl: ModalController,
     public events: Events,
     public firebaseNative: Firebase,
     public platform: Platform,
@@ -65,7 +66,10 @@ export class ResultatsPage {
       }
     });
   }
-
+  openSearchPage() {
+    this.modalCtrl.create('SearchPage', {queryText:"Arrêté"} )
+      .present();
+  }
 
   loadData() {
     return this.dataService.getResultats(0).then((data) => {

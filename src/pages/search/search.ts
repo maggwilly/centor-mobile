@@ -1,14 +1,7 @@
-import {Component,ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
-import {App, IonicPage,  NavController, NavParams, Searchbar, ViewController} from 'ionic-angular';
+import {App, IonicPage, NavController, NavParams, Searchbar, ViewController} from 'ionic-angular';
 import {DataService} from "../../providers/data-service";
-
-/**
- * Generated class for the SearchPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -26,17 +19,17 @@ export class SearchPage {
               public dataService: DataService,
               public viewCtrl: ViewController,
               public appCtrl: App) {
-
+    this.queryText = navParams.get('queryText');
   }
 
   ngAfterViewInit() {
-      setTimeout(() => {
-        this.vc.setFocus();
-      }, 500);
+    setTimeout(() => {
+      this.vc.setFocus();
+    }, 500);
 
     this.dataService.search(this.searchTerm$)
       .subscribe(results => {
-        if(!results||results.length==0)
+        if (!results || results.length == 0)
           return;
         this.results$ = results;
         setTimeout(() => {
@@ -44,11 +37,11 @@ export class SearchPage {
         }, 500);
 
       });
-    this.searchTerm$.next('');
+    this.searchTerm$.next(this.queryText);
   }
 
   name(url: string): string {
-    if (url&&url.includes('pdf'))
+    if (url && url.includes('pdf'))
       return 'md-download';
     return 'md-open';
   }

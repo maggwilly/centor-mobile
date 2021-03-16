@@ -4,16 +4,13 @@ import { MyApp } from './app.component';
 import {MODULES, MAINPROVIDERS, SHAREDPROVIDERS} from './app.imports';
 import { SharedDirectivesModule } from './shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { TooltipsModule } from 'ionic-tooltips';
 import { FcmProvider } from '../providers/fcm/fcm';
 import { AbonnementProvider } from '../providers/abonnement/abonnement';
-import { firebaseConfig} from './app.firebaseconfig';
 import { GroupmanagerProvider } from '../providers/groupmanager/groupmanager';
-
-
+import { firebaseConfig} from './app.firebaseconfig';
+import firebase from 'firebase';
 @NgModule({
   declarations: [
     MyApp,
@@ -28,8 +25,6 @@ import { GroupmanagerProvider } from '../providers/groupmanager/groupmanager';
      //backButtonText: 'Quitter',
       pageTransition: 'ios-transition'
     }),
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireDatabaseModule,
     MODULES,
     BrowserAnimationsModule,
     LazyLoadImageModule,
@@ -45,4 +40,8 @@ import { GroupmanagerProvider } from '../providers/groupmanager/groupmanager';
     AbonnementProvider,
     GroupmanagerProvider]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(){
+    firebase.initializeApp(firebaseConfig);
+  }
+}

@@ -187,6 +187,7 @@ export class MatieresPage {
     if (!this.concours)
       return
     this.abonnementProvider.checkAbonnementValidity(this.concours.id).then(data => {
+      console.log(data)
       this.abonnement = data;
       this.abonnementLoaded = true;
       if ($event)

@@ -25,12 +25,11 @@ export class PaymentPage {
   ionViewDidLoad() {}
 
   onFrameError($event){
-    console.log(JSON.stringify($event))
-    this.dismiss($event.detail.error)
+   // this.dismiss($event.detail.error)
   }
 
-  onPaymentComplete($event){
-    this.dismiss($event.detail.data)
+  onPaymentComplete($event: any){
+    this.dismiss($event.detail)
   }
 
   dismiss(data?: any) {
@@ -38,6 +37,6 @@ export class PaymentPage {
   }
 
   onPaymentCancel($event: any) {
-    this.dismiss($event.detail.data)
+    this.dismiss($event.detail)
   }
 }

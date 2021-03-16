@@ -1,5 +1,5 @@
 import {Component, NgZone, ViewChild} from '@angular/core';
-import {Events, Searchbar, Platform, NavController, NavParams, LoadingController, AlertController} from 'ionic-angular';
+import { ModalController,Events, Searchbar, Platform, NavController, NavParams, LoadingController, AlertController} from 'ionic-angular';
 import {Storage} from '@ionic/storage';
 import {DataService} from '../../providers/data-service';
 import {AppNotify} from '../../providers/app-notify';
@@ -29,6 +29,7 @@ export class ConcoursPage {
     public storage: Storage,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
+    public modalCtrl: ModalController,
     public dataService: DataService,
     public notify: AppNotify,
     public abonnementProvider:AbonnementProvider,
@@ -126,6 +127,10 @@ export class ConcoursPage {
     return;
   }
 
+  openSearchPage() {
+    this.modalCtrl.create('SearchPage', {queryText:"Concours"} )
+      .present();
+  }
 
 
   filter(array: any[], text) {
@@ -173,4 +178,6 @@ export class ConcoursPage {
     });
     alert.present()
   }
+
+
 }

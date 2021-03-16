@@ -13,9 +13,7 @@ import {
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 import {DataService} from '../providers/data-service';
-import {AngularFireDatabase} from 'angularfire2/database';
 import {Storage} from '@ionic/storage';
-import firebase from 'firebase';
 import {AppNotify} from '../providers/app-notify';
 import {FcmProvider} from '../providers/fcm/fcm';
 import {Deeplinks} from '@ionic-native/deeplinks';
@@ -25,10 +23,10 @@ import {AbonnementProvider} from "../providers/abonnement/abonnement";
 import {ImghandlerProvider} from "../providers/imghandler/imghandler";
 import {UserProvider} from "../providers/user/user";
 import {NotificationData} from "@ionic-native/fcm";
-//import { Push, PushObject, PushOptions, NotificationEventResponse, RegistrationEventResponse } from '@ionic-native/push';
+import * as firebase from "firebase";
 
 
-const appVersion = '3.3.8';
+const appVersion = '3.4.2';
 
 export interface PageInterface {
   title: string;
@@ -58,17 +56,18 @@ export class MyApp {
   modalshow = false;
   rootSet: boolean = false;
   telegram: any = 'https://t.me/centorconcours';
-  notificationId: string = firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;//= window.localStorage.getItem('registrationId');
   appPages: PageInterface[] = [
     {title: 'Accueil', component: 'HomePage', icon: 'home'},
-    {title: 'Les Concours', component: 'ConcoursPage', icon: 'school'},
+    {title: 'Rechercher', component: 'SearchPage', icon: 'search'},
+    {title: 'Les concours', component: 'ConcoursPage', icon: 'school'},
     {title: 'Arrêtés publiés', component: 'ResultatsPage', icon: 'md-list'},
-    {title: 'A Propos de nous', component: 'AboutPage', icon: 'information-circle'}
+    {title: 'A propos de nous', component: 'AboutPage', icon: 'information-circle'}
   ];
   skipMsg: string = "Skip";
   state: string = 'x';
   abonnement: any;
   currentMessage = new BehaviorSubject(null)
+  notificationId: string;
   constructor(
     public platform: Platform,
     public menu: MenuController,
@@ -76,7 +75,6 @@ export class MyApp {
     public abonnementProvider: AbonnementProvider,
     public notify: AppNotify,
     public fcm: FcmProvider,
-    public af: AngularFireDatabase,
     public storage: Storage,
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
@@ -89,6 +87,7 @@ export class MyApp {
     public imgservice: ImghandlerProvider,
     public deeplinks: Deeplinks
   ) {
+    this.notificationId=firebase.auth().currentUser ? firebase.auth().currentUser.uid : undefined;
     this.zone = new NgZone({});
      platform.ready().then(() => {
       try {

@@ -1,8 +1,10 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Rechercher</ion-title>
+    <ion-title>Rechercher quelques choses</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="dismiss()"><ion-icon name="close"></ion-icon></button>
+      <button ion-button icon-only (click)="dismiss()" showWhen="android,windows,core">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -11,7 +13,7 @@
                  placeholder="Rechercher n'importe quoi">
   </ion-searchbar>
   <ion-list>
-    <ion-item *ngFor="let result of results$" [hidden]="!result.title" (click)="openItem(result)">
+    <ion-item *ngFor="let result of results$" [hidden]="!result.title" (click)="openItem(result)" text-wrap>
       <h2>{{result.title}}</h2>
       <p>{{result.description}}</p>
       <ion-badge [color]="color(result.resultType)">{{result.resultType}}</ion-badge>

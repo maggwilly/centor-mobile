@@ -1,16 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {IonicPage, ModalController, NavController, NavParams} from 'ionic-angular';
 import { DataService } from '../../providers/data-service';
 import { AppNotify } from '../../providers/app-notify';
 import { Storage } from '@ionic/storage';
 import { FcmProvider as Firebase } from '../../providers/fcm/fcm';
 
-/**
- * Generated class for the RessourcesPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -25,6 +19,7 @@ export class RessourcesPage {
     public navParams: NavParams,
     public firebaseNative: Firebase,
     public dataService: DataService,
+    public modalCtrl: ModalController,
     public notify: AppNotify,
      public storage: Storage
     ) {
@@ -42,12 +37,15 @@ export class RessourcesPage {
         this.notify.onError({ message: 'Problème de connexion.' });
       })
     })
-
   }
 
 openRessource(ressource:any){
   this.navCtrl.push('RessourceDetailsPage',{ressource_id:ressource.id});
 }
 
+  openSearchPage() {
+    this.modalCtrl.create('SearchPage', {queryText:"Document"} )
+      .present();
+  }
 
 }

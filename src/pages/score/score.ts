@@ -44,7 +44,7 @@ export class ScorePage {
   isTheBegining: boolean = true;
   modal: any;
   isAmswering: boolean = true;
-  timer = 0;
+  timer:any = 0;
   isMathProcessed = false;
   start: number;
   authInfo: any;

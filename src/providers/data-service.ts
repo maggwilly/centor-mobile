@@ -178,6 +178,7 @@ getQuestions(qcm:number){
 
 }
   getOneRessource(id: number) {
+  console.log(apiConfig.baseUrl + 'formated/ressource/' + id + '/show/json' + '?uid=' + this.getUserUID())
     return this.http.get(apiConfig.baseUrl + 'formated/ressource/' + id + '/show/json' + '?uid=' + this.getUserUID(), { headers: this.headers })
       .toPromise()
       .then(response => response.json());

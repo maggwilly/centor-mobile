@@ -49,4 +49,9 @@
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
+  <ion-fab bottom right #fab>
+    <button color="light" id="cart-btn" ion-fab (click)="openSearchPage()">
+      <ion-icon name="search"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>

@@ -83,7 +83,6 @@ export class RessourceDetailsPage {
   private createCommande() {
     this.abonnementProvider.startCommande(this.estateProperty.id, 'ressource').then(data => {
       this.commande = data;
-      ;
       if (!data.amount)
         return;
       this.firebaseNative.logEvent(`cmd_started_event`, {bundle: 'ressource', amount: this.estateProperty.price});
@@ -99,13 +98,15 @@ export class RessourceDetailsPage {
       apikey:payGardeConfig.apiKey,
       orderid: this.commande.order_id,
       amount: this.commande.amount,
+      acceptmultipayment:true,
       currency: 'XAF',
-      payeremail: firebase.auth().currentUser.email || this.commande.info.email,
+      payeremail: firebase.auth().currentUser.email ? firebase.auth().currentUser.email:this.commande.info.email,
       payerphone:  this.commande.info.phone
     }
     let modal=  this.modalCtrl.create('PaymentPage',{paymentdata:paymentdata} );
-    modal.onDidDismiss((data, role)=>{
-       this.commande.paid=(data&&data.status=='PAID');
+    modal.onDidDismiss((detail, role)=>{
+      console.log(detail);
+       this.commande.paid=(detail && detail.data && detail.data.status === 'PAID');
     })
     modal.present();
   }

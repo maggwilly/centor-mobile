@@ -5,7 +5,6 @@ import { Http } from '@angular/http';
 import { window } from 'rxjs/operator/window';
 import { FilePath } from '@ionic-native/file-path';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import {finalize} from "rxjs/operators";
 
 @Injectable()
 export class ImghandlerProvider {
@@ -126,56 +125,6 @@ export class ImghandlerProvider {
 
     })
      return promise;
-  }
-
-  filemsgstore() {
-    var promise = new Promise((resolve, reject) => {
-      this.filechooser.open().then((url) => {
-        (<any>window).FilePath.resolveNativePath(url,(fileentry) => {
-          this.nativepath = fileentry;
-          let filename = this.getfilename(fileentry);
-          let fileext = this.getfileext(fileentry);
-          let type = "application/pdf"
-          switch (fileext) {
-            case "pdf":
-              type = "application/pdf"
-              break;
-            case "docx":
-              type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              break;
-            case "jpg":
-            case "png":
-              type = 'image/jpeg'
-              break;
-            case "doc":
-              type = 'application/msword'
-              break;
-            case "xlsx":
-              type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-              break;
-            default:
-              break;
-          }
-          this.makeFileIntoBlob(fileentry, filename, type).then(blob=>{
-           let file = {
-              blob: blob,
-              type: type,
-              fileext: fileext,
-             filename: this.guid()
-            }
-
-            let imageStore = this.firestore.ref('/filemsgs').child(file.filename);
-            imageStore.put(file.blob, { contentType: file.type }).then((res) => {
-              resolve(res.downloadURL);
-            }).catch((err) => {
-              alert(err);
-            })
-          });
-
-        })
-      })
-    })
-    return promise;
   }
 
   makeFileIntoBlob(_imagePath, name, type) {

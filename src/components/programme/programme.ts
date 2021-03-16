@@ -127,7 +127,6 @@ export class ProgrammeComponent implements OnChanges{
   }
 
   ngOnChanges() {
-
     this.locked=this.isExpired(this.abonnement);
   }
 
@@ -136,7 +135,6 @@ export class ProgrammeComponent implements OnChanges{
      return true;
   let now=Date.now();
   let endDate=new Date(abonnement.endDate).getTime();
-
    return now>endDate;
    }
 
