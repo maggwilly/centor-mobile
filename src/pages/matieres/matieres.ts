@@ -105,6 +105,7 @@ export class MatieresPage {
         .then((data) => {
           this.abonnement = data;
           this.concours = this.abonnement.session;
+          if(this.concours.id)
           this.getShowConcours().then(() => {
             this.observeAuth();
           });
@@ -113,6 +114,7 @@ export class MatieresPage {
         });
     else {
       this.concours = this.abonnement.session;
+      if(this.concours.id)
       this.getShowConcours().then(() => {
         this.observeAuth();
       });
@@ -187,7 +189,6 @@ export class MatieresPage {
     if (!this.concours)
       return
     this.abonnementProvider.checkAbonnementValidity(this.concours.id).then(data => {
-      console.log(data)
       this.abonnement = data;
       this.abonnementLoaded = true;
       if ($event)

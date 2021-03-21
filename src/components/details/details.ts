@@ -16,7 +16,6 @@ export class DetailsComponent {
     @Input()
    concours:any;
     constructor() {
-     console.log('Hello Details Component');
   }
 
 
@@ -32,7 +31,7 @@ if(days>=30){
     return {nbre:remain,label:'mois',color:'secondary',text:''+remain +' mois'};
  }else if(days>=7 &&days<30){
   remain=days%7;
-  if(remain>3) 
+  if(remain>3)
     remain=(days-remain)/7+1;
   else
    remain=(days-remain)/7;

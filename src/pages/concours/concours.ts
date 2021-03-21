@@ -21,6 +21,7 @@ export class ConcoursPage {
   zone: NgZone
   abonnement: any;
   notificationId: string = window.localStorage.getItem('registrationId');
+  loaded=false;
   @ViewChild("searchbar") searchbar: Searchbar;
 
   constructor(
@@ -42,9 +43,12 @@ export class ConcoursPage {
   ngAfterViewInit() {
     this.dataService.search(this.searchTerm$, 'Concours')
       .subscribe(results => {
+        this.loaded=true;
         if(!results||results.length==0)
           return;
         this._concours = results;
+      },error => {
+        this.loaded=true;
       });
     this.search();
   }

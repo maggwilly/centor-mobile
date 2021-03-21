@@ -72,11 +72,12 @@ export class PricesPage {
   confirmCommende() {
     if (!this.commande.amount) {
       this.abonnementProvider.confirmFreeCommende({status: "PAID",orderid: this.commande.order_id})
-        .then(data => {
-          if(data&&data.abonnement)
+        .then(ok => {
+          if(ok)
               this.dismiss({status: "PAID", amount:0});
           else throw 'Nous avons rencontré un problème !';
       }, error => {
+          console.log(error);
         this.notify.onError({message: 'Nous avons rencontré un problème !'});
       })
       return;

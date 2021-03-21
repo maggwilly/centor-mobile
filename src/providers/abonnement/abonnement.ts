@@ -55,7 +55,7 @@ export class AbonnementProvider {
   confirmFreeCommende(status:any){
     return  this.http.post(apiConfig.baseUrl+'formated/commende/confirm/json',JSON.stringify(status ), { headers:this. headers })
       .toPromise()
-      .then(response =>response.json());
+      .then(response =>response.ok);
   }
 
 }

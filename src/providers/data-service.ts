@@ -27,9 +27,9 @@ data: any;
   searchEntries(term, entity_code?:any) {
     let route='formated/search?'
     let filter=entity_code?'&entity_key='+entity_code:'';
-    console.log(`${apiConfig.baseUrl}${route}term=${term}${filter}`)
+    let searchTerm=term?term:'document'
     return this.http
-      .get(`${apiConfig.baseUrl}${route}term=${term}${filter}`)
+      .get(`${apiConfig.baseUrl}${route}term=${searchTerm}${filter}`)
       .map(res => res.json());
   }
 

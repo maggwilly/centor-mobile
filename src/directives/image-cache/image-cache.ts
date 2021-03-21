@@ -17,24 +17,19 @@ export class ImageCacheDirective {
   @Input('ngStyle') cacheEl;
   @Input('bg') bg;
   constructor(private el: ElementRef, private platform: Platform) {
- 
+
 
   }
 
 
   cacheSrc(){
     ImgCache.isCached(this.el.nativeElement.src, (path: string, success: any) => {
-      console.log('path - ' + path);
-      console.log('success - ' + success);
       if (success) {
         // already cached
-        console.log('already cached so using cached');
         ImgCache.useCachedFile(this.el.nativeElement);
       } else {
         // not there, need to cache the image
-        console.log('not there, need to cache the image - ' + this.el.nativeElement.src);
         ImgCache.cacheFile(this.el.nativeElement.src, () => {
-          console.log('cached file');
           // ImgCache.useCachedFile(el.nativeElement);
         });
       }
@@ -52,6 +47,6 @@ export class ImageCacheDirective {
       }, () => {
         console.log('ImgCache init: error! Check the log for errors');
       });
-    })    
+    })
   }
 }

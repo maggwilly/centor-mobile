@@ -15,10 +15,11 @@ import {Subject} from "rxjs/Subject";
 })
 export class ResultatsPage {
   _resultats: any[] = [];
- queryText = null;
+   queryText = null;
   authInfo: any;
   @ViewChild("searchbar") searchbar: Searchbar;
   searchTerm$ = new Subject<string>();
+  loaded=false;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -31,15 +32,18 @@ export class ResultatsPage {
     public platform: Platform,
 
   ) {
-  //  this.firebaseNative.setScreemName('document_list');
+    this.firebaseNative.setScreemName('document_list');
   }
 
   ngAfterViewInit() {
     this.dataService.search(this.searchTerm$, 'Resultat')
       .subscribe(results => {
+        this.loaded=true;
         if(!results||results.length==0)
           return;
         this._resultats = results;
+      },error => {
+        this.loaded=true;
       });
     this.searchTerm$.next('Resultat');
   }
